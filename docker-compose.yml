@@ -1,0 +1,107 @@
+version: "3.7"
+
+services:
+
+  bootstrap:
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    # TODO: expose some ports to inject traffic
+    ports:
+      - 127.0.0.1:60000:60000
+      - 127.0.0.1:8008:8008
+      - 127.0.0.1:9000:9000
+      - 127.0.0.1:8545:8545
+    entrypoint: sh
+    command:
+    - '/opt/run_bootstrap.sh'
+    volumes:
+      - ./run_bootstrap.sh:/opt/run_bootstrap.sh:Z
+  
+  nwaku:
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    deploy:
+      replicas: ${NUM_NWAKU_NODES}
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+    depends_on:
+      - bootstrap
+
+  ##gowaku:
+  ##  # crazy discv5 loop
+  ##  #image: ac1aa5d18e62c668c3644320247d3df0c6dcec6470fd48c70b6b6bfc659456ab
+  ##  #image: 51c2a81e23588acc8ee00c10523364d9ae4717241c8d59cce12c8d50146e7992 # relaxed disv5 loop 15 sec out if
+  ##  image: caaea91fdaf0992c4e98522a40531f37927e87f2feb39b91cbcf48f935fddeed # 5 sec delay out of if
+  ##  restart: on-failure
+  ##  deploy:
+  ##    replicas: 5
+  ##  entrypoint: sh
+  ##  command:
+  ##    - '/opt/run_gowaku.sh'
+  ##  volumes:
+  ##    - ./run_gowaku.sh:/opt/run_gowaku.sh:Z
+  ##  depends_on:
+  ##    - bootstrap
+  ##  environment:
+  ##    GO_WAKU: "true"
+
+
+  waku-publisher:
+    image: alrevuelta/waku-publisher:c985cb3
+    entrypoint: sh
+      - 'opt/run_wakupublisher.sh'
+    volumes:
+      - ./run_wakupublisher.sh:/opt/run_wakupublisher.sh:Z
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./monitoring/prometheus-config.yml:/etc/prometheus/prometheus.yml:z
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=7d
+    ports:
+      - 127.0.0.1:9090:9090
+    restart: on-failure
+
+  grafana:
+    image: grafana/grafana:latest
+    env_file:
+      - ./monitoring/configuration/grafana-plugins.env
+    volumes:
+      - ./monitoring/configuration/grafana.ini:/etc/grafana/grafana.ini:z
+      - ./monitoring/configuration/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml:z
+      - ./monitoring/configuration/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml:z
+      - ./monitoring/configuration/dashboards:/var/lib/grafana/dashboards/:z
+      - ./monitoring/configuration/customizations/custom-logo.svg:/usr/share/grafana/public/img/grafana_icon.svg:z
+      - ./monitoring/configuration/customizations/custom-logo.svg:/usr/share/grafana/public/img/grafana_typelogo.svg:z
+      - ./monitoring/configuration/customizations/custom-logo.png:/usr/share/grafana/public/img/fav32.png:z
+    ports:
+      #- 127.0.0.1:3000:3000
+      # open port to access the dashboard
+      - 3000:3000
+    restart: on-failure
+    depends_on:
+      - prometheus
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    #ports:
+    #  - 8080:8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    #ports:
+    #  - 6379:6379
