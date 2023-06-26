@@ -30,24 +30,18 @@ services:
     depends_on:
       - bootstrap
 
-  ##gowaku:
-  ##  # crazy discv5 loop
-  ##  #image: ac1aa5d18e62c668c3644320247d3df0c6dcec6470fd48c70b6b6bfc659456ab
-  ##  #image: 51c2a81e23588acc8ee00c10523364d9ae4717241c8d59cce12c8d50146e7992 # relaxed disv5 loop 15 sec out if
-  ##  image: caaea91fdaf0992c4e98522a40531f37927e87f2feb39b91cbcf48f935fddeed # 5 sec delay out of if
-  ##  restart: on-failure
-  ##  deploy:
-  ##    replicas: 5
-  ##  entrypoint: sh
-  ##  command:
-  ##    - '/opt/run_gowaku.sh'
-  ##  volumes:
-  ##    - ./run_gowaku.sh:/opt/run_gowaku.sh:Z
-  ##  depends_on:
-  ##    - bootstrap
-  ##  environment:
-  ##    GO_WAKU: "true"
-
+  #gowaku:
+  #  image: statusteam/go-waku:v0.6.0
+  #  restart: on-failure
+  #  deploy:
+  #    replicas: 5
+  #  entrypoint: sh
+  #  command:
+  #    - '/opt/run_gowaku.sh'
+  #  volumes:
+  #    - ./run_gowaku.sh:/opt/run_gowaku.sh:Z
+  #  depends_on:
+  #    - bootstrap
 
   waku-publisher:
     image: alrevuelta/waku-publisher:c985cb3

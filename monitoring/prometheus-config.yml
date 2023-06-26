@@ -214,4 +214,23 @@ scrape_configs:
       - waku-simulator_nwaku_198:8008
       - waku-simulator_nwaku_199:8008
       - waku-simulator_nwaku_200:8008
-      
+      - waku-simulator_gowaku_1:8008
+      - waku-simulator_gowaku_2:8008
+      - waku-simulator_gowaku_3:8008
+      - waku-simulator_gowaku_4:8008
+      - waku-simulator_gowaku_5:8008
+      - waku-simulator_gowaku_6:8008
+      - waku-simulator_gowaku_7:8008
+      - waku-simulator_gowaku_8:8008
+      - waku-simulator_gowaku_9:8008
+      - waku-simulator_gowaku_10:8008
+      - waku-simulator_gowaku_11:8008
+      - waku-simulator_gowaku_12:8008
+      - waku-simulator_gowaku_13:8008
+      - waku-simulator_gowaku_14:8008
+      - waku-simulator_gowaku_15:8008
+      - waku-simulator_gowaku_16:8008
+      - waku-simulator_gowaku_17:8008
+      - waku-simulator_gowaku_18:8008
+      - waku-simulator_gowaku_19:8008
+      - waku-simulator_gowaku_20:8008
