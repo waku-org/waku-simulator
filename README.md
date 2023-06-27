@@ -13,7 +13,7 @@ cd waku-simulator
 ```
 
 ```
-export NWAKU_IMAGE=statusteam/nim-waku:v0.17.0
+export NWAKU_IMAGE=statusteam/nim-waku:v0.18.0-rc.0
 export NUM_NWAKU_NODES=5
 docker-compose up -d
 ```
