@@ -22,7 +22,7 @@ echo "Using bootstrap node: ${BOOTSTRAP_ENR}"
 exec /usr/bin/wakunode\
       --relay=true\
       --rpc-admin=true\
-      --max-connections=50\
+      --max-connections=250\
       --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
