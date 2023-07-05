@@ -30,25 +30,28 @@ services:
     depends_on:
       - bootstrap
 
-  #gowaku:
-  #  image: statusteam/go-waku:v0.7.0
-  #  restart: on-failure
-  #  deploy:
-  #    replicas: 5
-  #  entrypoint: sh
-  #  command:
-  #    - '/opt/run_gowaku.sh'
-  #  volumes:
-  #    - ./run_gowaku.sh:/opt/run_gowaku.sh:Z
-  #  depends_on:
-  #    - bootstrap
+  gowaku:
+    image: ${GOWAKU_IMAGE}
+    restart: on-failure
+    deploy:
+      replicas: ${NUM_GOWAKU_NODES}
+    entrypoint: sh
+    command:
+      - '/opt/run_gowaku.sh'
+    volumes:
+      - ./run_gowaku.sh:/opt/run_gowaku.sh:Z
+    depends_on:
+      - bootstrap
 
   waku-publisher:
-    image: alrevuelta/waku-publisher:c985cb3
+    image: alrevuelta/waku-publisher:de34e2d
     entrypoint: sh
       - 'opt/run_wakupublisher.sh'
     volumes:
       - ./run_wakupublisher.sh:/opt/run_wakupublisher.sh:Z
+    environment:
+      MSG_PER_SECOND: 10
+      MSG_SIZE_KBYTES: 10
 
   prometheus:
     image: prom/prometheus:latest
