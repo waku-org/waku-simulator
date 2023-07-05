@@ -8,7 +8,7 @@
 Without changing anything:
 
 ```
-git clone 
+git clone https://github.com/waku-org/waku-simulator.git
 cd waku-simulator
 ```
 
