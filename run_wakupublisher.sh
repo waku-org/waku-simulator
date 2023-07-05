@@ -22,7 +22,7 @@ echo "Using bootstrap node: ${BOOTSTRAP_ENR}"
 exec /main\
     --pubsub-topic="/waku/2/default-waku/proto"\
     --content-topic="my-ctopic"\
-    --msg-per-second=10\
-    --msg-size-kb=1\
+    --msg-per-second=${MSG_PER_SECOND}\
+    --msg-size-kb=${MSG_SIZE_KBYTES}\
     --bootstrap-node=${BOOTSTRAP_ENR}\
     --max-peers=50
