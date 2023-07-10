@@ -44,7 +44,7 @@ services:
       - bootstrap
 
   waku-publisher:
-    image: alrevuelta/waku-publisher:de34e2d
+    image: alrevuelta/waku-publisher:9fb206c
     entrypoint: sh
       - 'opt/run_wakupublisher.sh'
     volumes:
