@@ -24,6 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 2,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -666,8 +667,8 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "gowaku_10"
+              "id": "byRegexp",
+              "options": "/.*gowaku*/"
             },
             "properties": [
               {
@@ -681,8 +682,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "nwaku_20"
+              "id": "byRegexp",
+              "options": "/.*nwaku*/"
             },
             "properties": [
               {
@@ -690,79 +691,6 @@
                 "value": {
                   "fixedColor": "blue",
                   "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "__systemRef": "hideSeriesFrom",
-            "matcher": {
-              "id": "byNames",
-              "options": {
-                "mode": "exclude",
-                "names": [
-                  "gowaku_1",
-                  "gowaku_10",
-                  "gowaku_11",
-                  "gowaku_12",
-                  "gowaku_13",
-                  "gowaku_14",
-                  "gowaku_15",
-                  "gowaku_16",
-                  "gowaku_17",
-                  "gowaku_18",
-                  "gowaku_19",
-                  "gowaku_2",
-                  "gowaku_20",
-                  "gowaku_21",
-                  "gowaku_22",
-                  "gowaku_23",
-                  "gowaku_24",
-                  "gowaku_25",
-                  "gowaku_26",
-                  "gowaku_27",
-                  "gowaku_28",
-                  "gowaku_29",
-                  "gowaku_3",
-                  "gowaku_30",
-                  "gowaku_31",
-                  "gowaku_32",
-                  "gowaku_33",
-                  "gowaku_34",
-                  "gowaku_35",
-                  "gowaku_36",
-                  "gowaku_37",
-                  "gowaku_38",
-                  "gowaku_39",
-                  "gowaku_4",
-                  "gowaku_40",
-                  "gowaku_41",
-                  "gowaku_42",
-                  "gowaku_43",
-                  "gowaku_44",
-                  "gowaku_45",
-                  "gowaku_46",
-                  "gowaku_47",
-                  "gowaku_48",
-                  "gowaku_49",
-                  "gowaku_5",
-                  "gowaku_50",
-                  "gowaku_6",
-                  "gowaku_7",
-                  "gowaku_8",
-                  "gowaku_9"
-                ],
-                "prefix": "All except:",
-                "readOnly": true
-              }
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom",
-                "value": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": true
                 }
               }
             ]
@@ -975,75 +903,31 @@
         },
         "overrides": [
           {
-            "__systemRef": "hideSeriesFrom",
             "matcher": {
-              "id": "byNames",
-              "options": {
-                "mode": "exclude",
-                "names": [
-                  "gowaku_1",
-                  "gowaku_10",
-                  "gowaku_11",
-                  "gowaku_12",
-                  "gowaku_13",
-                  "gowaku_14",
-                  "gowaku_15",
-                  "gowaku_16",
-                  "gowaku_17",
-                  "gowaku_18",
-                  "gowaku_19",
-                  "gowaku_2",
-                  "gowaku_20",
-                  "gowaku_21",
-                  "gowaku_22",
-                  "gowaku_23",
-                  "gowaku_24",
-                  "gowaku_25",
-                  "gowaku_26",
-                  "gowaku_27",
-                  "gowaku_28",
-                  "gowaku_29",
-                  "gowaku_3",
-                  "gowaku_30",
-                  "gowaku_31",
-                  "gowaku_32",
-                  "gowaku_33",
-                  "gowaku_34",
-                  "gowaku_35",
-                  "gowaku_36",
-                  "gowaku_37",
-                  "gowaku_38",
-                  "gowaku_39",
-                  "gowaku_4",
-                  "gowaku_40",
-                  "gowaku_41",
-                  "gowaku_42",
-                  "gowaku_43",
-                  "gowaku_44",
-                  "gowaku_45",
-                  "gowaku_46",
-                  "gowaku_47",
-                  "gowaku_48",
-                  "gowaku_49",
-                  "gowaku_5",
-                  "gowaku_50",
-                  "gowaku_6",
-                  "gowaku_7",
-                  "gowaku_8",
-                  "gowaku_9",
-                  "waku-publisher_1"
-                ],
-                "prefix": "All except:",
-                "readOnly": true
-              }
+              "id": "byRegexp",
+              "options": "/.*gowaku*/"
             },
             "properties": [
               {
-                "id": "custom.hideFrom",
+                "id": "color",
                 "value": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": true
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*nwaku*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
                 }
               }
             ]
@@ -1256,74 +1140,31 @@
         },
         "overrides": [
           {
-            "__systemRef": "hideSeriesFrom",
             "matcher": {
-              "id": "byNames",
-              "options": {
-                "mode": "exclude",
-                "names": [
-                  "gowaku_1",
-                  "gowaku_10",
-                  "gowaku_11",
-                  "gowaku_12",
-                  "gowaku_13",
-                  "gowaku_14",
-                  "gowaku_15",
-                  "gowaku_16",
-                  "gowaku_17",
-                  "gowaku_18",
-                  "gowaku_19",
-                  "gowaku_2",
-                  "gowaku_20",
-                  "gowaku_21",
-                  "gowaku_22",
-                  "gowaku_23",
-                  "gowaku_24",
-                  "gowaku_25",
-                  "gowaku_26",
-                  "gowaku_27",
-                  "gowaku_28",
-                  "gowaku_29",
-                  "gowaku_3",
-                  "gowaku_30",
-                  "gowaku_31",
-                  "gowaku_32",
-                  "gowaku_33",
-                  "gowaku_34",
-                  "gowaku_35",
-                  "gowaku_36",
-                  "gowaku_37",
-                  "gowaku_38",
-                  "gowaku_39",
-                  "gowaku_4",
-                  "gowaku_40",
-                  "gowaku_41",
-                  "gowaku_42",
-                  "gowaku_43",
-                  "gowaku_44",
-                  "gowaku_45",
-                  "gowaku_46",
-                  "gowaku_47",
-                  "gowaku_48",
-                  "gowaku_49",
-                  "gowaku_5",
-                  "gowaku_50",
-                  "gowaku_6",
-                  "gowaku_7",
-                  "gowaku_8",
-                  "gowaku_9"
-                ],
-                "prefix": "All except:",
-                "readOnly": true
-              }
+              "id": "byRegexp",
+              "options": "/.*gowaku*/"
             },
             "properties": [
               {
-                "id": "custom.hideFrom",
+                "id": "color",
                 "value": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": true
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*nwaku*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
                 }
               }
             ]
@@ -1536,74 +1377,31 @@
         },
         "overrides": [
           {
-            "__systemRef": "hideSeriesFrom",
             "matcher": {
-              "id": "byNames",
-              "options": {
-                "mode": "exclude",
-                "names": [
-                  "gowaku_1",
-                  "gowaku_10",
-                  "gowaku_11",
-                  "gowaku_12",
-                  "gowaku_13",
-                  "gowaku_14",
-                  "gowaku_15",
-                  "gowaku_16",
-                  "gowaku_17",
-                  "gowaku_18",
-                  "gowaku_19",
-                  "gowaku_2",
-                  "gowaku_20",
-                  "gowaku_21",
-                  "gowaku_22",
-                  "gowaku_23",
-                  "gowaku_24",
-                  "gowaku_25",
-                  "gowaku_26",
-                  "gowaku_27",
-                  "gowaku_28",
-                  "gowaku_29",
-                  "gowaku_3",
-                  "gowaku_30",
-                  "gowaku_31",
-                  "gowaku_32",
-                  "gowaku_33",
-                  "gowaku_34",
-                  "gowaku_35",
-                  "gowaku_36",
-                  "gowaku_37",
-                  "gowaku_38",
-                  "gowaku_39",
-                  "gowaku_4",
-                  "gowaku_40",
-                  "gowaku_41",
-                  "gowaku_42",
-                  "gowaku_43",
-                  "gowaku_44",
-                  "gowaku_45",
-                  "gowaku_46",
-                  "gowaku_47",
-                  "gowaku_48",
-                  "gowaku_49",
-                  "gowaku_5",
-                  "gowaku_50",
-                  "gowaku_6",
-                  "gowaku_7",
-                  "gowaku_8",
-                  "gowaku_9"
-                ],
-                "prefix": "All except:",
-                "readOnly": true
-              }
+              "id": "byRegexp",
+              "options": "/.*gowaku*/"
             },
             "properties": [
               {
-                "id": "custom.hideFrom",
+                "id": "color",
                 "value": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": true
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*nwaku*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
                 }
               }
             ]
@@ -1813,7 +1611,38 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*gowaku*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*nwaku*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 11,
@@ -1966,7 +1795,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2030,7 +1860,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2094,7 +1925,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3991,10 +3823,9 @@
     "list": [
       {
         "current": {
-          "isNone": true,
           "selected": false,
-          "text": "None",
-          "value": ""
+          "text": "bootstrap:8008",
+          "value": "bootstrap:8008"
         },
         "datasource": {
           "type": "prometheus",
@@ -4025,8 +3856,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "nwaku-monitoring",
-  "uid": "x01BwcJ4z",
-  "version": 1,
+  "title": "nwaku-vs-gowaku",
+  "uid": "x01BwcJ4a",
+  "version": 2,
   "weekStart": ""
 }
