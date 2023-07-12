@@ -14,7 +14,7 @@ cd waku-simulator
 Configure the simulation parameters. You can place the env variable in an `.env` file.
 
 ```
-export GOWAKU_IMAGE=statusteam/go-waku:v0.7.0
+export GOWAKU_IMAGE=statusteam/go-waku:latest
 export NWAKU_IMAGE=statusteam/nim-waku:v0.18.0-rc.0
 export NUM_NWAKU_NODES=5
 export NUM_GOWAKU_NODES=5
