@@ -30,6 +30,9 @@ This will:
 * spin up a given amount of nwaku/gowaku nodes with specific versions.
 * spin up a `waku-publisher` instance that will inject traffic into the network (see flags for rate and msg size)
 
+## notes
+
+The default login/password for grafana is `admin`/`admin`.
 
 ## warning
 
