@@ -26,9 +26,15 @@ exec /usr/bin/wakunode\
       --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
-      --log-level=INFO\
+      --log-level=DEBUG\
       --rpc-address=0.0.0.0\
       --metrics-server=True\
       --metrics-server-address=0.0.0.0\
       --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
-      --nat=extip:${IP}
+      --nat=extip:${IP} \
+      --rln-relay=true \
+      --rln-relay-dynamic=true \
+      --rln-relay-cred-password=password \
+      --rln-relay-cred-path=/rlnKeystore.json \
+      --rln-relay-eth-contract-address=0x39558059411112732d73997712b75a865a697330  \
+      --rln-relay-eth-client-address=wss://sepolia.infura.io/ws/v3/4576482c0f474483ac709755f2663b20 \

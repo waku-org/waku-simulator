@@ -2,6 +2,7 @@ version: "3.7"
 
 services:
 
+  # TODO: disable relay and make it just bootstrap? discv5
   bootstrap:
     image: ${NWAKU_IMAGE}
     restart: on-failure
@@ -27,6 +28,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
     depends_on:
       - bootstrap
 
