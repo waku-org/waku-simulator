@@ -38,4 +38,3 @@ exec /usr/bin/wakunode\
       --rln-relay-cred-path=/rlnKeystore.json \
       --rln-relay-eth-contract-address=0x39558059411112732d73997712b75a865a697330  \
       --rln-relay-eth-client-address=ws://linux-01.ih-eu-mda1.nimbus.sepolia.wg:9557
-      #--rln-relay-eth-client-address=wss://sepolia.infura.io/ws/v3/4576482c0f474483ac709755f2663b20 \

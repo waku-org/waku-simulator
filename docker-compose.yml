@@ -26,11 +26,23 @@ services:
     entrypoint: sh
     command:
       - '/opt/run_nwaku.sh'
+    #ports:
+    #  - 127.0.0.1:8545:8545
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
       - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
       - bootstrap
+
+  rpc-traffic:
+    image: a444c985d103b9f86121b935f21b02b0fbe0ccc7c7538a1195996984ed317188
+    restart: "no"
+    #depends_on:
+    #  - nwaku
+    command:
+      - --node=http://bootstrap:8545
+      - --msg-size-kbyte=10
 
   gowaku:
     image: ${GOWAKU_IMAGE}
@@ -45,15 +57,15 @@ services:
     depends_on:
       - bootstrap
 
-  waku-publisher:
-    image: alrevuelta/waku-publisher:9fb206c
-    entrypoint: sh
-      - 'opt/run_wakupublisher.sh'
-    volumes:
-      - ./run_wakupublisher.sh:/opt/run_wakupublisher.sh:Z
-    environment:
-      MSG_PER_SECOND: 10
-      MSG_SIZE_KBYTES: 10
+#  waku-publisher:
+#    image: alrevuelta/waku-publisher:9fb206c
+#    entrypoint: sh
+#      - 'opt/run_wakupublisher.sh'
+#    volumes:
+#      - ./run_wakupublisher.sh:/opt/run_wakupublisher.sh:Z
+#    environment:
+#      MSG_PER_SECOND: 10
+#      MSG_SIZE_KBYTES: 10
 
   prometheus:
     image: prom/prometheus:latest
