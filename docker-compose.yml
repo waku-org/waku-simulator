@@ -35,14 +35,16 @@ services:
     depends_on:
       - bootstrap
 
-  rpc-traffic:
-    image: a444c985d103b9f86121b935f21b02b0fbe0ccc7c7538a1195996984ed317188
-    restart: "no"
-    #depends_on:
-    #  - nwaku
-    command:
-      - --node=http://bootstrap:8545
-      - --msg-size-kbyte=10
+#  rpc-traffic:
+#    build: .
+#      #context: ./
+#      #dockerfile: Dockerfile
+#    restart: "no"
+#    depends_on:
+#      - nwaku
+#    command:
+#      - --node=http://bootstrap:8545
+#      - --msg-size-kbyte=10
 
   gowaku:
     image: ${GOWAKU_IMAGE}
