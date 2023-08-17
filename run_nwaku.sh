@@ -3,6 +3,7 @@
 IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
 
 echo "I am a nwaku node"
+echo "I am replica $REPLICA"
 
 RETRIES=${RETRIES:=10}
 
@@ -36,5 +37,6 @@ exec /usr/bin/wakunode\
       --rln-relay-dynamic=true \
       --rln-relay-cred-password=password \
       --rln-relay-cred-path=/rlnKeystore.json \
+      --rln-relay-membership-index=$REPLICA \
       --rln-relay-eth-contract-address=0x39558059411112732d73997712b75a865a697330  \
       --rln-relay-eth-client-address=ws://linux-01.ih-eu-mda1.nimbus.sepolia.wg:9557

@@ -62,7 +62,11 @@ if args.multiple_nodes:
 
   print("Injecting traffic to multiple nodes RPC") 
   for i in range(start, end+1):
-    print(node_placeholder.replace("{placeholder}", str(i)))
+    nodes.append(node_placeholder.replace("{placeholder}", str(i)))
+
+print("Injecting traffic to multiple nodes RPC")
+for node in nodes:
+  print(node)
 
 while True:
     # calls are blocking
@@ -75,4 +79,5 @@ while True:
       for node in nodes:
         send_waku_msg(node, args.msg_size_kbytes, args.pubsub_topic, args.content_topic)
 
+    print("sleeping: ", args.delay_seconds, " seconds")
     time.sleep(args.delay_seconds)
