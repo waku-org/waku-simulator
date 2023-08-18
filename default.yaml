@@ -1,0 +1,43 @@
+name: Basic simulation
+bootstrap: true
+publisher:
+  image: alrevuelta/waku-publisher:9fb206c
+  msq_per_sec: 10
+  msg_size_kb: 10
+groups:
+  - name: nwaku
+    type: nwaku
+    image: statusteam/nim-waku:v0.19.0
+    count: 2
+    args:
+      - --relay
+    env:
+      POSTGRES_USER: nwaku
+      POSTGRES_PASSWORD: verysecret
+    volumes:
+      - src: ./data
+        dst: /data
+        per_node: true
+  - name: nwaku-extra
+    type: nwaku
+    image: statusteam/nim-waku:v0.19.0
+    count: 2
+    args:
+      - --filter=true
+      - --store=true
+    env:
+      POSTGRES_USER: nwaku
+      POSTGRES_PASSWORD: verysecret
+    volumes:
+      - src: ./data
+        dst: /data
+        per_node: true
+  - name: gowaku
+    type: gowaku
+    image: statusteam/go-waku:latest
+    count: 2
+    args:
+      - --relay
+    volumes:
+      - src: /home/vpavlin/devel/github.com/vpavlin/waku-simulator/go-data
+        dst: /data
