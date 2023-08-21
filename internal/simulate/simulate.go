@@ -92,7 +92,6 @@ func (s *Simulation) Generate() error {
 				service.DependsOn = compose.DependsOnConfig{
 					BOOSTRAP_SERVICE_NAME: compose.ServiceDependency{
 						Condition: compose.ServiceConditionStarted,
-						Required:  true,
 					},
 				}
 			}

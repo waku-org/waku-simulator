@@ -2,7 +2,10 @@ module github.com/waku-org/waku-simulator
 
 go 1.18
 
-require github.com/spf13/cobra v1.7.0
+require (
+	github.com/prometheus/common v0.44.0
+	github.com/spf13/cobra v1.7.0
+)
 
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.7.0 // indirect
@@ -32,7 +35,6 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_golang v1.16.0 // indirect
 	github.com/prometheus/client_model v0.4.0 // indirect
-	github.com/prometheus/common v0.44.0 // indirect
 	github.com/prometheus/common/sigv4 v0.1.0 // indirect
 	github.com/prometheus/procfs v0.11.0 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
@@ -49,7 +51,7 @@ require (
 )
 
 require (
-	github.com/compose-spec/compose-go v1.18.1
+	github.com/compose-spec/compose-go v1.14.0
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/otiai10/copy v1.12.0
 	github.com/prometheus/prometheus v0.46.0
