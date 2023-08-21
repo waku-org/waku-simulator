@@ -1,12 +1,13 @@
+
 version: "3.7"
 
 services:
 
-  # TODO: disable relay and make it just bootstrap? discv5
+  #TODO: disable relay and make it just bootstrap? discv5
   bootstrap:
     image: ${NWAKU_IMAGE}
     restart: on-failure
-    # TODO: expose some ports to inject traffic
+    #TODO: expose some ports to inject traffic
     ports:
       - 127.0.0.1:60000:60000
       - 127.0.0.1:8008:8008
@@ -17,356 +18,6 @@ services:
     - '/opt/run_bootstrap.sh'
     volumes:
       - ./run_bootstrap.sh:/opt/run_bootstrap.sh:Z
-  
-  nwaku_1:
-    container_name: waku-simulator_nwaku_1
-    environment:
-      REPLICA: 1
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_2:
-    container_name: waku-simulator_nwaku_2
-    environment:
-      REPLICA: 2
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_3:
-    container_name: waku-simulator_nwaku_3
-    environment:
-      REPLICA: 3
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_4:
-    container_name: waku-simulator_nwaku_4
-    environment:
-      REPLICA: 4
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_5:
-    container_name: waku-simulator_nwaku_5
-    environment:
-      REPLICA: 5
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_6:
-    container_name: waku-simulator_nwaku_6
-    environment:
-      REPLICA: 6
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_7:
-    container_name: waku-simulator_nwaku_7
-    environment:
-      REPLICA: 7
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_8:
-    container_name: waku-simulator_nwaku_8
-    environment:
-      REPLICA: 8
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_9:
-    container_name: waku-simulator_nwaku_9
-    environment:
-      REPLICA: 9
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_10:
-    container_name: waku-simulator_nwaku_10
-    environment:
-      REPLICA: 10
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_11:
-    container_name: waku-simulator_nwaku_11
-    environment:
-      REPLICA: 11
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_12:
-    container_name: waku-simulator_nwaku_12
-    environment:
-      REPLICA: 12
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_13:
-    container_name: waku-simulator_nwaku_13
-    environment:
-      REPLICA: 13
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_14:
-    container_name: waku-simulator_nwaku_14
-    environment:
-      REPLICA: 14
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_15:
-    container_name: waku-simulator_nwaku_15
-    environment:
-      REPLICA: 15
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_16:
-    container_name: waku-simulator_nwaku_16
-    environment:
-      REPLICA: 16
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_17:
-    container_name: waku-simulator_nwaku_17
-    environment:
-      REPLICA: 17
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_18:
-    container_name: waku-simulator_nwaku_18
-    environment:
-      REPLICA: 18
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_19:
-    container_name: waku-simulator_nwaku_19
-    environment:
-      REPLICA: 19
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-
-  nwaku_20:
-    container_name: waku-simulator_nwaku_20
-    environment:
-      REPLICA: 20
-    image: ${NWAKU_IMAGE}
-    restart: on-failure
-    entrypoint: sh
-    command:
-      - '/opt/run_nwaku.sh'
-    volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
-#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
-    depends_on:
-      - bootstrap
-
-#  rpc-traffic:
-#    build: .
-#      #context: ./
-#      #dockerfile: Dockerfile
-#    restart: "no"
-#    depends_on:
-#      - nwaku
-#    command:
-#      - --node=http://bootstrap:8545
-#      - --msg-size-kbyte=10
 
   gowaku:
     image: ${GOWAKU_IMAGE}
@@ -381,15 +32,15 @@ services:
     depends_on:
       - bootstrap
 
-#  waku-publisher:
-#    image: alrevuelta/waku-publisher:9fb206c
-#    entrypoint: sh
-#      - 'opt/run_wakupublisher.sh'
-#    volumes:
-#      - ./run_wakupublisher.sh:/opt/run_wakupublisher.sh:Z
-#    environment:
-#      MSG_PER_SECOND: 10
-#      MSG_SIZE_KBYTES: 10
+  #waku-publisher:
+  #  image: alrevuelta/waku-publisher:9fb206c
+  #  entrypoint: sh
+  #    - 'opt/run_wakupublisher.sh'
+  #  volumes:
+  #    - ./run_wakupublisher.sh:/opt/run_wakupublisher.sh:Z
+  #  environment:
+  #    MSG_PER_SECOND: 10
+  #    MSG_SIZE_KBYTES: 10
 
   prometheus:
     image: prom/prometheus:latest
@@ -440,3 +91,324 @@ services:
     container_name: redis
     #ports:
     #  - 6379:6379
+
+
+  nwaku_1:
+    container_name: waku-simulator_nwaku_1
+    environment:
+      REPLICA: 1
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_2:
+    container_name: waku-simulator_nwaku_2
+    environment:
+      REPLICA: 2
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_3:
+    container_name: waku-simulator_nwaku_3
+    environment:
+      REPLICA: 3
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_4:
+    container_name: waku-simulator_nwaku_4
+    environment:
+      REPLICA: 4
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_5:
+    container_name: waku-simulator_nwaku_5
+    environment:
+      REPLICA: 5
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_6:
+    container_name: waku-simulator_nwaku_6
+    environment:
+      REPLICA: 6
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_7:
+    container_name: waku-simulator_nwaku_7
+    environment:
+      REPLICA: 7
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_8:
+    container_name: waku-simulator_nwaku_8
+    environment:
+      REPLICA: 8
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_9:
+    container_name: waku-simulator_nwaku_9
+    environment:
+      REPLICA: 9
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_10:
+    container_name: waku-simulator_nwaku_10
+    environment:
+      REPLICA: 10
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_11:
+    container_name: waku-simulator_nwaku_11
+    environment:
+      REPLICA: 11
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_12:
+    container_name: waku-simulator_nwaku_12
+    environment:
+      REPLICA: 12
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_13:
+    container_name: waku-simulator_nwaku_13
+    environment:
+      REPLICA: 13
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_14:
+    container_name: waku-simulator_nwaku_14
+    environment:
+      REPLICA: 14
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_15:
+    container_name: waku-simulator_nwaku_15
+    environment:
+      REPLICA: 15
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_16:
+    container_name: waku-simulator_nwaku_16
+    environment:
+      REPLICA: 16
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_17:
+    container_name: waku-simulator_nwaku_17
+    environment:
+      REPLICA: 17
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_18:
+    container_name: waku-simulator_nwaku_18
+    environment:
+      REPLICA: 18
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_19:
+    container_name: waku-simulator_nwaku_19
+    environment:
+      REPLICA: 19
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
+
+  nwaku_20:
+    container_name: waku-simulator_nwaku_20
+    environment:
+      REPLICA: 20
+    image: ${NWAKU_IMAGE}
+    restart: on-failure
+    entrypoint: sh
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./rlnKeystore.json:/rlnKeystore.json:Z
+#      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
+    depends_on:
+      - bootstrap
