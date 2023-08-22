@@ -38,5 +38,5 @@ exec /usr/bin/wakunode\
       --rln-relay-cred-password=password \
       --rln-relay-cred-path=/rlnKeystore.json \
       --rln-relay-membership-index=$REPLICA \
-      --rln-relay-eth-contract-address=0x39558059411112732d73997712b75a865a697330  \
+      --rln-relay-eth-contract-address=0x2992c7bFD42729991b614e95F4C2C78619f49c50  \
       --rln-relay-eth-client-address=ws://linux-01.ih-eu-mda1.nimbus.sepolia.wg:9557
