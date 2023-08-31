@@ -1,5 +1,14 @@
 version: "3.7"
 
+
+networks:
+  simulation:
+      driver: bridge
+      ipam:
+          driver: default
+          config:
+              - subnet: "10.1.0.0/22"
+
 services:
 
   bootstrap:
@@ -16,6 +25,8 @@ services:
     - '/opt/run_bootstrap.sh'
     volumes:
       - ./run_bootstrap.sh:/opt/run_bootstrap.sh:Z
+    networks:
+      - simulation
   
   nwaku:
     image: ${NWAKU_IMAGE}
@@ -29,6 +40,8 @@ services:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
     depends_on:
       - bootstrap
+    networks:
+      - simulation
 
   gowaku:
     image: ${GOWAKU_IMAGE}
@@ -52,6 +65,8 @@ services:
     environment:
       MSG_PER_SECOND: 10
       MSG_SIZE_KBYTES: 10
+    networks:
+      - simulation
 
   prometheus:
     image: prom/prometheus:latest
@@ -63,6 +78,8 @@ services:
     ports:
       - 127.0.0.1:9090:9090
     restart: on-failure
+    networks:
+      - simulation
 
   grafana:
     image: grafana/grafana:latest
@@ -83,6 +100,8 @@ services:
     restart: on-failure
     depends_on:
       - prometheus
+    networks:
+      - simulation
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
@@ -96,9 +115,13 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
     depends_on:
       - redis
+    networks:
+      - simulation
 
   redis:
     image: redis:latest
     container_name: redis
     #ports:
     #  - 6379:6379
+    networks:
+      - simulation
