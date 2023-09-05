@@ -2,7 +2,7 @@
 
 IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
 
-echo "I am a traffic generator"
+echo "I testdiscv5 node"
 
 RETRIES=${RETRIES:=10}
 
@@ -19,10 +19,6 @@ if [ -z "${BOOTSTRAP_ENR}" ]; then
 fi
 
 echo "Using bootstrap node: ${BOOTSTRAP_ENR}"
-exec /main\
-    --pubsub-topic="/waku/2/default-waku/proto"\
-    --content-topic="/toy-chat/3/mingde/proto"\
-    --msg-per-second=200\
-    --msg-size-kb=2\
-    --bootstrap-node=${BOOTSTRAP_ENR}\
-    --max-peers=50
+exec /usr/bin/discv5\
+    --bootnodes=${BOOTSTRAP_ENR}
+   #--bootnodes="enr:-M-4QLOTEs_ZFxCb09FgIezZd5KeTru5CWWyEtMWMN-yUABrerWxckU-pMIh3yO8VjxHpgZ4jU2WSXuK3goW4uYb6c4BgmlkgnY0gmlwhI_G-a6KbXVsdGlhZGRyc7EALzYobm9kZS0wMS5kby1hbXMzLnN0YXR1cy5wcm9kLnN0YXR1c2ltLm5ldAYBu94DiXNlY3AyNTZrMaECoVyonsTGEQvVioM562Q1fjzTb_vKD152PPIdsV7sM6SDdGNwgnZfg3VkcIIjKIV3YWt1MgM"\
