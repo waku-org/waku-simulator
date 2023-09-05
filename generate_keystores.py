@@ -3,7 +3,7 @@ import copy
 import os
 import subprocess
 # Opening JSON file
-f = open('rlnKeystore.json')
+f = open('rlnKeystore_bueno.json')
 
 # returns JSON object as
 # a dictionary
