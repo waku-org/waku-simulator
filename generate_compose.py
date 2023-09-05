@@ -106,7 +106,8 @@ nwaku = '''
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./rlnKeystore.json:/rlnKeystore.json:Z
+      - ./data/nwaku_INDEX:/data:Z
+#      - ./rlnKeystore.json:/rlnKeystore.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
       - bootstrap
@@ -115,8 +116,8 @@ nwaku = '''
 fname = "docker-compose.yml"
 f = open(fname, "w")
 f.write(base)
-
-for i in range(1, 20+1):
+NUM_NWAKUS = 200
+for i in range(1, NUM_NWAKUS+1):
     my_copy= nwaku.replace("INDEX", str(i))
     f.write(my_copy)
 f.close()
