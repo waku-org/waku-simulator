@@ -48,7 +48,7 @@
         "content": "# Single Node (Select nwaku-instance)",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.1",
+      "pluginVersion": "10.1.1",
       "type": "text"
     },
     {
@@ -97,7 +97,7 @@
         "showUnfilled": true,
         "valueMode": "color"
       },
-      "pluginVersion": "9.5.1",
+      "pluginVersion": "10.1.1",
       "targets": [
         {
           "datasource": {
@@ -140,6 +140,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -252,7 +253,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.1",
+      "pluginVersion": "10.1.1",
       "targets": [
         {
           "datasource": {
@@ -317,7 +318,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.1",
+      "pluginVersion": "10.1.1",
       "targets": [
         {
           "datasource": {
@@ -355,7 +356,7 @@
         "content": "# Global View (All Nodes)",
         "mode": "markdown"
       },
-      "pluginVersion": "9.5.1",
+      "pluginVersion": "10.1.1",
       "type": "text"
     },
     {
@@ -406,7 +407,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.1",
+      "pluginVersion": "10.1.1",
       "targets": [
         {
           "datasource": {
@@ -471,7 +472,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.1",
+      "pluginVersion": "10.1.1",
       "targets": [
         {
           "datasource": {
@@ -536,7 +537,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.1",
+      "pluginVersion": "10.1.1",
       "targets": [
         {
           "datasource": {
@@ -601,7 +602,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.1",
+      "pluginVersion": "10.1.1",
       "targets": [
         {
           "datasource": {
@@ -678,7 +679,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.1",
+      "pluginVersion": "10.1.1",
       "targets": [
         {
           "datasource": {
@@ -744,7 +745,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.1",
+      "pluginVersion": "10.1.1",
       "targets": [
         {
           "datasource": {
@@ -785,6 +786,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -878,6 +880,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -971,6 +974,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1278,6 +1282,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1537,6 +1542,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1629,6 +1635,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1721,6 +1728,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1813,6 +1821,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1905,6 +1914,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1997,6 +2007,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2089,6 +2100,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2181,6 +2193,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2273,6 +2286,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2365,6 +2379,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2404,7 +2419,7 @@
         "x": 11,
         "y": 85
       },
-      "id": 69,
+      "id": 77,
       "options": {
         "legend": {
           "calcs": [],
@@ -2424,13 +2439,13 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "(increase(waku_node_messages_total[1m]))/60",
-          "legendFormat": "{{instance}}_{{type}}",
+          "expr": "waku_rln_number_registered_memberships_total",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Messages/second",
+      "title": "Total RLN Memberships",
       "type": "timeseries"
     },
     {
@@ -2457,6 +2472,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2549,6 +2565,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2588,7 +2605,7 @@
         "x": 11,
         "y": 93
       },
-      "id": 71,
+      "id": 69,
       "options": {
         "legend": {
           "calcs": [],
@@ -2608,13 +2625,13 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "libp2p_gossipsub_bad_score_disconnection_total",
-          "legendFormat": "{{instance}}",
+          "expr": "(increase(waku_node_messages_total[1m]))/60",
+          "legendFormat": "{{instance}}_{{type}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Bad Peer Disconnection",
+      "title": "Messages/second",
       "type": "timeseries"
     },
     {
@@ -2641,6 +2658,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2733,6 +2751,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2772,7 +2791,7 @@
         "x": 11,
         "y": 101
       },
-      "id": 53,
+      "id": 71,
       "options": {
         "legend": {
           "calcs": [],
@@ -2792,13 +2811,13 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "(increase(libp2p_pubsub_messages_published_total[1m]))",
+          "expr": "libp2p_gossipsub_bad_score_disconnection_total",
           "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Published Pubsub Messages/Minute",
+      "title": "Bad Peer Disconnection",
       "type": "timeseries"
     },
     {
@@ -2825,6 +2844,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2917,6 +2937,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2956,7 +2977,7 @@
         "x": 11,
         "y": 109
       },
-      "id": 56,
+      "id": 53,
       "options": {
         "legend": {
           "calcs": [],
@@ -2976,13 +2997,13 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "libp2p_gossipsub_invalid_topic_subscription_total",
+          "expr": "(increase(libp2p_pubsub_messages_published_total[1m]))",
           "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "GossipSub Invalid Topic Subscriptions",
+      "title": "Published Pubsub Messages/Minute",
       "type": "timeseries"
     },
     {
@@ -3009,6 +3030,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3101,6 +3123,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3140,7 +3163,7 @@
         "x": 11,
         "y": 117
       },
-      "id": 55,
+      "id": 56,
       "options": {
         "legend": {
           "calcs": [],
@@ -3160,13 +3183,13 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "libp2p_gossipsub_healthy_peers_topics",
+          "expr": "libp2p_gossipsub_invalid_topic_subscription_total",
           "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "GossipSub Healthy Topics",
+      "title": "GossipSub Invalid Topic Subscriptions",
       "type": "timeseries"
     },
     {
@@ -3193,6 +3216,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3309,6 +3333,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3348,7 +3373,7 @@
         "x": 11,
         "y": 125
       },
-      "id": 24,
+      "id": 55,
       "options": {
         "legend": {
           "calcs": [],
@@ -3368,13 +3393,13 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "libp2p_autonat_reachability_confidence{}",
-          "legendFormat": "{{instance}}__{{reachability}}",
+          "expr": "libp2p_gossipsub_healthy_peers_topics",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Reachability State",
+      "title": "GossipSub Healthy Topics",
       "type": "timeseries"
     },
     {
@@ -3401,6 +3426,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3475,7 +3501,6 @@
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
-      "description": "Careful with this when using more than one topic, as all values will be added in \"other\" unless nimlibp2p is compiled with the appropriate flags",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -3495,6 +3520,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3534,7 +3560,7 @@
         "x": 11,
         "y": 133
       },
-      "id": 59,
+      "id": 24,
       "options": {
         "legend": {
           "calcs": [],
@@ -3554,13 +3580,13 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "libp2p_gossipsub_peers_per_topic_mesh",
-          "legendFormat": "{{instance}}_topic_{{topic}}",
+          "expr": "libp2p_autonat_reachability_confidence{}",
+          "legendFormat": "{{instance}}__{{reachability}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Peers Per Topic Mesh",
+      "title": "Reachability State",
       "type": "timeseries"
     },
     {
@@ -3616,7 +3642,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.5.1",
+      "pluginVersion": "10.1.1",
       "targets": [
         {
           "datasource": {
@@ -3653,6 +3679,7 @@
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
+      "description": "Careful with this when using more than one topic, as all values will be added in \"other\" unless nimlibp2p is compiled with the appropriate flags",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -3672,6 +3699,100 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 10,
+        "x": 11,
+        "y": 141
+      },
+      "id": 59,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "libp2p_gossipsub_peers_per_topic_mesh",
+          "legendFormat": "{{instance}}_topic_{{topic}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Peers Per Topic Mesh",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3710,7 +3831,7 @@
         "h": 8,
         "w": 10,
         "x": 11,
-        "y": 141
+        "y": 149
       },
       "id": 48,
       "options": {
@@ -3798,6 +3919,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3835,7 +3957,7 @@
         "h": 8,
         "w": 10,
         "x": 11,
-        "y": 149
+        "y": 157
       },
       "id": 50,
       "options": {
