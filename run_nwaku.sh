@@ -20,18 +20,20 @@ if [ -z "${BOOTSTRAP_ENR}" ]; then
 fi
 
 echo "Bootstrap node: ${BOOTSTRAP_ENR}"
-RANDOM_PEERS=$(shuf -i 20-80 -n 1)
-echo $RANDOM_PEERS
 echo "Using bootstrap node: ${BOOTSTRAP_ENR}"
 exec /usr/bin/wakunode\
       --relay=true\
       --rpc-admin=true\
-      --max-connections=20\
+      --rpc-address=0.0.0.0\
+      --rest=true \
+      --rest-admin=true \
+      --rest-private=true \
+      --rest-address=0.0.0.0 \
+      --max-connections=100\
       --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
       --log-level=DEBUG\
-      --rpc-address=0.0.0.0\
       --metrics-server=True\
       --metrics-server-address=0.0.0.0\
       --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
@@ -39,7 +41,7 @@ exec /usr/bin/wakunode\
       --rln-relay=true \
       --rln-relay-dynamic=true \
       --rln-relay-cred-password=password \
-      --rln-relay-cred-path=/data/rlnKeystore_$REPLICA.json \
-      --rln-relay-tree-path=/data/rln_tree.db \
+      --rln-relay-cred-path=/rlnKeystore_$REPLICA.json \
+      --rln-relay-tree-path=/data/rln_tree_$REPLICA.db \
       --rln-relay-eth-contract-address=0x0A988fd9CA5BAebDf098b8A73621b2AaDa6492E8  \
       --rln-relay-eth-client-address=ws://linux-01.ih-eu-mda1.nimbus.sepolia.wg:9558

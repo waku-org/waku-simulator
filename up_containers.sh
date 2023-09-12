@@ -8,10 +8,10 @@ echo "Generating rln memberships into a single keystore"
 # seems we dont populate the chain id, so infura considers it as replayable and rejects it.
 #ws://linux-01.ih-eu-mda1.nimbus.sepolia.wg:9557
 
-for i in {1..10}
+for i in {2..200}
 do
   docker-compose up -d nwaku_$i
-  sleep 5
+  sleep 1600
 done
 
 

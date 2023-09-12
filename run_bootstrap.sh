@@ -8,7 +8,7 @@ exec /usr/bin/wakunode\
       --relay=true\
       --rpc-admin=true\
       --keep-alive=true\
-      --max-connections=300\
+      --max-connections=600\
       --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
