@@ -37,11 +37,4 @@ exec /usr/bin/wakunode\
       --metrics-server=True\
       --metrics-server-address=0.0.0.0\
       --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
-      --nat=extip:${IP} \
-      --rln-relay=true \
-      --rln-relay-dynamic=true \
-      --rln-relay-cred-password=password \
-      --rln-relay-cred-path=/rlnKeystore_$REPLICA.json \
-      --rln-relay-tree-path=/data/rln_tree_$REPLICA.db \
-      --rln-relay-eth-contract-address=0x0A988fd9CA5BAebDf098b8A73621b2AaDa6492E8  \
-      --rln-relay-eth-client-address=ws://linux-01.ih-eu-mda1.nimbus.sepolia.wg:9558
+      --nat=extip:${IP}

@@ -60,10 +60,10 @@ services:
     image: ${NWAKU_IMAGE}
     restart: on-failure
     #TODO: expose some ports to inject traffic
-    ports:
-      - 127.0.0.1:60000:60000
-      - 127.0.0.1:8008:8008
-      - 127.0.0.1:9000:9000
+    #ports:
+      #- 127.0.0.1:60000:60000
+      #- 127.0.0.1:8008:8008
+      #- 127.0.0.1:9000:9000
     entrypoint: sh
     command:
     - '/opt/run_bootstrap.sh'
@@ -125,18 +125,18 @@ services:
       - prometheus
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
     container_name: cadvisor
-    #ports:
-    #  - 8080:8080
+    restart: unless-stopped
+   # privileged: true
+    ports:
+      - "8080:8080"
     volumes:
       - /:/rootfs:ro
-      - /var/run:/var/run:rw
+      - /var/run:/var/run:ro
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
-    depends_on:
-      - redis
-
+      - /dev/disk/:/dev/disk:ro
   redis:
     image: redis:latest
     container_name: redis
@@ -155,7 +155,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_1:/data:Z
+      - ./data/rln_tree_1.db:/rln_tree_1.db:Z
       - ./keys/rlnKeystore_1.json:/rlnKeystore_1.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -178,7 +178,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_2:/data:Z
+      - ./data/rln_tree_2.db:/rln_tree_2.db:Z
       - ./keys/rlnKeystore_2.json:/rlnKeystore_2.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -201,7 +201,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_3:/data:Z
+      - ./data/rln_tree_3.db:/rln_tree_3.db:Z
       - ./keys/rlnKeystore_3.json:/rlnKeystore_3.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -224,7 +224,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_4:/data:Z
+      - ./data/rln_tree_4.db:/rln_tree_4.db:Z
       - ./keys/rlnKeystore_4.json:/rlnKeystore_4.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -247,7 +247,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_5:/data:Z
+      - ./data/rln_tree_5.db:/rln_tree_5.db:Z
       - ./keys/rlnKeystore_5.json:/rlnKeystore_5.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -270,7 +270,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_6:/data:Z
+      - ./data/rln_tree_6.db:/rln_tree_6.db:Z
       - ./keys/rlnKeystore_6.json:/rlnKeystore_6.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -293,7 +293,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_7:/data:Z
+      - ./data/rln_tree_7.db:/rln_tree_7.db:Z
       - ./keys/rlnKeystore_7.json:/rlnKeystore_7.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -316,7 +316,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_8:/data:Z
+      - ./data/rln_tree_8.db:/rln_tree_8.db:Z
       - ./keys/rlnKeystore_8.json:/rlnKeystore_8.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -339,7 +339,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_9:/data:Z
+      - ./data/rln_tree_9.db:/rln_tree_9.db:Z
       - ./keys/rlnKeystore_9.json:/rlnKeystore_9.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -362,7 +362,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_10:/data:Z
+      - ./data/rln_tree_10.db:/rln_tree_10.db:Z
       - ./keys/rlnKeystore_10.json:/rlnKeystore_10.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -385,7 +385,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_11:/data:Z
+      - ./data/rln_tree_11.db:/rln_tree_11.db:Z
       - ./keys/rlnKeystore_11.json:/rlnKeystore_11.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -408,7 +408,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_12:/data:Z
+      - ./data/rln_tree_12.db:/rln_tree_12.db:Z
       - ./keys/rlnKeystore_12.json:/rlnKeystore_12.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -431,7 +431,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_13:/data:Z
+      - ./data/rln_tree_13.db:/rln_tree_13.db:Z
       - ./keys/rlnKeystore_13.json:/rlnKeystore_13.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -454,7 +454,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_14:/data:Z
+      - ./data/rln_tree_14.db:/rln_tree_14.db:Z
       - ./keys/rlnKeystore_14.json:/rlnKeystore_14.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -477,7 +477,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_15:/data:Z
+      - ./data/rln_tree_15.db:/rln_tree_15.db:Z
       - ./keys/rlnKeystore_15.json:/rlnKeystore_15.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -500,7 +500,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_16:/data:Z
+      - ./data/rln_tree_16.db:/rln_tree_16.db:Z
       - ./keys/rlnKeystore_16.json:/rlnKeystore_16.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -523,7 +523,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_17:/data:Z
+      - ./data/rln_tree_17.db:/rln_tree_17.db:Z
       - ./keys/rlnKeystore_17.json:/rlnKeystore_17.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -546,7 +546,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_18:/data:Z
+      - ./data/rln_tree_18.db:/rln_tree_18.db:Z
       - ./keys/rlnKeystore_18.json:/rlnKeystore_18.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -569,7 +569,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_19:/data:Z
+      - ./data/rln_tree_19.db:/rln_tree_19.db:Z
       - ./keys/rlnKeystore_19.json:/rlnKeystore_19.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -592,7 +592,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_20:/data:Z
+      - ./data/rln_tree_20.db:/rln_tree_20.db:Z
       - ./keys/rlnKeystore_20.json:/rlnKeystore_20.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -615,7 +615,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_21:/data:Z
+      - ./data/rln_tree_21.db:/rln_tree_21.db:Z
       - ./keys/rlnKeystore_21.json:/rlnKeystore_21.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -638,7 +638,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_22:/data:Z
+      - ./data/rln_tree_22.db:/rln_tree_22.db:Z
       - ./keys/rlnKeystore_22.json:/rlnKeystore_22.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -661,7 +661,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_23:/data:Z
+      - ./data/rln_tree_23.db:/rln_tree_23.db:Z
       - ./keys/rlnKeystore_23.json:/rlnKeystore_23.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -684,7 +684,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_24:/data:Z
+      - ./data/rln_tree_24.db:/rln_tree_24.db:Z
       - ./keys/rlnKeystore_24.json:/rlnKeystore_24.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -707,7 +707,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_25:/data:Z
+      - ./data/rln_tree_25.db:/rln_tree_25.db:Z
       - ./keys/rlnKeystore_25.json:/rlnKeystore_25.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -730,7 +730,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_26:/data:Z
+      - ./data/rln_tree_26.db:/rln_tree_26.db:Z
       - ./keys/rlnKeystore_26.json:/rlnKeystore_26.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -753,7 +753,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_27:/data:Z
+      - ./data/rln_tree_27.db:/rln_tree_27.db:Z
       - ./keys/rlnKeystore_27.json:/rlnKeystore_27.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -776,7 +776,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_28:/data:Z
+      - ./data/rln_tree_28.db:/rln_tree_28.db:Z
       - ./keys/rlnKeystore_28.json:/rlnKeystore_28.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -799,7 +799,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_29:/data:Z
+      - ./data/rln_tree_29.db:/rln_tree_29.db:Z
       - ./keys/rlnKeystore_29.json:/rlnKeystore_29.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -822,7 +822,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_30:/data:Z
+      - ./data/rln_tree_30.db:/rln_tree_30.db:Z
       - ./keys/rlnKeystore_30.json:/rlnKeystore_30.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -845,7 +845,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_31:/data:Z
+      - ./data/rln_tree_31.db:/rln_tree_31.db:Z
       - ./keys/rlnKeystore_31.json:/rlnKeystore_31.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -868,7 +868,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_32:/data:Z
+      - ./data/rln_tree_32.db:/rln_tree_32.db:Z
       - ./keys/rlnKeystore_32.json:/rlnKeystore_32.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -891,7 +891,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_33:/data:Z
+      - ./data/rln_tree_33.db:/rln_tree_33.db:Z
       - ./keys/rlnKeystore_33.json:/rlnKeystore_33.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -914,7 +914,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_34:/data:Z
+      - ./data/rln_tree_34.db:/rln_tree_34.db:Z
       - ./keys/rlnKeystore_34.json:/rlnKeystore_34.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -937,7 +937,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_35:/data:Z
+      - ./data/rln_tree_35.db:/rln_tree_35.db:Z
       - ./keys/rlnKeystore_35.json:/rlnKeystore_35.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -960,7 +960,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_36:/data:Z
+      - ./data/rln_tree_36.db:/rln_tree_36.db:Z
       - ./keys/rlnKeystore_36.json:/rlnKeystore_36.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -983,7 +983,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_37:/data:Z
+      - ./data/rln_tree_37.db:/rln_tree_37.db:Z
       - ./keys/rlnKeystore_37.json:/rlnKeystore_37.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1006,7 +1006,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_38:/data:Z
+      - ./data/rln_tree_38.db:/rln_tree_38.db:Z
       - ./keys/rlnKeystore_38.json:/rlnKeystore_38.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1029,7 +1029,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_39:/data:Z
+      - ./data/rln_tree_39.db:/rln_tree_39.db:Z
       - ./keys/rlnKeystore_39.json:/rlnKeystore_39.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1052,7 +1052,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_40:/data:Z
+      - ./data/rln_tree_40.db:/rln_tree_40.db:Z
       - ./keys/rlnKeystore_40.json:/rlnKeystore_40.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1075,7 +1075,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_41:/data:Z
+      - ./data/rln_tree_41.db:/rln_tree_41.db:Z
       - ./keys/rlnKeystore_41.json:/rlnKeystore_41.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1098,7 +1098,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_42:/data:Z
+      - ./data/rln_tree_42.db:/rln_tree_42.db:Z
       - ./keys/rlnKeystore_42.json:/rlnKeystore_42.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1121,7 +1121,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_43:/data:Z
+      - ./data/rln_tree_43.db:/rln_tree_43.db:Z
       - ./keys/rlnKeystore_43.json:/rlnKeystore_43.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1144,7 +1144,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_44:/data:Z
+      - ./data/rln_tree_44.db:/rln_tree_44.db:Z
       - ./keys/rlnKeystore_44.json:/rlnKeystore_44.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1167,7 +1167,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_45:/data:Z
+      - ./data/rln_tree_45.db:/rln_tree_45.db:Z
       - ./keys/rlnKeystore_45.json:/rlnKeystore_45.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1190,7 +1190,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_46:/data:Z
+      - ./data/rln_tree_46.db:/rln_tree_46.db:Z
       - ./keys/rlnKeystore_46.json:/rlnKeystore_46.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1213,7 +1213,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_47:/data:Z
+      - ./data/rln_tree_47.db:/rln_tree_47.db:Z
       - ./keys/rlnKeystore_47.json:/rlnKeystore_47.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1236,7 +1236,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_48:/data:Z
+      - ./data/rln_tree_48.db:/rln_tree_48.db:Z
       - ./keys/rlnKeystore_48.json:/rlnKeystore_48.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1259,7 +1259,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_49:/data:Z
+      - ./data/rln_tree_49.db:/rln_tree_49.db:Z
       - ./keys/rlnKeystore_49.json:/rlnKeystore_49.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1282,7 +1282,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_50:/data:Z
+      - ./data/rln_tree_50.db:/rln_tree_50.db:Z
       - ./keys/rlnKeystore_50.json:/rlnKeystore_50.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1305,7 +1305,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_51:/data:Z
+      - ./data/rln_tree_51.db:/rln_tree_51.db:Z
       - ./keys/rlnKeystore_51.json:/rlnKeystore_51.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1328,7 +1328,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_52:/data:Z
+      - ./data/rln_tree_52.db:/rln_tree_52.db:Z
       - ./keys/rlnKeystore_52.json:/rlnKeystore_52.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1351,7 +1351,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_53:/data:Z
+      - ./data/rln_tree_53.db:/rln_tree_53.db:Z
       - ./keys/rlnKeystore_53.json:/rlnKeystore_53.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1374,7 +1374,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_54:/data:Z
+      - ./data/rln_tree_54.db:/rln_tree_54.db:Z
       - ./keys/rlnKeystore_54.json:/rlnKeystore_54.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1397,7 +1397,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_55:/data:Z
+      - ./data/rln_tree_55.db:/rln_tree_55.db:Z
       - ./keys/rlnKeystore_55.json:/rlnKeystore_55.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1420,7 +1420,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_56:/data:Z
+      - ./data/rln_tree_56.db:/rln_tree_56.db:Z
       - ./keys/rlnKeystore_56.json:/rlnKeystore_56.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1443,7 +1443,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_57:/data:Z
+      - ./data/rln_tree_57.db:/rln_tree_57.db:Z
       - ./keys/rlnKeystore_57.json:/rlnKeystore_57.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1466,7 +1466,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_58:/data:Z
+      - ./data/rln_tree_58.db:/rln_tree_58.db:Z
       - ./keys/rlnKeystore_58.json:/rlnKeystore_58.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1489,7 +1489,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_59:/data:Z
+      - ./data/rln_tree_59.db:/rln_tree_59.db:Z
       - ./keys/rlnKeystore_59.json:/rlnKeystore_59.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1512,7 +1512,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_60:/data:Z
+      - ./data/rln_tree_60.db:/rln_tree_60.db:Z
       - ./keys/rlnKeystore_60.json:/rlnKeystore_60.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1535,7 +1535,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_61:/data:Z
+      - ./data/rln_tree_61.db:/rln_tree_61.db:Z
       - ./keys/rlnKeystore_61.json:/rlnKeystore_61.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1558,7 +1558,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_62:/data:Z
+      - ./data/rln_tree_62.db:/rln_tree_62.db:Z
       - ./keys/rlnKeystore_62.json:/rlnKeystore_62.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1581,7 +1581,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_63:/data:Z
+      - ./data/rln_tree_63.db:/rln_tree_63.db:Z
       - ./keys/rlnKeystore_63.json:/rlnKeystore_63.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1604,7 +1604,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_64:/data:Z
+      - ./data/rln_tree_64.db:/rln_tree_64.db:Z
       - ./keys/rlnKeystore_64.json:/rlnKeystore_64.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1627,7 +1627,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_65:/data:Z
+      - ./data/rln_tree_65.db:/rln_tree_65.db:Z
       - ./keys/rlnKeystore_65.json:/rlnKeystore_65.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1650,7 +1650,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_66:/data:Z
+      - ./data/rln_tree_66.db:/rln_tree_66.db:Z
       - ./keys/rlnKeystore_66.json:/rlnKeystore_66.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1673,7 +1673,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_67:/data:Z
+      - ./data/rln_tree_67.db:/rln_tree_67.db:Z
       - ./keys/rlnKeystore_67.json:/rlnKeystore_67.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1696,7 +1696,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_68:/data:Z
+      - ./data/rln_tree_68.db:/rln_tree_68.db:Z
       - ./keys/rlnKeystore_68.json:/rlnKeystore_68.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1719,7 +1719,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_69:/data:Z
+      - ./data/rln_tree_69.db:/rln_tree_69.db:Z
       - ./keys/rlnKeystore_69.json:/rlnKeystore_69.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1742,7 +1742,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_70:/data:Z
+      - ./data/rln_tree_70.db:/rln_tree_70.db:Z
       - ./keys/rlnKeystore_70.json:/rlnKeystore_70.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1765,7 +1765,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_71:/data:Z
+      - ./data/rln_tree_71.db:/rln_tree_71.db:Z
       - ./keys/rlnKeystore_71.json:/rlnKeystore_71.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1788,7 +1788,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_72:/data:Z
+      - ./data/rln_tree_72.db:/rln_tree_72.db:Z
       - ./keys/rlnKeystore_72.json:/rlnKeystore_72.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1811,7 +1811,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_73:/data:Z
+      - ./data/rln_tree_73.db:/rln_tree_73.db:Z
       - ./keys/rlnKeystore_73.json:/rlnKeystore_73.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1834,7 +1834,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_74:/data:Z
+      - ./data/rln_tree_74.db:/rln_tree_74.db:Z
       - ./keys/rlnKeystore_74.json:/rlnKeystore_74.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1857,7 +1857,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_75:/data:Z
+      - ./data/rln_tree_75.db:/rln_tree_75.db:Z
       - ./keys/rlnKeystore_75.json:/rlnKeystore_75.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1880,7 +1880,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_76:/data:Z
+      - ./data/rln_tree_76.db:/rln_tree_76.db:Z
       - ./keys/rlnKeystore_76.json:/rlnKeystore_76.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1903,7 +1903,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_77:/data:Z
+      - ./data/rln_tree_77.db:/rln_tree_77.db:Z
       - ./keys/rlnKeystore_77.json:/rlnKeystore_77.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1926,7 +1926,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_78:/data:Z
+      - ./data/rln_tree_78.db:/rln_tree_78.db:Z
       - ./keys/rlnKeystore_78.json:/rlnKeystore_78.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1949,7 +1949,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_79:/data:Z
+      - ./data/rln_tree_79.db:/rln_tree_79.db:Z
       - ./keys/rlnKeystore_79.json:/rlnKeystore_79.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1972,7 +1972,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_80:/data:Z
+      - ./data/rln_tree_80.db:/rln_tree_80.db:Z
       - ./keys/rlnKeystore_80.json:/rlnKeystore_80.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -1995,7 +1995,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_81:/data:Z
+      - ./data/rln_tree_81.db:/rln_tree_81.db:Z
       - ./keys/rlnKeystore_81.json:/rlnKeystore_81.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2018,7 +2018,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_82:/data:Z
+      - ./data/rln_tree_82.db:/rln_tree_82.db:Z
       - ./keys/rlnKeystore_82.json:/rlnKeystore_82.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2041,7 +2041,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_83:/data:Z
+      - ./data/rln_tree_83.db:/rln_tree_83.db:Z
       - ./keys/rlnKeystore_83.json:/rlnKeystore_83.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2064,7 +2064,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_84:/data:Z
+      - ./data/rln_tree_84.db:/rln_tree_84.db:Z
       - ./keys/rlnKeystore_84.json:/rlnKeystore_84.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2087,7 +2087,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_85:/data:Z
+      - ./data/rln_tree_85.db:/rln_tree_85.db:Z
       - ./keys/rlnKeystore_85.json:/rlnKeystore_85.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2110,7 +2110,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_86:/data:Z
+      - ./data/rln_tree_86.db:/rln_tree_86.db:Z
       - ./keys/rlnKeystore_86.json:/rlnKeystore_86.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2133,7 +2133,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_87:/data:Z
+      - ./data/rln_tree_87.db:/rln_tree_87.db:Z
       - ./keys/rlnKeystore_87.json:/rlnKeystore_87.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2156,7 +2156,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_88:/data:Z
+      - ./data/rln_tree_88.db:/rln_tree_88.db:Z
       - ./keys/rlnKeystore_88.json:/rlnKeystore_88.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2179,7 +2179,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_89:/data:Z
+      - ./data/rln_tree_89.db:/rln_tree_89.db:Z
       - ./keys/rlnKeystore_89.json:/rlnKeystore_89.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2202,7 +2202,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_90:/data:Z
+      - ./data/rln_tree_90.db:/rln_tree_90.db:Z
       - ./keys/rlnKeystore_90.json:/rlnKeystore_90.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2225,7 +2225,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_91:/data:Z
+      - ./data/rln_tree_91.db:/rln_tree_91.db:Z
       - ./keys/rlnKeystore_91.json:/rlnKeystore_91.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2248,7 +2248,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_92:/data:Z
+      - ./data/rln_tree_92.db:/rln_tree_92.db:Z
       - ./keys/rlnKeystore_92.json:/rlnKeystore_92.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2271,7 +2271,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_93:/data:Z
+      - ./data/rln_tree_93.db:/rln_tree_93.db:Z
       - ./keys/rlnKeystore_93.json:/rlnKeystore_93.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2294,7 +2294,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_94:/data:Z
+      - ./data/rln_tree_94.db:/rln_tree_94.db:Z
       - ./keys/rlnKeystore_94.json:/rlnKeystore_94.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2317,7 +2317,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_95:/data:Z
+      - ./data/rln_tree_95.db:/rln_tree_95.db:Z
       - ./keys/rlnKeystore_95.json:/rlnKeystore_95.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2340,7 +2340,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_96:/data:Z
+      - ./data/rln_tree_96.db:/rln_tree_96.db:Z
       - ./keys/rlnKeystore_96.json:/rlnKeystore_96.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2363,7 +2363,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_97:/data:Z
+      - ./data/rln_tree_97.db:/rln_tree_97.db:Z
       - ./keys/rlnKeystore_97.json:/rlnKeystore_97.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2386,7 +2386,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_98:/data:Z
+      - ./data/rln_tree_98.db:/rln_tree_98.db:Z
       - ./keys/rlnKeystore_98.json:/rlnKeystore_98.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2409,7 +2409,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_99:/data:Z
+      - ./data/rln_tree_99.db:/rln_tree_99.db:Z
       - ./keys/rlnKeystore_99.json:/rlnKeystore_99.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
@@ -2432,7 +2432,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_100:/data:Z
+      - ./data/rln_tree_100.db:/rln_tree_100.db:Z
       - ./keys/rlnKeystore_100.json:/rlnKeystore_100.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:

@@ -60,10 +60,10 @@ services:
     image: ${NWAKU_IMAGE}
     restart: on-failure
     #TODO: expose some ports to inject traffic
-    ports:
-      - 127.0.0.1:60000:60000
-      - 127.0.0.1:8008:8008
-      - 127.0.0.1:9000:9000
+    #ports:
+      #- 127.0.0.1:60000:60000
+      #- 127.0.0.1:8008:8008
+      #- 127.0.0.1:9000:9000
     entrypoint: sh
     command:
     - '/opt/run_bootstrap.sh'
@@ -157,7 +157,7 @@ nwaku = '''
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./data/nwaku_INDEX:/data:Z
+      - ./data/rln_tree_INDEX.db:/rln_tree_INDEX.db:Z
       - ./keys/rlnKeystore_INDEX.json:/rlnKeystore_INDEX.json:Z
 #      - ./rln_tree.db:/rln_tree.db:Z # this should not be done as its being written by all the replicas
     depends_on:
