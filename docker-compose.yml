@@ -14,6 +14,8 @@ services:
   bootstrap:
     image: ${NWAKU_IMAGE}
     restart: on-failure
+    labels:
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
     # TODO: expose some ports to inject traffic
     ports:
       - 127.0.0.1:60000:60000
@@ -31,6 +33,8 @@ services:
   nwaku:
     image: ${NWAKU_IMAGE}
     restart: on-failure
+    labels:
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
     deploy:
       replicas: ${NUM_NWAKU_NODES}
     entrypoint: sh
@@ -46,6 +50,8 @@ services:
   gowaku:
     image: ${GOWAKU_IMAGE}
     restart: on-failure
+    labels:
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
     deploy:
       replicas: ${NUM_GOWAKU_NODES}
     entrypoint: sh
