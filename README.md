@@ -41,3 +41,12 @@ in case arp tables are overflowing:
 ```
 sysctl net.ipv4.neigh.default.gc_thresh3=32000
 ```
+
+# Infrastructure
+
+An instance of this service is deployed at https://simulator.waku.org/.
+
+It is configured using [`wakusim.env`](./wakusim.env) file, and new changes to this repository are picked up using a [GitHub webhook handler](https://github.com/status-im/infra-role-github-webhook).
+The docker images used are updated using [Watchtower](https://github.com/containrrr/watchtower) as well.
+
+For details on how it works please read the [Ansible role readme file](https://github.com/status-im/infra-misc/blob/master/ansible/roles/waku-simulator/). The original deployment issue can be found [here](https://github.com/status-im/infra-nim-waku/issues/79).
