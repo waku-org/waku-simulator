@@ -23,6 +23,7 @@ exec /usr/bin/waku\
    --discv5-discovery\
    --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
    --metrics-server=True\
-   --metrics-server-address=0.0.0.0
+   --metrics-server-address=0.0.0.0\
+   $@
 
 

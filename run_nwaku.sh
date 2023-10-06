@@ -31,4 +31,5 @@ exec /usr/bin/wakunode\
       --metrics-server=True\
       --metrics-server-address=0.0.0.0\
       --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
-      --nat=extip:${IP}
+      --nat=extip:${IP}\
+      $@
