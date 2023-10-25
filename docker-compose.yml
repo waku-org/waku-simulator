@@ -62,15 +62,19 @@ services:
     depends_on:
       - bootstrap
 
-  waku-publisher:
-    image: alrevuelta/waku-publisher:9fb206c
-    entrypoint: sh
-      - 'opt/run_wakupublisher.sh'
-    volumes:
-      - ./run_wakupublisher.sh:/opt/run_wakupublisher.sh:Z
-    environment:
-      MSG_PER_SECOND: 10
-      MSG_SIZE_KBYTES: 10
+  rpc-traffic:
+    image: #todo
+    command:
+      # TODO:
+      - --multiple-nodes=http://waku-simulator_nwaku_[1..20]:8545
+      - --pubsub-topic=/waku/2/default-waku/proto
+      - --content-topic=/toy-chat/3/mingde/proto
+      - --msg-size-kbytes=1
+      - --delay-seconds=15
+
+    #environment: # TODO
+    #  MSG_PER_SECOND: 10
+    #  MSG_SIZE_KBYTES: 10
     networks:
       - simulation
 
