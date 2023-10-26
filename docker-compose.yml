@@ -1,5 +1,9 @@
 version: "3.7"
 
+x-traffic-multiple-nodes: &traffic-multiple-nodes >
+  ${TRAFFIC_MULTIPLE_NODES:-http://waku-simulator_nwaku_[1..10]:8545}
+x-traffic-message-size-kb: &traffic-message-size-kb ${TRAFFIC_MESSAGE_SIZE_KB:-10}
+x-traffic-delay-seconds: &traffic-delay-seconds ${TRAFFIC_DELAY_SECONDS:-15}
 
 networks:
   simulation:
@@ -62,15 +66,15 @@ services:
     depends_on:
       - bootstrap
 
-  waku-publisher:
-    image: alrevuelta/waku-publisher:9fb206c
-    entrypoint: sh
-      - 'opt/run_wakupublisher.sh'
+  rest-traffic:
+    image: python:3.9.18-alpine3.18
+    command: >
+      python /opt/traffic.py
+      -mn=${traffic-multiple-nodes}
+      -s=${traffic-message-size-kb}
+      -d=${traffic-delay-seconds}
     volumes:
-      - ./run_wakupublisher.sh:/opt/run_wakupublisher.sh:Z
-    environment:
-      MSG_PER_SECOND: 10
-      MSG_SIZE_KBYTES: 10
+      - ./traffic.py:/opt/traffic.py:Z
     networks:
       - simulation
 
