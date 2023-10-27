@@ -1,10 +1,5 @@
 version: "3.7"
 
-x-traffic-multiple-nodes: &traffic-multiple-nodes >
-  ${TRAFFIC_MULTIPLE_NODES:-http://waku-simulator_nwaku_[1..10]:8545}
-x-traffic-message-size-kb: &traffic-message-size-kb ${TRAFFIC_MESSAGE_SIZE_KB:-10}
-x-traffic-delay-seconds: &traffic-delay-seconds ${TRAFFIC_DELAY_SECONDS:-15}
-
 networks:
   simulation:
       driver: bridge
@@ -67,16 +62,19 @@ services:
       - bootstrap
 
   rest-traffic:
-    image: python:3.9.18-alpine3.18
+    build:
+      dockerfile: Dockerfile.rest-traffic
     command: >
       python /opt/traffic.py
-      -mn=${traffic-multiple-nodes}
-      -s=${traffic-message-size-kb}
-      -d=${traffic-delay-seconds}
+      -mn=${TRAFFIC_MULTIPLE_NODES:-http://waku-simulator_nwaku_[1..5]:8645}
+      -s=${TRAFFIC_MESSAGE_SIZE_KB:-10}
+      -d=${TRAFFIC_DELAY_SECONDS:-15}
     volumes:
       - ./traffic.py:/opt/traffic.py:Z
     networks:
       - simulation
+    depends_on:
+      - nwaku
 
   prometheus:
     image: prom/prometheus:latest

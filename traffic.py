@@ -3,37 +3,51 @@ import time
 import json
 import os
 import base64
-import argparse
 import sys
+import urllib.parse
+import requests
+import argparse
 
 def send_waku_msg(node_address, kbytes, pubsub_topic, content_topic):
     # TODO dirty trick .replace("=", "")
     base64_payload = (base64.b64encode(os.urandom(kbytes*1000)).decode('ascii')).replace("=", "")
-    #print(base64_payload)
     print("size message kBytes", len(base64_payload) *(3/4)/1000, "KBytes")
-    #pubsub_topic = "/waku/2/default-waku/proto"
-    #content_topic = "xxx"
-    data = {
-        'jsonrpc': '2.0',
-        'method': 'post_waku_v2_relay_v1_message',
-        'id': 1,
-        'params': [pubsub_topic, {"payload": base64_payload, "contentTopic": content_topic, "ephemeral": False}]
+    body = {
+        "payload": base64_payload,
+        "contentTopic": content_topic,
+        "version": 1,  # You can adjust the version as needed
+        #"timestamp": int(time.time())
     }
-    print('Waku RPC: %s from %s PubSubTopic: %s, ContentTopic: %s' % (data['method'], node_address, pubsub_topic, content_topic))
+
+    encoded_pubsub_topic = urllib.parse.quote(pubsub_topic, safe='')
+
+    url = f"{node_address}/relay/v1/messages/{encoded_pubsub_topic}"
+    headers = {'content-type': 'application/json'}
+
+    print('Waku REST API: %s PubSubTopic: %s, ContentTopic: %s' % (url, pubsub_topic, content_topic))
     s_time = time.time()
-    #print(data)
-    response = requests.post(node_address, data=json.dumps(data), headers={'content-type': 'application/json'})
-    elapsed_ms = (time.time() - s_time) * 1000
-    response_obj = response.json()
-    print('Response from %s: %s [%.4f ms.]' % (node_address, response_obj, elapsed_ms))
-    return response_obj
+    
+    response = None
+
+    try:
+      print("Sending request")
+      response = requests.post(url, json=body, headers=headers)
+      print("Got response", response)
+    except Exception as e:
+      print(f"Error sending request: {e}")
+
+    if(response != None):
+      elapsed_ms = (time.time() - s_time) * 1000
+      print(response.status_code, response.text)
+      print('Response from %s: status:%s content:%s [%.4f ms.]' % (node_address, \
+        response.status_code, response.text, elapsed_ms))
 
 parser = argparse.ArgumentParser(description='')
 
 # these flags are mutually exclusive, one or the other, never at once
 group = parser.add_mutually_exclusive_group(required=True)
-group.add_argument('-sn', '--single-node', type=str, help='example: http://waku-simulator_nwaku_1:8545')
-group.add_argument('-mn', '--multiple-nodes', type=str, help='example: http://waku-simulator_nwaku_[1..10]:8545')
+group.add_argument('-sn', '--single-node', type=str, help='example: http://waku-simulator_nwaku_1:8645')
+group.add_argument('-mn', '--multiple-nodes', type=str, help='example: http://waku-simulator_nwaku_[1..10]:8645')
 
 # rest of araguments
 parser.add_argument('-c', '--content-topic', type=str, help='content topic', default="my-ctopic")
@@ -45,7 +59,7 @@ args = parser.parse_args()
 print(args)
 
 if args.single_node != None:
-  print("Injecting traffic to single node RPC:", args.single_node)
+  print("Injecting traffic to single node REST API:", args.single_node)
 
 # this simply converts from http://url_[1..5]:port to
 # [http://url_1:port
@@ -57,17 +71,16 @@ if args.multiple_nodes:
   start = int(clean_range.split("..")[0])
   end = int(clean_range.split("..")[1])
 
-  print("Injecting traffic to multiple nodes RPC") 
+  print("Injecting traffic to multiple nodes REST APIs") 
   for i in range(start, end+1):
     nodes.append(node_placeholder.replace("{placeholder}", str(i)))
 
-print("Injecting traffic to multiple nodes RPC")
 for node in nodes:
   print(node)
 
 while True:
     # calls are blocking
-    # limited by the time it takes the rpc to reply
+    # limited by the time it takes the REST API to reply
 
     if args.single_node != None:
       send_waku_msg(args.single_node, args.msg_size_kbytes, args.pubsub_topic, args.content_topic)
