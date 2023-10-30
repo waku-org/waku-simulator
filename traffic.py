@@ -38,7 +38,6 @@ def send_waku_msg(node_address, kbytes, pubsub_topic, content_topic):
 
     if(response != None):
       elapsed_ms = (time.time() - s_time) * 1000
-      print(response.status_code, response.text)
       print('Response from %s: status:%s content:%s [%.4f ms.]' % (node_address, \
         response.status_code, response.text, elapsed_ms))
 
