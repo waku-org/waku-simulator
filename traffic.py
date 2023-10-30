@@ -32,7 +32,6 @@ def send_waku_msg(node_address, kbytes, pubsub_topic, content_topic):
     try:
       print("Sending request")
       response = requests.post(url, json=body, headers=headers)
-      print("Got response", response)
     except Exception as e:
       print(f"Error sending request: {e}")
 
