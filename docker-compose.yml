@@ -11,7 +11,7 @@ networks:
 services:
 
   bootstrap:
-    image: ${NWAKU_IMAGE}
+    image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
     restart: on-failure
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
@@ -30,12 +30,12 @@ services:
       - simulation
   
   nwaku:
-    image: ${NWAKU_IMAGE}
+    image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
     restart: on-failure
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
     deploy:
-      replicas: ${NUM_NWAKU_NODES}
+      replicas: ${NUM_NWAKU_NODES:-5}
     entrypoint: sh
     command:
       - '/opt/run_nwaku.sh'
@@ -47,12 +47,12 @@ services:
       - simulation
 
   gowaku:
-    image: ${GOWAKU_IMAGE}
+    image: ${GOWAKU_IMAGE:-wakuorg/go-waku:latest}
     restart: on-failure
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
     deploy:
-      replicas: ${NUM_GOWAKU_NODES}
+      replicas: ${NUM_GOWAKU_NODES:-0}
     entrypoint: sh
     command:
       - '/opt/run_gowaku.sh'
