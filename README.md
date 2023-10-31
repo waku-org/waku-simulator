@@ -17,7 +17,7 @@ Configure the simulation parameters. You can place the env variable in an `.env`
 export GOWAKU_IMAGE=wakuorg/go-waku:latest
 export NWAKU_IMAGE=wakuorg/nwaku:v0.21.2-rc.0
 export NUM_NWAKU_NODES=5
-export NUM_GOWAKU_NODES=5
+export NUM_GOWAKU_NODES=0
 export TRAFFIC_DELAY_SECONDS=15
 export MSG_SIZE_KBYTES=10
 docker-compose up -d
