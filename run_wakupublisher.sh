@@ -26,3 +26,4 @@ exec /main\
     --msg-size-kb=${MSG_SIZE_KBYTES}\
     --bootstrap-node=${BOOTSTRAP_ENR}\
     --max-peers=50
+    
