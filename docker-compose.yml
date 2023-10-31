@@ -63,6 +63,7 @@ services:
 
   rest-traffic:
     build:
+      context: .
       dockerfile: Dockerfile.rest-traffic
     command: >
       python /opt/traffic.py
