@@ -1,6 +1,5 @@
 version: "3.7"
 
-
 networks:
   simulation:
       driver: bridge
@@ -62,17 +61,21 @@ services:
     depends_on:
       - bootstrap
 
-  waku-publisher:
-    image: alrevuelta/waku-publisher:9fb206c
-    entrypoint: sh
-      - 'opt/run_wakupublisher.sh'
+  rest-traffic:
+    build:
+      context: .
+      dockerfile: Dockerfile.rest-traffic
+    command: >
+      python /opt/traffic.py
+      --multiple-nodes=http://waku-simulator_nwaku_[1..$NUM_NWAKU_NODES]:8645
+      --msg-size-kbytes=${MSG_SIZE_KBYTES:-10}
+      --delay-seconds=${TRAFFIC_DELAY_SECONDS:-15}
     volumes:
-      - ./run_wakupublisher.sh:/opt/run_wakupublisher.sh:Z
-    environment:
-      MSG_PER_SECOND: 10
-      MSG_SIZE_KBYTES: 10
+      - ./traffic.py:/opt/traffic.py:Z
     networks:
       - simulation
+    depends_on:
+      - nwaku
 
   prometheus:
     image: prom/prometheus:latest

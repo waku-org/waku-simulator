@@ -4,6 +4,13 @@ IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
 
 echo "I am a nwaku node"
 
+# Get an unique node index based on the container's IP
+FOURTH_OCTET=${IP##*.}
+THIRD_OCTET="${IP%.*}"; THIRD_OCTET="${THIRD_OCTET##*.}"
+NODE_INDEX=$((FOURTH_OCTET + 256 * THIRD_OCTET))
+
+echo "NODE_INDEX $NODE_INDEX"
+
 RETRIES=${RETRIES:=10}
 
 while [ -z "${BOOTSTRAP_ENR}" ] && [ ${RETRIES} -ge 0 ]; do
@@ -23,6 +30,14 @@ exec /usr/bin/wakunode\
       --relay=true\
       --rpc-admin=true\
       --max-connections=250\
+      --rpc-address=0.0.0.0\
+      --rest=true\
+      --rest-admin=true\
+      --rest-private=true\
+      --rest-address=0.0.0.0\
+      --rln-relay=true\
+      --rln-relay-dynamic=false\
+      --rln-relay-membership-index=${NODE_INDEX}\
       --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
