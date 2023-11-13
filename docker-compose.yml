@@ -67,7 +67,7 @@ services:
       dockerfile: Dockerfile.rest-traffic
     command: >
       python /opt/traffic.py
-      --multiple-nodes=http://waku-simulator_nwaku_[1..$NUM_NWAKU_NODES]:8645
+      --multiple-nodes=http://waku-simulator_nwaku_[1..${NUM_NWAKU_NODES:-5}]:8645
       --msg-size-kbytes=${MSG_SIZE_KBYTES:-10}
       --delay-seconds=${TRAFFIC_DELAY_SECONDS:-15}
     volumes:
