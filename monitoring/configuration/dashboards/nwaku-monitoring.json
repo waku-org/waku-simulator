@@ -201,7 +201,7 @@
           },
           "editorMode": "code",
           "expr": "libp2p_open_streams{instance=\"[[nwaku_instance]]\"}",
-          "legendFormat": "{{instance}}_{{type}}",
+          "legendFormat": "{{instance}}_{{type}}_{{dir}}",
           "range": true,
           "refId": "A"
         }
