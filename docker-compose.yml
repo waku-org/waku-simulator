@@ -11,15 +11,15 @@ networks:
 services:
 
   foundry:
-    image: ghcr.io/foundry-rs/foundry:latest
+    image: ghcr.io/foundry-rs/foundry:nightly-9b73e06e1fe376738b92ae081107620291d50188
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-    command: 
-    - anvil
-    - --port=8540 
-    - --chain-id=1337 
-    - --block-time=12 
-    - --accounts=1
+    command: >
+      "anvil 
+      --port=8540 
+      --chain-id=1337 
+      --block-time=12 
+      --accounts=1"
     networks:
       - simulation
 
