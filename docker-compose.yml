@@ -10,6 +10,18 @@ networks:
 
 services:
 
+  foundry:
+    image: ghcr.io/foundry-rs/foundry:latest
+    labels:
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+    entrypoint: sh
+    command:
+      - '/opt/run_anvil.sh'
+    volumes:
+      - ./run_anvil.sh:/opt/run_anvil.sh:Z
+    networks:
+      - simulation
+
   bootstrap:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
     restart: on-failure
@@ -43,6 +55,7 @@ services:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
     depends_on:
       - bootstrap
+      - foundry
     networks:
       - simulation
 
