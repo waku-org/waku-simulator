@@ -16,10 +16,10 @@ services:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
     command: 
     - anvil
-    - --port 8540 
-    - --chain-id 1337 
-    - --block-time 12 
-    - --accounts 1
+    - --port=8540 
+    - --chain-id=1337 
+    - --block-time=12 
+    - --accounts=1
     networks:
       - simulation
 
