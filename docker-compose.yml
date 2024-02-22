@@ -14,11 +14,12 @@ services:
     image: ghcr.io/foundry-rs/foundry:latest
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-    entrypoint: sh
-    command:
-      - '/opt/run_anvil.sh'
-    volumes:
-      - ./run_anvil.sh:/opt/run_anvil.sh:Z
+    command: 
+    - anvil
+    - --port 8540 
+    - --chain-id 1337 
+    - --block-time 12 
+    - --accounts 1
     networks:
       - simulation
 
