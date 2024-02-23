@@ -10,6 +10,19 @@ networks:
 
 services:
 
+  foundry:
+    image: ghcr.io/foundry-rs/foundry:nightly-9b73e06e1fe376738b92ae081107620291d50188
+    labels:
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+    command: >
+      "anvil 
+      --port=8540 
+      --chain-id=1337 
+      --block-time=12 
+      --accounts=1"
+    networks:
+      - simulation
+
   bootstrap:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
     restart: on-failure
@@ -43,6 +56,7 @@ services:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
     depends_on:
       - bootstrap
+      - foundry
     networks:
       - simulation
 
