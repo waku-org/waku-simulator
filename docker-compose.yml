@@ -156,7 +156,7 @@ services:
   api:
     image: web3labs/epirus-free-api:latest
     ports:
-      - 8090:8090
+      - 127.0.0.1:8090:8090
     environment:
       - NODE_ENDPOINT=http://foundry:8541
       - MONGO_CLIENT_URI=mongodb://mongodb:27017
@@ -184,7 +184,7 @@ services:
   web:
     image: web3labs/epirus-free-web:latest
     ports:
-      - 3001:3000
+      - 127.0.0.1:3001:3000
     environment:
       - API_URL=http://localhost:8090
       - WS_API_URL=ws://localhost:8090
