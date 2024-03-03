@@ -14,12 +14,16 @@ services:
     image: ghcr.io/foundry-rs/foundry:nightly-9b73e06e1fe376738b92ae081107620291d50188
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+    ports:
+      - 127.0.0.1:8541:8541
     command: >
       "anvil 
-      --port=8540 
+      --port=8541
+      --host=0.0.0.0 
       --chain-id=1337 
       --block-time=12 
-      --accounts=1"
+      --accounts=1
+      --allow-origin=*"
     networks:
       - simulation
 
@@ -146,5 +150,60 @@ services:
     container_name: redis
     #ports:
     #  - 6379:6379
+    networks:
+      - simulation
+
+  api:
+    image: web3labs/epirus-free-api:latest
+    ports:
+      - 127.0.0.1:8090:8090
+    environment:
+      - NODE_ENDPOINT=http://foundry:8541
+      - MONGO_CLIENT_URI=mongodb://mongodb:27017
+      - REINDEX_ENDPOINT=http://ingestion/reindex/
+      - MONGO_DB_NAME=epirus
+      - MONGO_CREATE_INDICES=true
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis 
+      - mongodb
+      - foundry
+    networks:
+      - simulation
+  
+  mongodb:
+    image: mongo:5.0.8
+    environment:
+      - COMPOSE_HTTP_TIMEOUT=900
+      - DOCKER_CLIENT_TIMEOUT=900
+    entrypoint: mongod --bind_ip "0.0.0.0"
+    networks:
+      - simulation
+
+  web:
+    image: web3labs/epirus-free-web:latest
+    ports:
+      - 127.0.0.1:3001:3000
+    environment:
+      - API_URL=http://localhost:8090
+      - WS_API_URL=ws://localhost:8090
+      - DISPLAY_NETWORK_TAB=disabled
+    depends_on:
+      - api
+    networks:
+      - simulation
+  
+  ingestion:
+    image: web3labs/epirus-free-ingestion:latest
+    environment:
+      - NODE_ENDPOINT=http://foundry:8541
+      - MONGO_CLIENT_URI=mongodb://mongodb:27017
+      - MONGO_DB_NAME=epirus
+      - LIST_OF_METRICS_TO_CALCULATE_PER_MINUTE=hourly,daily,monthly,yearly
+    depends_on:
+      - mongodb
+      - redis
+      - foundry
     networks:
       - simulation
