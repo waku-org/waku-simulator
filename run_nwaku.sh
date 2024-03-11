@@ -36,12 +36,12 @@ exec /usr/bin/wakunode\
       --rest-private=true\
       --rest-address=0.0.0.0\
       --rln-relay=true\
-      --rln-relay-dynamic=false\
+      --rln-relay-dynamic=true\
       --rln-relay-membership-index=${NODE_INDEX}\
       --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
-      --log-level=INFO\
+      --log-level=DEBUG\
       --rpc-address=0.0.0.0\
       --metrics-server=True\
       --metrics-server-address=0.0.0.0\
