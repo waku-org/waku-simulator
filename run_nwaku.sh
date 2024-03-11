@@ -37,7 +37,8 @@ exec /usr/bin/wakunode\
       --rest-address=0.0.0.0\
       --rln-relay=true\
       --rln-relay-dynamic=true\
-      --rln-relay-membership-index=${NODE_INDEX}\
+      --rln-relay-eth-client-address=http://10.1.0.4:8545\
+      --rln-relay-eth-contract-address=0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0\
       --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
