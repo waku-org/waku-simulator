@@ -24,11 +24,7 @@ services:
       --block-time=12 
       --accounts=1
       --allow-origin=*
-      --state "/blockchain_data"
-      --config-out /blockchain_data/config.json
       --silent"
-    volumes:
-     - ./anvil_state:/blockchain_data
     networks:
       - simulation
 
@@ -58,6 +54,12 @@ services:
     deploy:
       replicas: ${NUM_NWAKU_NODES:-5}
     entrypoint: sh
+    environment:
+      - RPC_URL=http://foundry:8545
+      - PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+      - RLN_CONTRACT_ADDRESS=0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
+      - RLN_CREDENTIAL_PATH=rlnKeystore.json
+      - RLN_CREDENTIAL_PASSWORD=passw123
     command:
       - '/opt/run_nwaku.sh'
     volumes:
@@ -209,5 +211,13 @@ services:
       - mongodb
       - redis
       - foundry
+    networks:
+      - simulation
+
+  waku-rln-contract:
+    image: ubuntu
+    command: tail -f /dev/null
+    volumes:
+      - /submodules/waku-rln-contract:/waku-rln-contract
     networks:
       - simulation
