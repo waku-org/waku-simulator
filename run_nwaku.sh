@@ -1,5 +1,50 @@
 #!/bin/sh
 
+# Install bind-tools package used for domainname resolution
+apk add bind-tools
+
+if test -f .env; then
+  echo "Using .env file"  
+  . $(pwd)/.env
+fi
+
+# Function to extract IP address from URL, resolve the IP and replace it in the original URL
+get_ip_address_and_replace() {
+    local url=$1
+    local domain_name=$(echo $RPC_URL | awk -F[/:] '{print $4}')
+    local ip_address=$(dig +short $domain_name)
+    valid_rpc_url="${url/$domain_name/$ip_address}" 
+    echo $valid_rpc_url
+}
+
+# the format of the RPC URL is checked in the generateRlnKeystore command and hostnames are not valid
+pattern="^(https?):\/\/((localhost)|([\w_-]+(?:(?:\.[\w_-]+)+)))(:[0-9]{1,5})?([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])*"
+# Perform regex matching
+if [[ $RPC_URL =~ $pattern ]]; then
+    echo "RPC URL is valid"
+else
+    echo "RPC URL is invalid: $RPC_URL. Attempting to resolve hostname."
+    resolved_rpc_url="$(get_ip_address_and_replace $RPC_URL)"
+    if [ -z "$resolved_rpc_url" ]; then
+        echo -e "Failed to retrieve IP address for $RPC_URL\n"
+    else
+        echo -e "Resolved RPC URL for $RPC_URL: $resolved_rpc_url"
+        RPC_URL="$resolved_rpc_url"
+    fi
+fi
+
+if test -f ./$RLN_CREDENTIAL_PATH; then
+  echo "$RLN_CREDENTIAL_PATH already exists. Use it instead of creating a new one."
+else
+  /usr/bin/wakunode generateRlnKeystore \
+    --rln-relay-eth-client-address="$RPC_URL" \
+    --rln-relay-eth-private-key=$PRIVATE_KEY  \
+    --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS \
+    --rln-relay-cred-path=$RLN_CREDENTIAL_PATH \
+    --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD \
+    --execute
+fi
+
 IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
 
 echo "I am a nwaku node"
@@ -37,8 +82,8 @@ exec /usr/bin/wakunode\
       --rest-address=0.0.0.0\
       --rln-relay=true\
       --rln-relay-dynamic=true\
-      --rln-relay-eth-client-address=http://10.1.0.4:8545\
-      --rln-relay-eth-contract-address=0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0\
+      --rln-relay-eth-client-address="$RPC_URL"\
+      --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS\
       --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
