@@ -38,6 +38,7 @@ services:
       - 127.0.0.1:60000:60000
       - 127.0.0.1:8008:8008
       - 127.0.0.1:9000:9000
+      - 127.0.0.1:8645:8645
     entrypoint: sh
     command:
     - '/opt/run_bootstrap.sh'
@@ -58,12 +59,13 @@ services:
       - RPC_URL=http://foundry:8545
       - PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
       - RLN_CONTRACT_ADDRESS=0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
-      - RLN_CREDENTIAL_PATH=rlnKeystore.json
+      - RLN_CREDENTIAL_PATH=/keystore/keystore.json
       - RLN_CREDENTIAL_PASSWORD=passw123
     command:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - ./keystore:/keystore/:Z
     depends_on:
       - bootstrap
       - foundry
