@@ -56,3 +56,5 @@ It is configured using [`wakusim.env`](./wakusim.env) file, and new changes to t
 The docker images used are updated using [Watchtower](https://github.com/containrrr/watchtower) as well.
 
 For details on how it works please read the [Ansible role readme file](https://github.com/status-im/infra-misc/blob/master/ansible/roles/waku-simulator/). The original deployment issue can be found [here](https://github.com/status-im/infra-nim-waku/issues/79).
+
+The deployed branch is [deploy-wakusim](https://github.com/waku-org/waku-simulator/tree/deploy-wakusim).
