@@ -214,11 +214,3 @@ services:
       - foundry
     networks:
       - simulation
-
-  waku-rln-contract:
-    image: ubuntu
-    command: tail -f /dev/null
-    volumes:
-      - /submodules/waku-rln-contract:/waku-rln-contract
-    networks:
-      - simulation
