@@ -15,15 +15,16 @@ services:
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
     ports:
-      - 127.0.0.1:8541:8541
+      - 127.0.0.1:8545:8545
     command: >
       "anvil 
-      --port=8541
+      --port=8545
       --host=0.0.0.0 
       --chain-id=1337 
       --block-time=12 
       --accounts=1
-      --allow-origin=*"
+      --allow-origin=*
+      --silent"
     networks:
       - simulation
 
@@ -54,6 +55,12 @@ services:
     deploy:
       replicas: ${NUM_NWAKU_NODES:-5}
     entrypoint: sh
+    environment:
+      - RPC_URL=http://foundry:8545
+      - PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+      - RLN_CONTRACT_ADDRESS=0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
+      - RLN_CREDENTIAL_PATH=/keystore.json
+      - RLN_CREDENTIAL_PASSWORD=passw123
     command:
       - '/opt/run_nwaku.sh'
     volumes:
@@ -158,7 +165,7 @@ services:
     ports:
       - 127.0.0.1:8090:8090
     environment:
-      - NODE_ENDPOINT=http://foundry:8541
+      - NODE_ENDPOINT=http://foundry:8545
       - MONGO_CLIENT_URI=mongodb://mongodb:27017
       - REINDEX_ENDPOINT=http://ingestion/reindex/
       - MONGO_DB_NAME=epirus
@@ -197,7 +204,7 @@ services:
   ingestion:
     image: web3labs/epirus-free-ingestion:latest
     environment:
-      - NODE_ENDPOINT=http://foundry:8541
+      - NODE_ENDPOINT=http://foundry:8545
       - MONGO_CLIENT_URI=mongodb://mongodb:27017
       - MONGO_DB_NAME=epirus
       - LIST_OF_METRICS_TO_CALCULATE_PER_MINUTE=hourly,daily,monthly,yearly

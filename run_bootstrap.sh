@@ -6,10 +6,6 @@ echo "I am a bootstrap node"
 
 exec /usr/bin/wakunode\
       --relay=true\
-      --rest=true\
-      --rest-admin=true\
-      --rest-private=true\
-      --rest-address=0.0.0.0\
       --keep-alive=true\
       --max-connections=300\
       --dns-discovery=true\
@@ -19,4 +15,8 @@ exec /usr/bin/wakunode\
       --metrics-server=True\
       --metrics-server-address=0.0.0.0\
       --nodekey=30348dd51465150e04a5d9d932c72864c8967f806cce60b5d26afeca1e77eb68\
-      --nat=extip:${IP}
+      --nat=extip:${IP}\
+      --rest=true\
+      --rest-admin=true\
+      --rest-private=true\
+      --rest-address=0.0.0.0
