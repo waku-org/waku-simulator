@@ -35,6 +35,7 @@ services:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
     environment:
       - RPC_URL=${RPC_URL:-http://foundry:8545}
+    entrypoint: sh
     command: 
       - '/opt/deploy_rln_contract.sh'
     volumes:
@@ -57,7 +58,7 @@ services:
       - 127.0.0.1:8645:8645
     entrypoint: sh
     command:
-    - '/opt/run_bootstrap.sh'
+      - '/opt/run_bootstrap.sh'
     volumes:
       - ./run_bootstrap.sh:/opt/run_bootstrap.sh:Z
     networks:
