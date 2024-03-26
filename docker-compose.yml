@@ -15,7 +15,7 @@ services:
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
     ports:
-      - 127.0.0.1:8545:8545
+      - 0.0.0.0:8545:8545
     command:
       - anvil
         --port=8545
@@ -208,7 +208,7 @@ services:
   web:
     image: web3labs/epirus-free-web:latest
     ports:
-      - 127.0.0.1:3001:3000
+      - 0.0.0.0:3001:3000
     environment:
       - API_URL=http://localhost:8090
       - WS_API_URL=ws://localhost:8090
