@@ -16,15 +16,32 @@ services:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
     ports:
       - 127.0.0.1:8545:8545
-    command: >
-      "anvil 
-      --port=8545
-      --host=0.0.0.0 
-      --chain-id=1337 
-      --block-time=12 
-      --accounts=1
-      --allow-origin=*
-      --silent"
+    command:
+      - anvil
+        --port=8545
+        --host=0.0.0.0
+        --chain-id=1337
+        --accounts=1
+        --allow-origin=*
+        --block-time=12
+        --silent
+        --config-out=anvil-config.txt
+    networks:
+      - simulation
+
+  contract-repo-deployer:
+    image: node:hydrogen-bullseye
+    labels:
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+    environment:
+      - RPC_URL=${RPC_URL:-http://foundry:8545}
+    entrypoint: sh
+    command: 
+      - '/opt/deploy_rln_contract.sh'
+    volumes:
+      - ./deploy_rln_contract.sh:/opt/deploy_rln_contract.sh
+    depends_on:
+      - foundry
     networks:
       - simulation
 
@@ -41,7 +58,7 @@ services:
       - 127.0.0.1:8645:8645
     entrypoint: sh
     command:
-    - '/opt/run_bootstrap.sh'
+      - '/opt/run_bootstrap.sh'
     volumes:
       - ./run_bootstrap.sh:/opt/run_bootstrap.sh:Z
     networks:
@@ -56,7 +73,7 @@ services:
       replicas: ${NUM_NWAKU_NODES:-5}
     entrypoint: sh
     environment:
-      - RPC_URL=http://foundry:8545
+      - RPC_URL=${RPC_URL:-http://foundry:8545}
       - PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
       - RLN_CONTRACT_ADDRESS=0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
       - RLN_CREDENTIAL_PATH=/keystore.json
@@ -67,7 +84,7 @@ services:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
     depends_on:
       - bootstrap
-      - foundry
+      - contract-repo-deployer
     networks:
       - simulation
 
@@ -165,7 +182,7 @@ services:
     ports:
       - 127.0.0.1:8090:8090
     environment:
-      - NODE_ENDPOINT=http://foundry:8545
+      - NODE_ENDPOINT=${RPC_URL:-http://foundry:8545}
       - MONGO_CLIENT_URI=mongodb://mongodb:27017
       - REINDEX_ENDPOINT=http://ingestion/reindex/
       - MONGO_DB_NAME=epirus
@@ -204,7 +221,7 @@ services:
   ingestion:
     image: web3labs/epirus-free-ingestion:latest
     environment:
-      - NODE_ENDPOINT=http://foundry:8545
+      - NODE_ENDPOINT=${RPC_URL:-http://foundry:8545}
       - MONGO_CLIENT_URI=mongodb://mongodb:27017
       - MONGO_DB_NAME=epirus
       - LIST_OF_METRICS_TO_CALCULATE_PER_MINUTE=hourly,daily,monthly,yearly
