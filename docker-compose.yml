@@ -87,22 +87,7 @@ services:
       - contract-repo-deployer
     networks:
       - simulation
-
-  gowaku:
-    image: ${GOWAKU_IMAGE:-wakuorg/go-waku:latest}
-    restart: on-failure
-    labels:
-      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-    deploy:
-      replicas: ${NUM_GOWAKU_NODES:-0}
-    entrypoint: sh
-    command:
-      - '/opt/run_gowaku.sh'
-    volumes:
-      - ./run_gowaku.sh:/opt/run_gowaku.sh:Z
-    depends_on:
-      - bootstrap
-
+      
   rest-traffic:
     build:
       context: .
