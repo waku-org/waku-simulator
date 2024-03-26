@@ -6,6 +6,10 @@ echo "I am a bootstrap node"
 
 exec /usr/bin/wakunode\
       --relay=true\
+      --rest=true\
+      --rest-admin=true\
+      --rest-private=true\
+      --rest-address=0.0.0.0\
       --keep-alive=true\
       --max-connections=300\
       --dns-discovery=true\
