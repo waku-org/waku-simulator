@@ -36,7 +36,7 @@ services:
     environment:
       - RPC_URL=${RPC_URL:-http://foundry:8545}
     entrypoint: sh
-    command: 
+    command:
       - '/opt/deploy_rln_contract.sh'
     volumes:
       - ./deploy_rln_contract.sh:/opt/deploy_rln_contract.sh
@@ -63,7 +63,7 @@ services:
       - ./run_bootstrap.sh:/opt/run_bootstrap.sh:Z
     networks:
       - simulation
-  
+
   nwaku:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
     restart: on-failure
@@ -145,9 +145,7 @@ services:
       - ./monitoring/configuration/customizations/custom-logo.svg:/usr/share/grafana/public/img/grafana_typelogo.svg:z
       - ./monitoring/configuration/customizations/custom-logo.png:/usr/share/grafana/public/img/fav32.png:z
     ports:
-      #- 127.0.0.1:3000:3000
-      # open port to access the dashboard
-      - 3000:3000
+      - 0.0.0.0:3001:3001
     restart: on-failure
     depends_on:
       - prometheus
@@ -190,12 +188,12 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     depends_on:
-      - redis 
+      - redis
       - mongodb
       - foundry
     networks:
       - simulation
-  
+
   mongodb:
     image: mongo:5.0.8
     environment:
@@ -208,7 +206,7 @@ services:
   web:
     image: web3labs/epirus-free-web:latest
     ports:
-      - 0.0.0.0:3001:3000
+      - 0.0.0.0:3000:3000
     environment:
       - API_URL=http://localhost:8090
       - WS_API_URL=ws://localhost:8090
@@ -217,7 +215,7 @@ services:
       - api
     networks:
       - simulation
-  
+
   ingestion:
     image: web3labs/epirus-free-ingestion:latest
     environment:
