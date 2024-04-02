@@ -78,6 +78,8 @@ exec /usr/bin/wakunode\
       --rest-admin=true\
       --rest-private=true\
       --rest-address=0.0.0.0\
+      --cluster-id=0\
+      --pubsub-topic=/waku/2/default-waku/proto\
       --rln-relay=true\
       --rln-relay-dynamic=true\
       --rln-relay-eth-client-address="$RPC_URL"\
