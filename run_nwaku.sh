@@ -89,7 +89,7 @@ exec /usr/bin/wakunode\
       --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
-      --log-level=INFO\
+      --log-level=DEBUG\
       --metrics-server=True\
       --metrics-server-address=0.0.0.0\
       --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
