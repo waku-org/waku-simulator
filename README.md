@@ -23,7 +23,6 @@ export MSG_SIZE_KBYTES=10
 docker-compose up -d
 ```
 
-
 This will:
 * spin up grafana/prometheus for monitoring, see `http://localhost:3000`.
 * spin up a bootstrap nwaku node.
