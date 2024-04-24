@@ -1,0 +1,49 @@
+---
+groups:
+  - name: waku
+    rules:
+      - alert: HighNimWakuNodeTraffic
+        expr: >
+          abs(
+            netdata_net_net_kilobits_persec_average{
+              family!~"^(wg|veth|br|docker).*",
+              fleet=~"(shards|waku|status|wakuv2)\\..*"
+          }) > 40000
+        for: 5m
+        annotations:
+          summary: "Too high traffic for {{ $labels.instance }}"
+          description: "Host {{ $labels.instance }} running nim-waku has {{ $labels.dimension }} traffic higher 40Mbps"
+
+      - alert: HighNimWakuMemUsage
+        expr: >
+          nim_gc_mem_bytes{
+            fleet=~"(shards|waku|status|wakuv2)\\..*"
+          } > 1073741824
+        for: 5m
+        annotations:
+          summary: "Too high memory usage for {{ $labels.instance }}"
+          description: "Host {{ $labels.instance }} running nim-waku has GC memory usage higher 1GB"
+          current_value: "{{ $value }}"
+
+      - alert: HighNimWakuNodeOpenSockets
+        expr: >
+          netdata_ipv4_sockstat_tcp_sockets_sockets_average{
+            fleet=~"(shards|waku|status|wakuv2)\\..*"
+          } > 300
+        for: 5m
+        annotations:
+          summary: "Too high open sockets for {{ $labels.instance }}"
+          description: "Host {{ $labels.instance }} running nim-waku has more than 300 open sockets"
+          current_value: "{{ $value }}"
+
+      - record: job:waku_libp2p_peers
+        expr: libp2p_peers{fleet=~"(shards|waku|status|wakuv2)\\..*"}
+
+      - alert: NimWakuPeersDecrease
+        expr: >
+          (job:waku_libp2p_peers / avg_over_time(job:waku_libp2p_peers[12h])) < 0.50
+        for: 15m
+        annotations:
+          summary: "Drop of libp2p_peers on {{ $labels.instance }}"
+          description: "Host {{ $labels.instance }} running nim-waku has more than 50% drop of peers compared to 12h average"
+          current_value: "{{ $value }}"

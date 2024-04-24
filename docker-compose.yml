@@ -108,12 +108,15 @@ services:
     image: prom/prometheus:latest
     volumes:
       - ./monitoring/prometheus-config.yml:/etc/prometheus/prometheus.yml:z
+      - ./monitoring/alert-rules.yml:/etc/prometheus/alert-rules.yml:z
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.retention.time=7d
     ports:
       - 127.0.0.1:9090:9090
     restart: on-failure
+    depends_on:
+      - alertmanager
     networks:
       - simulation
 
@@ -212,5 +215,17 @@ services:
       - mongodb
       - redis
       - foundry
+    networks:
+      - simulation
+  
+  alertmanager:
+    image: prom/alertmanager:latest
+    volumes:
+      - ./monitoring/alertmanager-config.yml:/etc/alertmanager/alertmanager.yml:z
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+    ports:
+      - 127.0.0.1:9093:9093
+    restart: on-failure
     networks:
       - simulation
