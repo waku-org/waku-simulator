@@ -2,11 +2,6 @@
 
 set -e
 
-which yarn
-echo $PATH
-export PATH=$PATH:$HOME/.yarn/bin
-echo $PATH
-
 # 1. Install foundry
 curl -L https://foundry.paradigm.xyz | bash && . /root/.bashrc && foundryup && export PATH=$PATH:$HOME/.foundry/bin
 
