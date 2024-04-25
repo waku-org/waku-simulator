@@ -9,3 +9,15 @@ groups:
           summary: "Too high memory usage for {{ $labels.instance }}"
           description: "Host {{ $labels.instance }} running nim-waku has GC memory usage higher 1GB"
           current_value: "{{ $value }}"
+      
+      - record: job:waku_libp2p_peers
+        expr: libp2p_peers{}
+
+      - alert: NimWakuPeersDecrease
+        expr: >
+          (job:waku_libp2p_peers / avg_over_time(job:waku_libp2p_peers[12h])) < 0.50
+        for: 15m
+        annotations:
+          summary: "Drop of libp2p_peers on {{ $labels.instance }}"
+          description: "Host {{ $labels.instance }} running nim-waku has more than 50% drop of peers compared to 12h average"
+          current_value: "{{ $value }}"
