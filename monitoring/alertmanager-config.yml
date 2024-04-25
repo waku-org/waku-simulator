@@ -5,6 +5,7 @@ route:
   repeat_interval: 1d
   receiver: 'discord'
 
+# TODO: fill data about Discord receiver
 receivers:
 - name: 'discord'
   
