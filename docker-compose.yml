@@ -88,8 +88,8 @@ services:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
       - privatekeys-volume:/shared
     depends_on:
-      contract-repo-deployer:
-          condition: service_completed_successfully
+      - bootstrap
+      - contract-repo-deployer
     networks:
       - simulation
       
