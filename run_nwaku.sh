@@ -102,13 +102,15 @@ else
   echo "Private key: $private_key"
 
   echo "Generating RLN keystore"
+
   /usr/bin/wakunode generateRlnKeystore \
     --rln-relay-eth-client-address="$RPC_URL" \
     --rln-relay-eth-private-key=$private_key  \
     --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS \
     --rln-relay-cred-path=$RLN_CREDENTIAL_PATH \
     --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD \
-    --log-level=INFO \
+    --rln-relay-user-message-limit=$RLN_RELAY_MSG_LIMIT \
+    --log-level=DEBUG \
     --execute
 fi
 
@@ -136,12 +138,18 @@ exec /usr/bin/wakunode\
       --rest-admin=true\
       --rest-private=true\
       --rest-address=0.0.0.0\
+      --cluster-id=0\
+      --pubsub-topic=/waku/2/default-waku/proto\
+      --rest-port=8645\
       --rln-relay=true\
       --rln-relay-dynamic=true\
       --rln-relay-eth-client-address="$RPC_URL"\
       --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS\
       --rln-relay-cred-path=$RLN_CREDENTIAL_PATH\
       --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD\
+      --rln-relay-tree-path="rlnv2_tree1"\
+      --rln-relay-epoch-sec=$RLN_RELAY_EPOCH_SEC\
+      --rln-relay-user-message-limit=$RLN_RELAY_MSG_LIMIT\
       --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
