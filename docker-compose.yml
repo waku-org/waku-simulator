@@ -66,6 +66,7 @@ services:
     networks:
       - simulation
 
+# Because of the of the depends_on condition these services will only be created once the contract-repo-deployer has successfully completed/exited, this can take over 5mins
   nwaku:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
     restart: on-failure
@@ -79,6 +80,8 @@ services:
       - RLN_CONTRACT_ADDRESS=0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
       - RLN_CREDENTIAL_PATH=/keystore.json
       - RLN_CREDENTIAL_PASSWORD=passw123
+      - RLN_RELAY_MSG_LIMIT=${RLN_RELAY_MSG_LIMIT:-10}
+      - RLN_RELAY_EPOCH_SEC=${RLN_RELAY_EPOCH_SEC:-60}
     command:
       - '/opt/run_nwaku.sh'
     volumes:
@@ -86,7 +89,7 @@ services:
       - privatekeys-volume:/shared
     depends_on:
       contract-repo-deployer:
-        condition: service_completed_successfully
+          condition: service_completed_successfully
     networks:
       - simulation
       
