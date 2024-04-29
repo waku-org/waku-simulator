@@ -5,7 +5,7 @@ route:
   repeat_interval: 1d
   receiver: 'discord'
 
-# TODO: fill data about Discord receiver
 receivers:
-- name: 'discord'
-  
+  - name: 'discord'
+    discord_configs:
+      - webhook_url: # TO DO: fill discord webhook
