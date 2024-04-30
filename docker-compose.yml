@@ -108,7 +108,7 @@ services:
     image: prom/prometheus:latest
     volumes:
       - ./monitoring/prometheus-config.yml:/etc/prometheus/prometheus.yml:z
-      - ./monitoring/alert-rules.yml:/etc/prometheus/alert-rules.yml:z
+      - ./monitoring/alert-manager/alert-rules.yml:/etc/prometheus/alert-rules.yml:z
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.retention.time=7d
@@ -218,10 +218,19 @@ services:
     networks:
       - simulation
   
+  env_replacer:
+    image: alpine:3.19.1
+    environment:
+      - DISCORD_WEBHOOK=$DISCORD_WEBHOOK
+    volumes:
+      - ./monitoring/alert-manager/alertmanager-config.yml.template:/etc/alertmanager/alertmanager.yml.template:z
+      - ./monitoring/alert-manager/alertmanager-config.yml:/etc/alertmanager/alertmanager.yml:z
+    command: ["/bin/sh", "-c", "apk add --no-cache gettext && envsubst < /etc/alertmanager/alertmanager.yml.template > /etc/alertmanager/alertmanager.yml"]
+
   alertmanager:
     image: prom/alertmanager:latest
     volumes:
-      - ./monitoring/alertmanager-config.yml:/etc/alertmanager/alertmanager.yml:z
+      - ./monitoring/alert-manager/alertmanager-config.yml:/etc/alertmanager/alertmanager.yml:z
     command:
       - --config.file=/etc/alertmanager/alertmanager.yml
     ports:
@@ -229,3 +238,5 @@ services:
     restart: on-failure
     networks:
       - simulation
+    depends_on:
+      - env_replacer

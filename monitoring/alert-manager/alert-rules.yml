@@ -3,7 +3,7 @@ groups:
     rules:
       - alert: HighNimWakuMemUsage
         expr: >
-          nim_gc_mem_bytes{} > 1073741824
+          nim_gc_mem_bytes{} > 1
         for: 5m
         annotations:
           summary: "Too high memory usage for {{ $labels.instance }}"
