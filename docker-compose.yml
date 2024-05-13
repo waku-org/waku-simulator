@@ -83,8 +83,8 @@ services:
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
     depends_on:
-      - bootstrap
-      - contract-repo-deployer
+      contract-repo-deployer:
+        condition: service_completed_successfully
     networks:
       - simulation
       
