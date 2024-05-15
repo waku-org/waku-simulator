@@ -23,4 +23,6 @@ exec /usr/bin/wakunode\
       --rest=true\
       --rest-admin=true\
       --rest-private=true\
-      --rest-address=0.0.0.0
+      --rest-address=0.0.0.0\
+      --pubsub-topic=/waku/2/rs/66/0\
+      --cluster-id=66
