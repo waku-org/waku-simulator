@@ -49,7 +49,7 @@ group.add_argument('-mn', '--multiple-nodes', type=str, help='example: http://wa
 
 # rest of araguments
 parser.add_argument('-c', '--content-topic', type=str, help='content topic', default="my-ctopic")
-parser.add_argument('-p', '--pubsub-topic', type=str, help='pubsub topic', default="/waku/2/default-waku/proto")
+parser.add_argument('-p', '--pubsub-topic', type=str, help='pubsub topic', default="/waku/2/rs/66/0")
 parser.add_argument('-s', '--msg-size-kbytes', type=int, help='message size in kBytes', default=10)
 parser.add_argument('-d', '--delay-seconds', type=int, help='delay in second between messages', required=15)
 args = parser.parse_args()
