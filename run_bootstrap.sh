@@ -25,4 +25,5 @@ exec /usr/bin/wakunode\
       --rest-private=true\
       --rest-address=0.0.0.0\
       --pubsub-topic=/waku/2/rs/66/0\
-      --cluster-id=66
+      --cluster-id=66\
+      --ip-colocation-limit=20
