@@ -18,4 +18,5 @@ exec /usr/bin/wakunode\
       --nodekey=30348dd51465150e04a5d9d932c72864c8967f806cce60b5d26afeca1e77eb68\
       --nat=extip:${IP}\
       --pubsub-topic=/waku/2/rs/66/0\
-      --cluster-id=66
+      --cluster-id=66\
+      --ip-colocation-limit=20
