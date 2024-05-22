@@ -36,12 +36,19 @@ fi
 if test -f .$RLN_CREDENTIAL_PATH; then
   echo "$RLN_CREDENTIAL_PATH already exists. Use it instead of creating a new one."
 else
+
+  wait_time=$((RANDOM % 400))
+  echo "Waiting $wait_time seconds before generating RLN keystore to avoid collision with other nodes."
+  sleep $wait_time;
+
+  echo "Generating RLN keystore"
   /usr/bin/wakunode generateRlnKeystore \
     --rln-relay-eth-client-address="$RPC_URL" \
     --rln-relay-eth-private-key=$PRIVATE_KEY  \
     --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS \
     --rln-relay-cred-path=$RLN_CREDENTIAL_PATH \
     --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD \
+    --log-level=INFO \
     --execute
 fi
 
@@ -87,7 +94,7 @@ exec /usr/bin/wakunode\
       --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
-      --log-level=INFO\
+      --log-level=DEBUG\
       --metrics-server=True\
       --metrics-server-address=0.0.0.0\
       --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
