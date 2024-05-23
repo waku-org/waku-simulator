@@ -1,7 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 
 # Install bind-tools package used for domainname resolution
 apk add bind-tools
+apk add jq
+apk add bash
 
 if test -f .env; then
   echo "Using .env file"  
@@ -33,26 +35,41 @@ else
     fi
 fi
 
+IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
+echo "IP: $IP"
+
+# get the service name you specified in the docker-compose.yml 
+# by a reverse DNS lookup on the IP
+SERVICE=`dig -x $IP +short | cut -d'_' -f2`
+
+# the number of replicas is equal to the A records 
+# associated with the service name
+COUNT=`dig $SERVICE +short | wc -l`
+
+# extract the replica number from the same PTR entry
+INDEX=`dig -x $IP +short | sed 's/.*_\([0-9]*\)\..*/\1/'`
+
+# Hello
+echo "Hello I'm container $INDEX of $COUNT"
+
+
+###########################################################################
 if test -f .$RLN_CREDENTIAL_PATH; then
   echo "$RLN_CREDENTIAL_PATH already exists. Use it instead of creating a new one."
 else
-
-  wait_time=$((RANDOM % 400))
-  echo "Waiting $wait_time seconds before generating RLN keystore to avoid collision with other nodes."
-  sleep $wait_time;
+  val=$(/bin/bash ./opt/parseAccountsDetails.sh $INDEX)
+  echo $val
 
   echo "Generating RLN keystore"
   /usr/bin/wakunode generateRlnKeystore \
     --rln-relay-eth-client-address="$RPC_URL" \
-    --rln-relay-eth-private-key=$PRIVATE_KEY  \
+    --rln-relay-eth-private-key=$val  \
     --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS \
     --rln-relay-cred-path=$RLN_CREDENTIAL_PATH \
     --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD \
     --log-level=INFO \
     --execute
 fi
-
-IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
 
 echo "I am a nwaku node"
 
