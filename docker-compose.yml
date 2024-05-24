@@ -121,6 +121,8 @@ services:
     image: grafana/grafana:latest
     env_file:
       - ./monitoring/configuration/grafana-plugins.env
+    environment:
+      - ADMIN_PASSW=${GF_SECURITY_ADMIN_PASSWORD}
     volumes:
       - ./monitoring/configuration/grafana.ini:/etc/grafana/grafana.ini:z
       - ./monitoring/configuration/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml:z
