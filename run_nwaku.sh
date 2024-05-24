@@ -8,6 +8,8 @@ if test -f .env; then
   . $(pwd)/.env
 fi
 
+IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
+
 # Function to extract IP address from URL, resolve the IP and replace it in the original URL
 get_ip_address_and_replace() {
     local url=$1
@@ -33,11 +35,10 @@ else
     fi
 fi
 
-#Function to get the index of the container and use it to retrieve a private key to generate the keystore
+#Function to get the index of the container and use it to retrieve a private key to be used to generate the keystore
 get_private_key(){
-  IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
 
-  # get the service name you specified in the docker-compose.yml 
+  # get the service specified in the docker-compose.yml 
   # by a reverse DNS lookup on the IP
   SERVICE=`dig -x $IP +short | cut -d'_' -f2`
 
@@ -48,6 +49,7 @@ get_private_key(){
   # extract the replica number from the same PTR entry
   INDEX=`dig -x $IP +short | sed 's/.*_\([0-9]*\)\..*/\1/'`
 
+  # get the line in the file corresponding to index
   key=$(sed -n "${INDEX}p" /shared/private-keys.txt)
   echo $key
 }
@@ -67,16 +69,7 @@ else
     --execute
 fi
 
-IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
-
 echo "I am a nwaku node"
-
-# Get an unique node index based on the container's IP
-FOURTH_OCTET=${IP##*.}
-THIRD_OCTET="${IP%.*}"; THIRD_OCTET="${THIRD_OCTET##*.}"
-NODE_INDEX=$((FOURTH_OCTET + 256 * THIRD_OCTET))
-
-echo "NODE_INDEX $NODE_INDEX"
 
 RETRIES=${RETRIES:=10}
 
