@@ -21,11 +21,14 @@ services:
         --port=8545
         --host=0.0.0.0
         --chain-id=1337
-        --accounts=1
+        --accounts=${NUM_NWAKU_NODES:-5}
         --allow-origin=*
         --block-time=12
         --silent
         --config-out=anvil-config.txt
+    volumes:
+      - privatekeys-volume:/shared
+      - ./getPrivateKeys.sh:/getPrivateKeys.sh
     networks:
       - simulation
 
@@ -217,3 +220,6 @@ services:
       - foundry
     networks:
       - simulation
+
+volumes:
+  privatekeys-volume:
