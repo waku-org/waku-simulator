@@ -16,8 +16,6 @@ services:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
     ports:
       - 0.0.0.0:8545:8545
-    environment:
-      - ANVIL_ACC=${ACCOUNTS}
     command:
       - anvil
         --port=8545
@@ -28,8 +26,10 @@ services:
         --block-time=12
         --silent
         --config-out=/shared/anvil-config.txt
+      - /getPrivateKeys.sh
     volumes:
       - accounts-volume:/shared
+      - ./getPrivateKeys.sh:/getPrivateKeys.sh
     networks:
       - simulation
 
@@ -85,7 +85,6 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - ./parseAccountsDetails.sh:/opt/parseAccountsDetails.sh:Z
       - accounts-volume:/shared
     depends_on:
       contract-repo-deployer:

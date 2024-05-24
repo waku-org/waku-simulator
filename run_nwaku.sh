@@ -2,8 +2,8 @@
 
 # Install bind-tools package used for domainname resolution
 apk add bind-tools
-apk add jq
-apk add bash
+# apk add jq
+# apk add bash
 
 if test -f .env; then
   echo "Using .env file"  
@@ -21,6 +21,7 @@ get_ip_address_and_replace() {
 
 # the format of the RPC URL is checked in the generateRlnKeystore command and hostnames are not valid
 pattern="^(https?):\/\/((localhost)|([\w_-]+(?:(?:\.[\w_-]+)+)))(:[0-9]{1,5})?([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])*"
+
 # Perform regex matching
 if [[ $RPC_URL =~ $pattern ]]; then
     echo "RPC URL is valid"
@@ -52,18 +53,16 @@ INDEX=`dig -x $IP +short | sed 's/.*_\([0-9]*\)\..*/\1/'`
 # Hello
 echo "Hello I'm container $INDEX of $COUNT"
 
-
-###########################################################################
 if test -f .$RLN_CREDENTIAL_PATH; then
   echo "$RLN_CREDENTIAL_PATH already exists. Use it instead of creating a new one."
 else
-  val=$(/bin/bash ./opt/parseAccountsDetails.sh $INDEX)
-  echo $val
+  PRIVATE_KEY=$(sed -n "${INDEX}p" /shared/private-keys.txt)
+  echo $PRIVATE_KEY
 
   echo "Generating RLN keystore"
   /usr/bin/wakunode generateRlnKeystore \
     --rln-relay-eth-client-address="$RPC_URL" \
-    --rln-relay-eth-private-key=$val  \
+    --rln-relay-eth-private-key=$PRIVATE_KEY  \
     --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS \
     --rln-relay-cred-path=$RLN_CREDENTIAL_PATH \
     --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD \
