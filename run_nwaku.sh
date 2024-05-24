@@ -33,12 +33,34 @@ else
     fi
 fi
 
+#Function to get the index of the container and use it to retrieve a private key to generate the keystore
+get_private_key(){
+  IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
+
+  # get the service name you specified in the docker-compose.yml 
+  # by a reverse DNS lookup on the IP
+  SERVICE=`dig -x $IP +short | cut -d'_' -f2`
+
+  # the number of replicas is equal to the A records 
+  # associated with the service name
+  COUNT=`dig $SERVICE +short | wc -l`
+
+  # extract the replica number from the same PTR entry
+  INDEX=`dig -x $IP +short | sed 's/.*_\([0-9]*\)\..*/\1/'`
+
+  key=$(sed -n "${INDEX}p" /shared/private-keys.txt)
+  echo $key
+}
+
 if test -f .$RLN_CREDENTIAL_PATH; then
   echo "$RLN_CREDENTIAL_PATH already exists. Use it instead of creating a new one."
 else
+  private_key="$(get_private_key)"
+  echo "Private key: $private_key"
+
   /usr/bin/wakunode generateRlnKeystore \
     --rln-relay-eth-client-address="$RPC_URL" \
-    --rln-relay-eth-private-key=$PRIVATE_KEY  \
+    --rln-relay-eth-private-key=$private_key  \
     --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS \
     --rln-relay-cred-path=$RLN_CREDENTIAL_PATH \
     --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD \
