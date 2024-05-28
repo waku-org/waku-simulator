@@ -25,10 +25,9 @@ services:
         --allow-origin=*
         --block-time=12
         --silent
-        --config-out=anvil-config.txt
+        --config-out=/shared/anvil-config.txt
     volumes:
       - privatekeys-volume:/shared
-      - ./getPrivateKeys.sh:/getPrivateKeys.sh
     networks:
       - simulation
 
