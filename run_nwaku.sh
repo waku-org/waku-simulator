@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Install bind-tools package used for domainname resolution and jq for json parsing
 apk add bind-tools
