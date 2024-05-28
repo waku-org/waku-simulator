@@ -21,11 +21,13 @@ services:
         --port=8545
         --host=0.0.0.0
         --chain-id=1337
-        --accounts=1
+        --accounts=${NUM_NWAKU_NODES:-5}
         --allow-origin=*
         --block-time=12
         --silent
-        --config-out=anvil-config.txt
+        --config-out=/shared/anvil-config.txt
+    volumes:
+      - privatekeys-volume:/shared
     networks:
       - simulation
 
@@ -74,7 +76,6 @@ services:
     entrypoint: sh
     environment:
       - RPC_URL=${RPC_URL:-http://foundry:8545}
-      - PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
       - RLN_CONTRACT_ADDRESS=0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
       - RLN_CREDENTIAL_PATH=/keystore.json
       - RLN_CREDENTIAL_PASSWORD=passw123
@@ -82,6 +83,7 @@ services:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - privatekeys-volume:/shared
     depends_on:
       contract-repo-deployer:
         condition: service_completed_successfully
@@ -217,3 +219,6 @@ services:
       - foundry
     networks:
       - simulation
+
+volumes:
+  privatekeys-volume:

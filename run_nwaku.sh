@@ -1,12 +1,15 @@
 #!/bin/sh
 
-# Install bind-tools package used for domainname resolution
+# Install bind-tools package used for domainname resolution and jq for json parsing
 apk add bind-tools
+apk add jq
 
 if test -f .env; then
   echo "Using .env file"  
   . $(pwd)/.env
 fi
+
+IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
 
 # Function to extract IP address from URL, resolve the IP and replace it in the original URL
 get_ip_address_and_replace() {
@@ -33,28 +36,57 @@ else
     fi
 fi
 
+#Function to get the index of the container and use it to retrieve a private key to be used to generate the keystore
+get_private_key(){
+
+  # Read the JSON file
+  json_content=$(cat /shared/anvil-config.txt)
+
+  # Extract private_keys json array using jq
+  private_keys=$(echo "$json_content" | jq -r '.private_keys[]')
+
+  # get the service specified in the docker-compose.yml 
+  # by a reverse DNS lookup on the IP
+  SERVICE=`dig -x $IP +short | cut -d'_' -f2`
+
+  # the number of replicas is equal to the A records 
+  # associated with the service name
+  COUNT=`dig $SERVICE +short | wc -l`
+
+  # extract the replica number from the same PTR entry
+  INDEX=`dig -x $IP +short | sed 's/.*_\([0-9]*\)\..*/\1/'`
+
+  # iterate through list of private keys and get the one corresponding to the container index
+  # we need to iterate because array objects cannot be used in /bin/ash (Alpine) and a separate script would need to be called to use bash
+  current_index=1
+  for key in $private_keys
+  do
+    if [ $current_index -eq $INDEX ]; then
+      echo $key
+      break
+    fi
+    current_index=$((current_index+1))
+  done
+}
+
 if test -f .$RLN_CREDENTIAL_PATH; then
   echo "$RLN_CREDENTIAL_PATH already exists. Use it instead of creating a new one."
 else
+  private_key="$(get_private_key)"
+  echo "Private key: $private_key"
+
+  echo "Generating RLN keystore"
   /usr/bin/wakunode generateRlnKeystore \
     --rln-relay-eth-client-address="$RPC_URL" \
-    --rln-relay-eth-private-key=$PRIVATE_KEY  \
+    --rln-relay-eth-private-key=$private_key  \
     --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS \
     --rln-relay-cred-path=$RLN_CREDENTIAL_PATH \
     --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD \
+    --log-level=INFO \
     --execute
 fi
 
-IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
-
 echo "I am a nwaku node"
-
-# Get an unique node index based on the container's IP
-FOURTH_OCTET=${IP##*.}
-THIRD_OCTET="${IP%.*}"; THIRD_OCTET="${THIRD_OCTET##*.}"
-NODE_INDEX=$((FOURTH_OCTET + 256 * THIRD_OCTET))
-
-echo "NODE_INDEX $NODE_INDEX"
 
 RETRIES=${RETRIES:=10}
 
@@ -87,7 +119,7 @@ exec /usr/bin/wakunode\
       --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
-      --log-level=INFO\
+      --log-level=DEBUG\
       --metrics-server=True\
       --metrics-server-address=0.0.0.0\
       --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
