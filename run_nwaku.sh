@@ -138,8 +138,6 @@ exec /usr/bin/wakunode\
       --rest-admin=true\
       --rest-private=true\
       --rest-address=0.0.0.0\
-      --cluster-id=0\
-      --pubsub-topic=/waku/2/default-waku/proto\
       --rest-port=8645\
       --rln-relay=true\
       --rln-relay-dynamic=true\

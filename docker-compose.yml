@@ -39,9 +39,9 @@ services:
       - RPC_URL=${RPC_URL:-http://foundry:8545}
     entrypoint: sh
     command:
-      - '/opt/deploy_rln_contract.sh'
+      - '/opt/deploy_rlnv2_contract.sh'
     volumes:
-      - ./deploy_rln_contract.sh:/opt/deploy_rln_contract.sh
+      - ./deploy_rlnv2_contract.sh:/opt/deploy_rlnv2_contract.sh
     depends_on:
       - foundry
     networks:
