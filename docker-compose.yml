@@ -20,10 +20,10 @@ services:
       - anvil
         --port=8545
         --host=0.0.0.0
-        --chain-id=1337
         --accounts=${NUM_NWAKU_NODES:-5}
         --allow-origin=*
         --block-time=12
+        --chain-id=1234
         --silent
         --config-out=/shared/anvil-config.txt
     volumes:
@@ -36,12 +36,14 @@ services:
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
     environment:
+      - PRIVATE_KEY=${PRIVATE_KEY}
+      - RLNV2=${RLNV2}
       - RPC_URL=${RPC_URL:-http://foundry:8545}
     entrypoint: sh
     command:
-      - '/opt/deploy_rlnv2_contract.sh'
+      - '/opt/deploy_rln_contract.sh'
     volumes:
-      - ./deploy_rlnv2_contract.sh:/opt/deploy_rlnv2_contract.sh
+      - ./deploy_rln_contract.sh:/opt/deploy_rln_contract.sh
     depends_on:
       - foundry
     networks:
