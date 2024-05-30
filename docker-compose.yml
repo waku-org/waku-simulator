@@ -37,7 +37,6 @@ services:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
     environment:
       - PRIVATE_KEY=${PRIVATE_KEY}
-      - RLNV2=${RLNV2}
       - RPC_URL=${RPC_URL:-http://foundry:8545}
     entrypoint: sh
     command:
@@ -89,8 +88,8 @@ services:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
       - privatekeys-volume:/shared
     depends_on:
-      - bootstrap
-      - contract-repo-deployer
+      contract-repo-deployer:
+        condition: service_completed_successfully
     networks:
       - simulation
       

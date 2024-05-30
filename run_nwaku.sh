@@ -102,7 +102,6 @@ else
   echo "Private key: $private_key"
 
   echo "Generating RLN keystore"
-
   /usr/bin/wakunode generateRlnKeystore \
     --rln-relay-eth-client-address="$RPC_URL" \
     --rln-relay-eth-private-key=$private_key  \
