@@ -82,7 +82,7 @@ else
     --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS \
     --rln-relay-cred-path=$RLN_CREDENTIAL_PATH \
     --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD \
-    --log-level=INFO \
+    --log-level=TRACE \
     --execute
 fi
 
@@ -116,7 +116,6 @@ exec /usr/bin/wakunode\
       --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS\
       --rln-relay-cred-path=$RLN_CREDENTIAL_PATH\
       --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD\
-      --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
       --log-level=DEBUG\
