@@ -1,8 +1,17 @@
 #!/bin/sh
 
-# Install bind-tools package used for domainname resolution and jq for json parsing
-apk add bind-tools
-apk add jq
+# Check Linux Distro Version - it can differ depending on the nwaku image used
+OS=$(cat /etc/os-release)
+if echo $OS | grep -q "Debian"; then
+    echo "The operating system is Debian."
+    apt update
+    apt install -y dnsutils
+    apt install -y jq
+elif echo $OS | grep -q "Alpine"; then
+    echo "The operating system is Alpine."
+    apk add bind-tools
+    apk add jq
+fi
 
 if test -f .env; then
   echo "Using .env file"  
@@ -16,14 +25,14 @@ get_ip_address_and_replace() {
     local url=$1
     local domain_name=$(echo $RPC_URL | awk -F[/:] '{print $4}')
     local ip_address=$(dig +short $domain_name)
-    valid_rpc_url="${url/$domain_name/$ip_address}" 
+    valid_rpc_url="$(echo "$url" | sed "s/$domain_name/$ip_address/g")"
     echo $valid_rpc_url
 }
 
 # the format of the RPC URL is checked in the generateRlnKeystore command and hostnames are not valid
 pattern="^(https?):\/\/((localhost)|([\w_-]+(?:(?:\.[\w_-]+)+)))(:[0-9]{1,5})?([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])*"
 # Perform regex matching
-if [[ $RPC_URL =~ $pattern ]]; then
+if echo "$RPC_URL" | grep -q "$pattern"; then
     echo "RPC URL is valid"
 else
     echo "RPC URL is invalid: $RPC_URL. Attempting to resolve hostname."
@@ -42,6 +51,12 @@ get_private_key(){
   # Read the JSON file
   json_content=$(cat /shared/anvil-config.txt)
 
+  # Check if json_content has a value
+  if [ -z "$json_content" ]; then
+    echo "Error: Failed to read the JSON file or the file is empty." >&2
+    return 1
+  fi
+
   # Extract private_keys json array using jq
   private_keys=$(echo "$json_content" | jq -r '.private_keys[]')
 
@@ -55,6 +70,11 @@ get_private_key(){
 
   # extract the replica number from the same PTR entry
   INDEX=`dig -x $IP +short | sed 's/.*_\([0-9]*\)\..*/\1/'`
+  if [ $? -ne 0 ] || [ -z "$INDEX" ]; then
+    echo "Error: Failed to determine the replica index from IP." >&2
+    return 1
+  fi
+
 
   # iterate through list of private keys and get the one corresponding to the container index
   # we need to iterate because array objects cannot be used in /bin/ash (Alpine) and a separate script would need to be called to use bash
@@ -62,11 +82,17 @@ get_private_key(){
   for key in $private_keys
   do
     if [ $current_index -eq $INDEX ]; then
+      pk=$key
       echo $key
       break
     fi
     current_index=$((current_index+1))
   done
+
+  if [ -z "$pk" ]; then
+    echo "Error: Failed to get private key for the container with index=$INDEX." >&2
+    return 1
+  fi
 }
 
 if test -f .$RLN_CREDENTIAL_PATH; then
