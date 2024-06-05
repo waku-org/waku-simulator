@@ -24,9 +24,12 @@ echo "forge build..."
 forge build
 
 # 4. Export environment variables
-export API_KEY_ETHERSCAN=123
 export RCL_URL=$RCL_URL
 export PRIVATE_KEY=$PRIVATE_KEY
+export ETH_FROM=$ETH_FROM
+# Dummy values
+export API_KEY_ETHERSCAN=123
+export API_KEY_CARDONA=123
 
 # 5. Deploy the contract
-forge script script/Deploy.s.sol:Deploy --broadcast --fork-url $RPC_URL --private-key $PRIVATE_KEY
+forge script script/Deploy.s.sol:Deploy --rpc-url $RPC_URL --broadcast -vv --private-key $PRIVATE_KEY --sender $ETH_FROM
