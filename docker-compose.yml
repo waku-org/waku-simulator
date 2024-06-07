@@ -20,10 +20,10 @@ services:
       - anvil
         --port=8545
         --host=0.0.0.0
-        --chain-id=1337
         --accounts=${NUM_NWAKU_NODES:-5}
         --allow-origin=*
         --block-time=12
+        --chain-id=1234
         --silent
         --config-out=/shared/anvil-config.txt
     volumes:
@@ -36,7 +36,9 @@ services:
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
     environment:
+      - PRIVATE_KEY=${PRIVATE_KEY}
       - RPC_URL=${RPC_URL:-http://foundry:8545}
+      - ETH_FROM=${ETH_FROM}
     entrypoint: sh
     command:
       - '/opt/deploy_rln_contract.sh'
@@ -76,9 +78,11 @@ services:
     entrypoint: sh
     environment:
       - RPC_URL=${RPC_URL:-http://foundry:8545}
-      - RLN_CONTRACT_ADDRESS=0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
+      - RLN_CONTRACT_ADDRESS=0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
       - RLN_CREDENTIAL_PATH=/keystore.json
       - RLN_CREDENTIAL_PASSWORD=passw123
+      - RLN_RELAY_MSG_LIMIT=${RLN_RELAY_MSG_LIMIT:-10}
+      - RLN_RELAY_EPOCH_SEC=${RLN_RELAY_EPOCH_SEC:-60}
     command:
       - '/opt/run_nwaku.sh'
     volumes:
