@@ -132,6 +132,7 @@ fi
 echo "Using bootstrap node: ${BOOTSTRAP_ENR}"
 exec /usr/bin/wakunode\
       --relay=true\
+      --lightpush=true\
       --max-connections=250\
       --rest=true\
       --rest-admin=true\
