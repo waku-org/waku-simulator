@@ -199,10 +199,8 @@ services:
 
   web:
     image: web3labs/epirus-free-web:latest
-    ports:
-      - 0.0.0.0:3000:3000
     environment:
-      - API_URL=${EPIRUS_WEB_API_URL:-http://localhost:8090}
+      - API_URL=${EPIRUS_WEB_API_URL:-/api}
       - WS_API_URL=${EPIRUS_WEB_WS_API_URL:-ws://localhost:8090}
       - DISPLAY_NETWORK_TAB=disabled
     depends_on:
@@ -221,6 +219,19 @@ services:
       - mongodb
       - redis
       - foundry
+    networks:
+      - simulation
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./5xx.html:/www/error_pages/5xx.html
+    ports:
+      - 0.0.0.0:3000:80
+    depends_on:
+      - api
+      - web
     networks:
       - simulation
 
