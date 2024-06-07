@@ -202,8 +202,8 @@ services:
     ports:
       - 0.0.0.0:3000:3000
     environment:
-      - API_URL=/api
-      - WS_API_URL=ws://localhost:8090
+      - API_URL=${EPIRUS_WEB_API_URL:-/api}
+      - WS_API_URL=${EPIRUS_WEB_WS_API_URL:-ws://localhost:8090}
       - DISPLAY_NETWORK_TAB=disabled
     depends_on:
       - api
