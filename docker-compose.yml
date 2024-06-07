@@ -199,8 +199,6 @@ services:
 
   web:
     image: web3labs/epirus-free-web:latest
-    ports:
-      - 0.0.0.0:3000:3000
     environment:
       - API_URL=${EPIRUS_WEB_API_URL:-/api}
       - WS_API_URL=${EPIRUS_WEB_WS_API_URL:-ws://localhost:8090}
@@ -230,7 +228,7 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./5xx.html:/www/error_pages/5xx.html
     ports:
-      - ${PORT:-80}:80
+      - 0.0.0.0:3000:80
     depends_on:
       - api
       - web
