@@ -14,11 +14,16 @@ cd waku-simulator
 Configure the simulation parameters. You can place the env variable in an `.env` file.
 
 ```
-export NWAKU_IMAGE=wakuorg/nwaku:v0.21.2-rc.0
+export NWAKU_IMAGE=quay.io/wakuorg/nwaku-pr:2759-rln-v2
 export NUM_NWAKU_NODES=5
 export TRAFFIC_DELAY_SECONDS=15
 export MSG_SIZE_KBYTES=10
-docker-compose up -d
+export PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+export ETH_FROM=0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+export RLN_RELAY_EPOCH_SEC=10
+export RLN_RELAY_MSG_LIMIT=2
+
+docker-compose --compatibility up -d
 ```
 
 
