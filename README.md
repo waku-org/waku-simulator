@@ -28,10 +28,14 @@ docker-compose --compatibility up -d
 
 
 This will:
-* spin up grafana/prometheus for monitoring, see `http://localhost:3000`.
+* create a private blockchain and attach a block explorer.
+* deploy RLN contract to it.
 * spin up a bootstrap nwaku node.
 * spin up a given amount of nwaku nodes with specific versions.
-* spin up a `rest-traffic` instance that will inject traffic into the network (see flags for rate and msg size)
+* register an RLN membership for each nwaku node.
+* spin up a `rest-traffic` instance that will inject traffic into the network via the REST API.
+* see block-explorer `http://localhost:3000`.
+* see grafana with node metrics `http://localhost:3001`.
 
 ## notes
 
