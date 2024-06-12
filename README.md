@@ -1,10 +1,8 @@
 # waku-simulator
 
-## Requires
-* docker
-* docker-compose
+Check 📖 [The Waku Simulator Book](https://waku-org.github.io/waku-simulator/)📖
 
-## How to run
+## Quickstart
 
 ```
 git clone https://github.com/waku-org/waku-simulator.git
@@ -25,21 +23,6 @@ export RLN_RELAY_MSG_LIMIT=2
 
 docker-compose --compatibility up -d
 ```
-
-
-This will:
-* create a private blockchain and attach a block explorer.
-* deploy RLN contract to it.
-* spin up a bootstrap nwaku node.
-* spin up a given amount of nwaku nodes with specific versions.
-* register an RLN membership for each nwaku node.
-* spin up a `rest-traffic` instance that will inject traffic into the network via the REST API.
-* see block-explorer `http://localhost:3000`.
-* see grafana with node metrics `http://localhost:3001`.
-
-## notes
-
-The default login/password for grafana is `admin`/`admin`.
 
 ## warning
 
