@@ -1,4 +1,4 @@
-# nwaku-simulator
+# waku-simulator
 
 ## Requires
 * docker
