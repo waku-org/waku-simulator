@@ -9,3 +9,4 @@ description = "A brief description of your book."
 [output.html]
 git-repository-url = "https://github.com/waku-org/waku-simulator"
 git-repository-icon = "fa-github"
+edit-url-template = "https://github.com/waku-org/waku-simulator/master/guide/{path}"
