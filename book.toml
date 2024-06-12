@@ -1,0 +1,7 @@
+[book]
+authors = ["waku-org"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Waku Simulator Book"
+description = "A brief description of your book."
