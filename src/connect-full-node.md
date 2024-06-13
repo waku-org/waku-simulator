@@ -43,7 +43,7 @@ done
 
 🎯**Goals**:
 
-- Connect a different nodes(s) to the network for some ad hoc test.
+- Connect a different node(s) to the network for some ad hoc test.
 - See how the network reacts to a node with different configuration.
 
 👀**Observability**:

@@ -28,7 +28,7 @@ Once configured, start all containers:
 docker-compose --compatibility up -d
 ```
 
-After couple of minutes, everything should be running at:
+After a couple of minutes, everything should be running at:
 
 - `http://localhost:3000` Block explorer
 - `http://localhost:3001` Grafana metrics
@@ -57,4 +57,4 @@ Now that we have the network deployed we can use it. Hereunder we describe how t
 - Connect external light node:
 - Register memberships:
 
-⚠️ For every use case, ensure that your node is configured in the same way as the rest of the nodes, otherwise message may be lost. Note that it can be also an intended test, seeing how the network reacts to other nodes connecting to it.
+⚠️ For every use case, ensure that your node is configured in the same way as the rest of the nodes, otherwise messages may be lost. Note that it can be also an intended test, seeing how the network reacts to other nodes connecting to it.
