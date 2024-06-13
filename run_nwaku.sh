@@ -81,6 +81,7 @@ get_private_key(){
   current_index=1
   for key in $private_keys
   do
+    INDEX=`echo $INDEX | sed -n "1p" | awk '{print $1}'`
     if [ $current_index -eq $INDEX ]; then
       pk=$key
       echo $key
@@ -114,6 +115,9 @@ else
     --execute
 fi
 
+echo $RLN_CREDENTIAL_PATH
+ls -la /
+ls -la $RLN_CREDENTIAL_PATH
 echo "I am a nwaku node"
 
 RETRIES=${RETRIES:=10}

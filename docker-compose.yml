@@ -44,7 +44,7 @@ services:
     command:
       - '/opt/deploy_rln_contract.sh'
     volumes:
-      - ./deploy_rln_contract.sh:/opt/deploy_rln_contract.sh
+      - ./deploy_rln_contract.sh:/opt/deploy_rln_contract.sh:Z
     depends_on:
       - foundry
     networks:
@@ -152,6 +152,7 @@ services:
       - /var/run:/var/run:rw
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
+      - /dev:/dev
     depends_on:
       - redis
     networks:
@@ -203,6 +204,8 @@ services:
       - api
     networks:
       - simulation
+    ports:
+      - 0.0.0.0:3000:3000
 
   ingestion:
     image: web3labs/epirus-free-ingestion:latest
