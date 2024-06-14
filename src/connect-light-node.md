@@ -19,7 +19,7 @@ send-messages-loop \
 --cluster-id=66 \
 --lightpush-peer=/ip4/10.2.0.16/tcp/60000/p2p/16Uiu2HAmAA99YfoLitSXgY1bHaqjaTKhyrU4M4y3D1rVj1bmcgL8 \
 --message-every-secs=5 \
---epoch-size-secs=60
+--epoch-size-secs=1
 ```
 
 Note that in some examples, it could be interesting to run multiple instances, either in parallel or one after the other. For example if you set `amount-message-to-send=1` this will send just 1 message and exit. You can for example run this 100 times, where a fresh RLN membership will be created on every run, create a new peerId, send a message and exit.
@@ -38,7 +38,7 @@ for i in {1..5}; do
     --cluster-id=66 \
     --lightpush-peer=/ip4/10.2.0.16/tcp/60000/p2p/16Uiu2HAm6a4kUT7YutsbwgQcmWw5VLzN3zj1StwiBVf2LUH9kb4A \
     --message-every-secs=5 \
-    --epoch-size-secs=60 \
+    --epoch-size-secs=1 \
     --amount-message-to-send=1
     
     if [ $? -ne 0 ]; then
