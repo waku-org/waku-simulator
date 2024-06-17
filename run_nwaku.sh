@@ -115,9 +115,6 @@ else
     --execute
 fi
 
-echo $RLN_CREDENTIAL_PATH
-ls -la /
-ls -la $RLN_CREDENTIAL_PATH
 echo "I am a nwaku node"
 
 RETRIES=${RETRIES:=10}

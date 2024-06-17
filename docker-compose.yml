@@ -205,7 +205,7 @@ services:
     networks:
       - simulation
     ports:
-      - 0.0.0.0:3000:3000
+      - 3000
 
   ingestion:
     image: web3labs/epirus-free-ingestion:latest
