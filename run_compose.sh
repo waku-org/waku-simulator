@@ -7,7 +7,7 @@ usage() {
 }
 
 # Default values
-DEFAULT_NWAKU_IMAGE="qiuay.io/wakuorg/nwaku-pr:2759-rln-v2"
+DEFAULT_NWAKU_IMAGE="quay.io/wakuorg/nwaku-pr:2759-rln-v2"
 DEFAULT_NUM_NWAKU_NODES=5
 DEFAULT_TRAFFIC_DELAY_SECONDS=60
 DEFAULT_MSG_SIZE_KBYTES=10
@@ -136,18 +136,30 @@ echo ""
 echo "================================================================================================="
 echo "                                       Summary of Parameters                                     "
 echo "================================================================================================="
-echo "- Nwaku Image:                ${NWAKU_IMAGE}"
-echo "- Number of Nwaku Nodes:      ${NUM_NWAKU_NODES}"
-echo "- Message Publishing Delay:   ${TRAFFIC_DELAY_SECONDS}s"
-echo "- Message Size:               ${MSG_SIZE_KBYTES}KB"
-echo "- Private Key:                ${PRIVATE_KEY}"
-echo "- ETH From:                   ${ETH_FROM}"
-echo "- RLN Relay Epoch:            ${RLN_RELAY_EPOCH_SEC}s"
-echo "- RLN Relay Messages Limit:   ${RLN_RELAY_MSG_LIMIT}"
+echo "- Nwaku Image:                 ${NWAKU_IMAGE}"
+echo "- Number of Nwaku Nodes:       ${NUM_NWAKU_NODES}"
+echo "- Message Publishing Delay:    ${TRAFFIC_DELAY_SECONDS}s"
+echo "- Message Size:                ${MSG_SIZE_KBYTES}KB"
+echo "- Private Key:                 ${PRIVATE_KEY}"
+echo "- ETH From:                    ${ETH_FROM}"
+echo "- RLN Relay Epoch:             ${RLN_RELAY_EPOCH_SEC}s"
+echo "- RLN Relay Messages Limit:    ${RLN_RELAY_MSG_LIMIT}"
 echo "================================================================================================="
 echo ""
 
-# Start compose
-read -n 1 -s -r -p "Press any key to launch docker compose"
+# Confirm Parameters
+read -n 1 -s -r -p "Press any key to launch docker compose with the specified parameters"
+echo ""
+
+# Export parameters and run compose
+export NWAKU_IMAGE
+export NUM_NWAKU_NODES
+export TRAFFIC_DELAY_SECONDS
+export MSG_SIZE_KBYTES
+export PRIVATE_KEY
+export ETH_FROM
+export RLN_RELAY_EPOCH_SEC
+export RLN_RELAY_MSG_LIMIT
+
 docker compose --compatibility up
 
