@@ -1,0 +1,116 @@
+version: "3.7"
+
+networks:
+  simulation:
+      driver: bridge
+      ipam:
+          driver: default
+          config:
+              - subnet: "10.2.0.0/24"
+
+services:
+
+  bootstrap:
+    image: ${NWAKU_IMAGE:-harbor.status.im/wakuorg/nwaku:latest}
+    restart: on-failure
+    ports:
+      - 127.0.0.1:60000:60000
+      - 127.0.0.1:8008:8008
+      - 127.0.0.1:9000:9000
+      - 127.0.0.1:8645:8645
+    entrypoint: sh
+    command:
+      - '/opt/run_bootstrap.sh'
+    volumes:
+      - ./run_bootstrap.sh:/opt/run_bootstrap.sh:Z
+    networks:
+      - simulation
+
+  nwaku:
+    image: ${NWAKU_IMAGE:-harbor.status.im/wakuorg/nwaku:latest}
+    restart: on-failure
+    deploy:
+      replicas: ${NUM_NWAKU_NODES:-5}
+    entrypoint: sh
+    environment:
+      - DONOTUSERLN=1
+    command:
+      - '/opt/run_nwaku.sh'
+    volumes:
+      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+    depends_on:
+      - bootstrap
+    networks:
+      - simulation
+      
+  rest-traffic:
+    image: alrevuelta/rest-traffic:d936446
+    command:
+      --multiple-nodes=http://waku-simulator_nwaku_[1..${NUM_NWAKU_NODES:-5}]:8645
+      --msg-size-kbytes=${MSG_SIZE_KBYTES:-10}
+      --delay-seconds=${TRAFFIC_DELAY_SECONDS:-15}
+    networks:
+      - simulation
+    depends_on:
+      - nwaku
+    profiles:
+      - msgpump
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./monitoring/prometheus-config.yml:/etc/prometheus/prometheus.yml:z
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=7d
+    ports:
+      - 127.0.0.1:9090:9090
+    restart: on-failure
+    networks:
+      - simulation
+
+  grafana:
+    image: grafana/grafana:latest
+    env_file:
+      - ./monitoring/configuration/grafana-plugins.env
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+    volumes:
+      - ./monitoring/configuration/grafana.ini:/etc/grafana/grafana.ini:z
+      - ./monitoring/configuration/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml:z
+      - ./monitoring/configuration/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml:z
+      - ./monitoring/configuration/dashboards:/var/lib/grafana/dashboards/:z
+      - ./monitoring/configuration/customizations/custom-logo.svg:/usr/share/grafana/public/img/grafana_icon.svg:z
+      - ./monitoring/configuration/customizations/custom-logo.svg:/usr/share/grafana/public/img/grafana_typelogo.svg:z
+      - ./monitoring/configuration/customizations/custom-logo.png:/usr/share/grafana/public/img/fav32.png:z
+    ports:
+      - 0.0.0.0:3001:3001
+    restart: on-failure
+    depends_on:
+      - prometheus
+    networks:
+      - simulation
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    #ports:
+    #  - 8080:8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    depends_on:
+      - redis
+    networks:
+      - simulation
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    #ports:
+    #  - 6379:6379
+    networks:
+      - simulation

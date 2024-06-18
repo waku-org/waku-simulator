@@ -20,6 +20,17 @@ fi
 
 IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
 
+
+
+if [ -z "$DONOTUSERLN" ] || [ "$DONOTUSERLN" != "1" ]; then
+  USERLN=true
+  echo "RLN is enabled"
+else
+  USERLN=false
+  echo "RLN is disabled"
+fi
+
+
 # Function to extract IP address from URL, resolve the IP and replace it in the original URL
 get_ip_address_and_replace() {
     local url=$1
@@ -95,22 +106,39 @@ get_private_key(){
   fi
 }
 
-if test -f .$RLN_CREDENTIAL_PATH; then
-  echo "$RLN_CREDENTIAL_PATH already exists. Use it instead of creating a new one."
-else
-  private_key="$(get_private_key)"
-  echo "Private key: $private_key"
+if $USERLN; then
 
-  echo "Generating RLN keystore"
-  /usr/bin/wakunode generateRlnKeystore \
-    --rln-relay-eth-client-address="$RPC_URL" \
-    --rln-relay-eth-private-key=$private_key  \
-    --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS \
-    --rln-relay-cred-path=$RLN_CREDENTIAL_PATH \
-    --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD \
-    --rln-relay-user-message-limit=$RLN_RELAY_MSG_LIMIT \
-    --log-level=DEBUG \
-    --execute
+  if test -f .$RLN_CREDENTIAL_PATH; then
+    echo "$RLN_CREDENTIAL_PATH already exists. Use it instead of creating a new one."
+  else
+    private_key="$(get_private_key)"
+    echo "Private key: $private_key"
+
+    echo "Generating RLN keystore"
+    /usr/bin/wakunode generateRlnKeystore \
+      --rln-relay-eth-client-address="$RPC_URL" \
+      --rln-relay-eth-private-key=$private_key  \
+      --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS \
+      --rln-relay-cred-path=$RLN_CREDENTIAL_PATH \
+      --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD \
+      --rln-relay-user-message-limit=$RLN_RELAY_MSG_LIMIT \
+      --log-level=DEBUG \
+      --execute
+  fi
+
+  
+  RLN_CLI_ARGS="--rln-relay=true\
+                --rln-relay-dynamic=true\
+                --rln-relay-eth-client-address=\"${RPC_URL}\"\
+                --rln-relay-eth-contract-address=${RLN_CONTRACT_ADDRESS}\
+                --rln-relay-cred-path=${RLN_CREDENTIAL_PATH}\
+                --rln-relay-cred-password=${RLN_CREDENTIAL_PASSWORD}\
+                --rln-relay-tree-path=\"rlnv2_tree1\"\
+                --rln-relay-epoch-sec=${RLN_RELAY_EPOCH_SEC}\
+                --rln-relay-user-message-limit=${RLN_RELAY_MSG_LIMIT}"
+
+else 
+  RLN_CLI_ARGS="--rln-relay=false"
 fi
 
 echo "I am a nwaku node"
@@ -139,15 +167,6 @@ exec /usr/bin/wakunode\
       --rest-private=true\
       --rest-address=0.0.0.0\
       --rest-port=8645\
-      --rln-relay=true\
-      --rln-relay-dynamic=true\
-      --rln-relay-eth-client-address="$RPC_URL"\
-      --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS\
-      --rln-relay-cred-path=$RLN_CREDENTIAL_PATH\
-      --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD\
-      --rln-relay-tree-path="rlnv2_tree1"\
-      --rln-relay-epoch-sec=$RLN_RELAY_EPOCH_SEC\
-      --rln-relay-user-message-limit=$RLN_RELAY_MSG_LIMIT\
       --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
@@ -157,4 +176,6 @@ exec /usr/bin/wakunode\
       --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
       --nat=extip:${IP}\
       --pubsub-topic=/waku/2/rs/66/0\
-      --cluster-id=66
+      --cluster-id=66\
+      ${RLN_CLI_ARGS}
+
