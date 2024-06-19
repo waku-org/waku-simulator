@@ -160,3 +160,4 @@ exec /usr/bin/wakunode\
       --nat=extip:${IP}\
       --pubsub-topic=/waku/2/rs/66/0\
       --cluster-id=66
+
