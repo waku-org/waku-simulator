@@ -204,8 +204,6 @@ services:
       - api
     networks:
       - simulation
-    ports:
-      - 3000
 
   ingestion:
     image: web3labs/epirus-free-ingestion:latest
