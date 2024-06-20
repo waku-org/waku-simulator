@@ -109,6 +109,7 @@ else
     --rln-relay-cred-path=$RLN_CREDENTIAL_PATH \
     --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD \
     --rln-relay-user-message-limit=$RLN_RELAY_MSG_LIMIT \
+    --rln-relay-epoch-sec=$RLN_RELAY_EPOCH_SEC \
     --log-level=DEBUG \
     --execute
 fi
