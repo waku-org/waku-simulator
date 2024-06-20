@@ -15,7 +15,10 @@ fi
 
 cd /waku-rlnv2-contract
 
-# 3. Compile
+#3. Replace the hardcoded MAX_MESSAGE_LIMIT
+sed -i "s/\b20\b/${MAX_MESSAGE_LIMIT}/g" script/Deploy.s.sol
+
+# 4. Compile
 echo "forge install..."
 forge install
 echo "pnpm install..."
@@ -23,7 +26,7 @@ pnpm install
 echo "forge build..."
 forge build
 
-# 4. Export environment variables
+# 5. Export environment variables
 export RCL_URL=$RCL_URL
 export PRIVATE_KEY=$PRIVATE_KEY
 export ETH_FROM=$ETH_FROM
@@ -31,5 +34,5 @@ export ETH_FROM=$ETH_FROM
 export API_KEY_ETHERSCAN=123
 export API_KEY_CARDONA=123
 
-# 5. Deploy the contract
+# 6. Deploy the contract
 forge script script/Deploy.s.sol:Deploy --rpc-url $RPC_URL --broadcast -vv --private-key $PRIVATE_KEY --sender $ETH_FROM
