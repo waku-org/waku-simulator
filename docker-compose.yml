@@ -39,6 +39,7 @@ services:
       - PRIVATE_KEY=${PRIVATE_KEY}
       - RPC_URL=${RPC_URL:-http://foundry:8545}
       - ETH_FROM=${ETH_FROM}
+      - MAX_MESSAGE_LIMIT=${MAX_MESSAGE_LIMIT:-20}
     entrypoint: sh
     command:
       - '/opt/deploy_rln_contract.sh'
