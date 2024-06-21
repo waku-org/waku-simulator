@@ -7,8 +7,10 @@ usage() {
 }
 
 # Default values
-DEFAULT_NWAKU_IMAGE="quay.io/wakuorg/nwaku-pr:2759-rln-v2"
+DEFAULT_NWAKU_IMAGE="harbor.status.im/wakuorg/nwaku:v0.30.0-rc.0"
 DEFAULT_NUM_NWAKU_NODES=5
+DEFAULT_TRAFFIC_NUM_NWAKU_NODES=$DEFAULT_NUM_NWAKU_NODES
+DEFAULT_SPAM_NUM_NWAKU_NODES=0
 DEFAULT_TRAFFIC_DELAY_SECONDS=60
 DEFAULT_MSG_SIZE_KBYTES=10
 DEFAULT_PRIVATE_KEY="0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
@@ -19,6 +21,8 @@ DEFAULT_RLN_RELAY_MSG_LIMIT=1
 # Initialize variables
 NWAKU_IMAGE=$DEFAULT_NWAKU_IMAGE
 NUM_NWAKU_NODES=$DEFAULT_NUM_NWAKU_NODES
+SPAM_NUM_NWAKU_NODES=$DEFAULT_SPAM_NUM_NWAKU_NODES
+TRAFFIC_NUM_NWAKU_NODES=$DEFAULT_TRAFFIC_NUM_NWAKU_NODES
 TRAFFIC_DELAY_SECONDS=$DEFAULT_TRAFFIC_DELAY_SECONDS
 MSG_SIZE_KBYTES=$DEFAULT_MSG_SIZE_KBYTES
 PRIVATE_KEY=$DEFAULT_PRIVATE_KEY
@@ -35,6 +39,14 @@ while [[ "$#" -gt 0 ]]; do
             ;;
         --num-nwaku-nodes)
             NUM_NWAKU_NODES="$2"
+            shift 2
+            ;;
+        --traffic-num-nwaku-nodes)
+            TRAFFIC_NUM_NWAKU_NODES="$2"
+            shift 2
+            ;;
+        --spam-num-nwaku-nodes)
+            SPAM_NUM_NWAKU_NODES="$2"
             shift 2
             ;;
         --traffic-delay-seconds)
@@ -74,6 +86,30 @@ if ! [[ "$NUM_NWAKU_NODES" =~ ^[0-9]+$ ]]; then
     exit 1
 fi
 
+# Validate traffic-num-nwaku-nodes is an integer
+if ! [[ "$TRAFFIC_NUM_NWAKU_NODES" =~ ^[0-9]+$ ]]; then
+    echo "Error: --num-nwaku-nodes must be an integer."
+    exit 1
+fi
+
+# Validate traffic-num-nwaku-nodes is less or equal than num-nwaku-nodes
+if ! [[ "$TRAFFIC_NUM_NWAKU_NODES" -le "$NUM_NWAKU_NODES" ]]; then
+    echo "Error: --traffic-num-nwaku-nodes must be less or equal than --num-nwaku-nodes."
+    exit 1
+fi
+
+# Validate spam-num-nwaku-nodes is an integer
+if ! [[ "$SPAM_NUM_NWAKU_NODES" =~ ^[0-9]+$ ]]; then
+    echo "Error: --spam-num-nwaku-nodes must be an integer."
+    exit 1
+fi
+
+# Validate spam-num-nwaku-nodoes is less or equal than num-nwaku-nodes
+if ! [[ "$SPAM_NUM_NWAKU_NODES" -le "$NUM_NWAKU_NODES" ]]; then
+    echo "Error: --spam-num-nwaku-nodes must be less or equal than --num-nwaku-nodes."
+    exit 1
+fi
+
 # Validate traffic-delay-seconds is an integer
 if ! [[ "$TRAFFIC_DELAY_SECONDS" =~ ^[0-9]+$ ]]; then
     echo "Error: --traffic-delay-seconds must be an integer."
@@ -107,6 +143,14 @@ if [[ "$NUM_NWAKU_NODES" -eq "$DEFAULT_NUM_NWAKU_NODES" ]]; then
     echo "Warning: Using default value for --num-nwaku-nodes: $DEFAULT_NUM_NWAKU_NODES"
 fi
 
+if [[ "$TRAFFIC_NUM_NWAKU_NODES" -eq "$DEFAULT_TRAFFIC_NUM_NWAKU_NODES" ]]; then
+    echo "Warning: Using default value for --num-nwaku-nodes: $DEFAULT_TRAFFIC_NUM_NWAKU_NODES"
+fi
+
+if [[ "$SPAM_NUM_NWAKU_NODES" -eq "$DEFAULT_SPAM_NUM_NWAKU_NODES" ]]; then
+    echo "Warning: Using default value for --spam-num-nwaku-nodes: $DEFAULT_SPAM_NUM_NWAKU_NODES"
+fi
+
 if [[ "$TRAFFIC_DELAY_SECONDS" -eq "$DEFAULT_TRAFFIC_DELAY_SECONDS" ]]; then
     echo "Warning: Using default value for --traffic-delay-seconds: $DEFAULT_TRAFFIC_DELAY_SECONDS"
 fi
@@ -137,7 +181,10 @@ echo "==========================================================================
 echo "                                       Summary of Parameters                                     "
 echo "================================================================================================="
 echo "- Nwaku Image:                 ${NWAKU_IMAGE}"
-echo "- Number of Nwaku Nodes:       ${NUM_NWAKU_NODES}"
+echo "- Nodes"
+echo "  | Total:                     ${NUM_NWAKU_NODES}"
+echo "  | Traffic Injection:         ${TRAFFIC_NUM_NWAKU_NODES}"
+echo "  | Spam Injection:            ${SPAM_NUM_NWAKU_NODES}"
 echo "- Message Publishing Delay:    ${TRAFFIC_DELAY_SECONDS}s"
 echo "- Message Size:                ${MSG_SIZE_KBYTES}KB"
 echo "- Private Key:                 ${PRIVATE_KEY}"
@@ -154,6 +201,8 @@ echo ""
 # Export parameters and run compose
 export NWAKU_IMAGE
 export NUM_NWAKU_NODES
+export TRAFFIC_NUM_NWAKU_NODES
+export SPAM_NUM_NWAKU_NODES
 export TRAFFIC_DELAY_SECONDS
 export MSG_SIZE_KBYTES
 export PRIVATE_KEY
