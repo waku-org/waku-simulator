@@ -3,6 +3,8 @@
 
 By using the [nwaku-spammer] (https://github.com/waku-org/nwaku/pull/2821), you can connect a node to the network that spams the other nodes, sending messages exceeding its rate limit. It will register an RLN membership at startup. It should be configured with the same contract and `rln-relay-user-message-limit` as the waku nodes. If a node spams enough for the peer-score to go below the threshold, then the peers will disconnect from the spamming node.
 
+- ⚠️ change `staticnode` to the node you wish. Note that the multiaddress is logged by every peer at startup.
+
 ```bash
 docker run -it --network waku-simulator_simulation quay.io/wakuorg/nwaku-pr:2821 \
       --relay=true \
