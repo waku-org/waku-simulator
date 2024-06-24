@@ -25,7 +25,16 @@ docker run -it --network waku-simulator_simulation quay.io/wakuorg/nwaku-pr:2821
       --spammer-delay-between-msg=200
 ```
 
-You can try to connect multiple spamming nodes, but it might be necessary to use a different private-key for each one to avoid the limitation of multiple contract transactions with the same nonce. Otherwise add a delay before running a new node. Note the `&`. Remember to kill the new nodes once you are done.
+An alternative config for the spamming node is to have it connect to the discv5 network instead of a single static node.
+The `staticnode` config can be replaced with the below config. The bootstrap node will log its ENR.
+
+```bash
+ --discv5-discovery=true \
+ --discv5-enr-auto-update=True \
+ --discv5-bootstrap-node=BOOTSTRAP_ENR\
+```
+
+You can also try to connect multiple spamming nodes, but it might be necessary to use a different private-key for each one to avoid the limitation of multiple contract transactions with the same nonce. Otherwise add a delay before running a new node. Note the `&`. Remember to kill the new nodes once you are done.
 
 ```bash
 for i in {1..5}; do
