@@ -10,6 +10,8 @@ networks:
 
 services:
 
+# Accounts are hardcoded to 520 with the idea that nwaku nodes use up to 500 for membership registration and the last 20 are used for ad-hoc testing.
+# The account number and private key pairs of the last 20 accounts can be found in the Register memberships section of the Waku-simulator book.
   foundry:
     image: ghcr.io/foundry-rs/foundry:nightly-9b73e06e1fe376738b92ae081107620291d50188
     labels:
@@ -20,7 +22,7 @@ services:
       - anvil
         --port=8545
         --host=0.0.0.0
-        --accounts=${NUM_NWAKU_NODES:-5}
+        --accounts=520
         --allow-origin=*
         --block-time=12
         --chain-id=1234
