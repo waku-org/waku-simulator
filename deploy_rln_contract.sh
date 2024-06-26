@@ -33,6 +33,7 @@ export ETH_FROM=$ETH_FROM
 # Dummy values
 export API_KEY_ETHERSCAN=123
 export API_KEY_CARDONA=123
+export API_KEY_LINEASCAN=123
 
 # 6. Deploy the contract
 forge script script/Deploy.s.sol:Deploy --rpc-url $RPC_URL --broadcast -vv --private-key $PRIVATE_KEY --sender $ETH_FROM
