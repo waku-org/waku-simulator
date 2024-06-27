@@ -16,7 +16,7 @@ fi
 cd /waku-rlnv2-contract
 
 #3. Replace the hardcoded MAX_MESSAGE_LIMIT
-sed -i "s/\b20\b/${MAX_MESSAGE_LIMIT}/g" script/Deploy.s.sol
+sed -i "s/\b100\b/${MAX_MESSAGE_LIMIT}/g" script/Deploy.s.sol
 
 # 4. Compile
 echo "forge install..."
