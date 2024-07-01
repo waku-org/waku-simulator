@@ -57,6 +57,29 @@ docker run -it --network waku-simulator_simulation quay.io/wakuorg/nwaku-pr:2821
       --spammer-delay-between-msg=200 &
 done
 ```
+
+The spammer node also provides a method to test burst messaging. It will send the total user-message-limit of messages sequentially without pauses, then rests for the epoch period and repeats.
+
+```bash
+docker run -it --network waku-simulator_simulation quay.io/wakuorg/nwaku-pr:2821 \
+      --relay=true \
+      --rln-relay=true \
+      --rln-relay-dynamic=true \
+      --rln-relay-eth-client-address=http://foundry:8545 \
+      --rln-relay-eth-contract-address=0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9 \
+      --rln-relay-epoch-sec=1 \
+      --rln-relay-user-message-limit=1 \
+      --log-level=DEBUG \
+      --staticnode=/ip4/10.2.0.16/tcp/60000/p2p/16Uiu2HAmAA99YfoLitSXgY1bHaqjaTKhyrU4M4y3D1rVj1bmcgL8 \
+      --pubsub-topic=/waku/2/rs/66/0 \
+      --cluster-id=66 \
+      --rln-relay-eth-private-key=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 \
+      --rln-relay-cred-path=/keystore.json \
+      --rln-relay-cred-password=password123 \
+      --spammer=true \
+      --spammer-burst=true
+```
+
 🎯**Goals**:
 
 - Connect a spamming node(s) to the network where spam messages are rejected and misbehaving peers are disconnected for a time.
