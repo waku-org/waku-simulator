@@ -10,7 +10,6 @@ exec /usr/bin/wakunode\
       --rest-admin=true\
       --rest-private=true\
       --rest-address=0.0.0.0\
-      --keep-alive=true\
       --max-connections=300\
       --dns-discovery=true\
       --discv5-discovery=true\
