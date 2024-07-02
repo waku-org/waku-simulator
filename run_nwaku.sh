@@ -81,6 +81,7 @@ get_private_key(){
   current_index=1
   for key in $private_keys
   do
+    # INDEX=`echo $INDEX | sed -n "1p" | awk '{print $1}'` # Podman Fix: Get only the first value of the first line
     if [ $current_index -eq $INDEX ]; then
       pk=$key
       echo $key
@@ -159,3 +160,4 @@ exec /usr/bin/wakunode\
       --nat=extip:${IP}\
       --pubsub-topic=/waku/2/rs/66/0\
       --cluster-id=66
+
