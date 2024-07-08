@@ -152,10 +152,11 @@ exec /usr/bin/wakunode\
       --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
-      --log-level=DEBUG\
+      --log-level=TRACE\
       --metrics-server=True\
       --metrics-server-address=0.0.0.0\
       --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
       --nat=extip:${IP}\
       --pubsub-topic=/waku/2/rs/66/0\
-      --cluster-id=66
+      --cluster-id=66\
+      --storenode=/ip4/10.2.0.99/tcp/60000/p2p/16Uiu2HAmTVafvweaXrXKmFFkUo4qWYP7wTa2H6PXee8iMyQw4eHm

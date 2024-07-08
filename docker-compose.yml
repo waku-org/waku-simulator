@@ -24,7 +24,7 @@ services:
         --host=0.0.0.0
         --accounts=520
         --allow-origin=*
-        --block-time=12
+        --block-time=3
         --chain-id=1234
         --silent
         --config-out=/shared/anvil-config.txt
@@ -96,7 +96,26 @@ services:
         condition: service_completed_successfully
     networks:
       - simulation
-      
+  
+  nwaku_store:
+    image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
+    restart: on-failure
+    labels:
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+    entrypoint: sh
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+    command:
+      - '/opt/run_nwaku_store.sh'
+    volumes:
+      - ./run_nwaku_store.sh:/opt/run_nwaku_store.sh:Z
+    depends_on:
+      - postgres
+    networks:
+      simulation:
+          ipv4_address: 10.2.0.99
+
   rest-traffic:
     image: alrevuelta/rest-traffic:6992bb5
     command:
@@ -107,6 +126,51 @@ services:
       - simulation
     depends_on:
       - nwaku
+
+  postgres:
+    # This service is used when the Waku node has the 'store' protocol enabled
+    # and the store-message-db-url is set to use Postgres
+    image: postgres:15.4-alpine3.18
+    restart: on-failure:5
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+    volumes:
+      - ./postgres_cfg/postgresql.conf:/etc/postgresql/postgresql.conf:Z
+      - ./postgres_cfg/db.sql:/docker-entrypoint-initdb.d/db.sql:Z
+      - ${PG_DATA_DIR:-./postgresql}:/var/lib/postgresql/data:Z
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    ports:
+      - 127.0.0.1:5432:5432
+    networks:
+      - simulation
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+
+  # postgres-exporter:
+  #   # Service aimed to scrape information from Postgres and post it to Prometeus
+  #   image: quay.io/prometheuscommunity/postgres-exporter:v0.12.0
+  #   restart: on-failure:5
+  #   environment:
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+  #     - DATA_SOURCE_URI=postgres?sslmode=disable
+  #     - DATA_SOURCE_USER=${POSTGRES_USER:-postgres}
+  #     - DATA_SOURCE_PASS=${POSTGRES_PASSWORD:-test123}
+  #     - PG_EXPORTER_EXTEND_QUERY_PATH=/etc/pgexporter/queries.yml
+  #   volumes:
+  #     - ./monitoring/configuration/postgres-exporter.yml:/etc/pgexporter/postgres-exporter.yml:Z
+  #     - ./monitoring/configuration/pg-exporter-queries.yml:/etc/pgexporter/queries.yml:Z
+  #   command:
+  #     # Both the config file and 'DATA_SOURCE_NAME' should contain valid connection info
+  #     - --config.file=/etc/pgexporter/postgres-exporter.yml
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     - simulation
 
   prometheus:
     image: prom/prometheus:latest
