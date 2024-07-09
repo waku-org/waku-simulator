@@ -10,6 +10,9 @@ scrape_configs:
     static_configs:
     - targets:
       - cadvisor:8080
+  - job_name: postgres-exporter
+    static_configs:
+    - targets: ['postgres-exporter:9187']
   - job_name: "nwaku"
     static_configs:
     - targets:
