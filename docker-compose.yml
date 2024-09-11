@@ -52,32 +52,32 @@ services:
   #   networks:
   #     - simulation
 
-  bootstrap:
-    image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
-    restart: on-failure
-    labels:
-      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-    # TODO: expose some ports to inject traffic
-    ports:
-      - 127.0.0.1:60000:60000
-      - 127.0.0.1:8008:8008
-      - 127.0.0.1:9000:9000
-      - 127.0.0.1:8645:8645
-    entrypoint: sh
-    command:
-      - '/opt/run_bootstrap.sh'
-    volumes:
-      - ./run_bootstrap.sh:/opt/run_bootstrap.sh:Z
-    networks:
-      - simulation
+  # bootstrap:
+  #   image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
+  #   restart: on-failure
+  #   labels:
+  #     com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+  #   # TODO: expose some ports to inject traffic
+  #   ports:
+  #     - 127.0.0.1:60000:60000
+  #     - 127.0.0.1:8008:8008
+  #     - 127.0.0.1:9000:9000
+  #     - 127.0.0.1:8645:8645
+  #   entrypoint: sh
+  #   command:
+  #     - '/opt/run_bootstrap.sh'
+  #   volumes:
+  #     - ./run_bootstrap.sh:/opt/run_bootstrap.sh:Z
+  #   networks:
+  #     - simulation
 
   nwaku:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
     restart: on-failure
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-    deploy:
-      replicas: ${NUM_NWAKU_NODES:-5}
+    # deploy:
+    #   replicas: ${NUM_NWAKU_NODES:-5}
     entrypoint: sh
     environment:
       - RPC_URL=${RPC_URL:-http://foundry:8545}
@@ -91,85 +91,86 @@ services:
     volumes:
       - ./run_nwaku_noRLN.sh:/opt/run_nwaku_noRLN.sh:Z
       - privatekeys-volume:/shared
-    depends_on:
-      - bootstrap
-    networks:
-      - simulation
-  
-  nwaku_store:
-    image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
-    restart: on-failure
-    labels:
-      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-    entrypoint: sh
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
-    command:
-      - '/opt/run_nwaku_store.sh'
-    volumes:
-      - ./run_nwaku_store.sh:/opt/run_nwaku_store.sh:Z
-    depends_on:
-      - postgres
     networks:
       simulation:
-          ipv4_address: 10.2.0.99
+          ipv4_address: 10.2.0.50
+  
+  # nwaku_store:
+  #   image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
+  #   restart: on-failure
+  #   labels:
+  #     com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+  #   ports:
+  #     - 127.0.0.1:60001:60001
+  #   entrypoint: sh
+  #   environment:
+  #     - POSTGRES_USER=${POSTGRES_USER:-postgres}
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+  #   command:
+  #     - '/opt/run_nwaku_store.sh'
+  #   volumes:
+  #     - ./run_nwaku_store.sh:/opt/run_nwaku_store.sh:Z
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     simulation:
+  #         ipv4_address: 10.2.0.99
 
-  rest-traffic:
-    image: alrevuelta/rest-traffic:6992bb5
-    command:
-      --multiple-nodes=http://waku-simulator_nwaku_[1..${NUM_NWAKU_NODES:-5}]:8645
-      --msg-size-kbytes=${MSG_SIZE_KBYTES:-10}
-      --delay-seconds=${TRAFFIC_DELAY_SECONDS:-15}
-    networks:
-      - simulation
-    depends_on:
-      - nwaku
+  # rest-traffic:
+  #   image: alrevuelta/rest-traffic:6992bb5
+  #   command:
+  #     --multiple-nodes=http://waku-simulator_nwaku_[1..${NUM_NWAKU_NODES:-5}]:8645
+  #     --msg-size-kbytes=${MSG_SIZE_KBYTES:-10}
+  #     --delay-seconds=${TRAFFIC_DELAY_SECONDS:-15}
+  #   networks:
+  #     - simulation
+  #   depends_on:
+  #     - nwaku
 
-  postgres:
-    # This service is used when the Waku node has the 'store' protocol enabled
-    # and the store-message-db-url is set to use Postgres
-    image: postgres:15.4-alpine3.18
-    restart: on-failure:5
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
-    volumes:
-      - ./postgres_cfg/postgresql.conf:/etc/postgresql/postgresql.conf:Z
-      - ./postgres_cfg/db.sql:/docker-entrypoint-initdb.d/db.sql:Z
-      - ${PG_DATA_DIR:-./postgresql}:/var/lib/postgresql/data:Z
-    command: postgres -c config_file=/etc/postgresql/postgresql.conf
-    ports:
-      - 127.0.0.1:5432:5432
-    networks:
-      - simulation
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
-      interval: 30s
-      timeout: 60s
-      retries: 5
-      start_period: 80s
+  # postgres:
+  #   # This service is used when the Waku node has the 'store' protocol enabled
+  #   # and the store-message-db-url is set to use Postgres
+  #   image: postgres:15.4-alpine3.18
+  #   restart: on-failure:5
+  #   environment:
+  #     - POSTGRES_USER=${POSTGRES_USER:-postgres}
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+  #   volumes:
+  #     - ./postgres_cfg/postgresql.conf:/etc/postgresql/postgresql.conf:Z
+  #     - ./postgres_cfg/db.sql:/docker-entrypoint-initdb.d/db.sql:Z
+  #     - ${PG_DATA_DIR:-./postgresql}:/var/lib/postgresql/data:Z
+  #   command: postgres -c config_file=/etc/postgresql/postgresql.conf
+  #   ports:
+  #     - 127.0.0.1:5432:5432
+  #   networks:
+  #     - simulation
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+  #     interval: 30s
+  #     timeout: 60s
+  #     retries: 5
+  #     start_period: 80s
 
-  postgres-exporter:
-    # Service aimed to scrape information from Postgres and post it to Prometeus
-    image: quay.io/prometheuscommunity/postgres-exporter:v0.12.0
-    restart: on-failure:5
-    environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
-      - DATA_SOURCE_URI=postgres?sslmode=disable
-      - DATA_SOURCE_USER=${POSTGRES_USER:-postgres}
-      - DATA_SOURCE_PASS=${POSTGRES_PASSWORD:-test123}
-      - PG_EXPORTER_EXTEND_QUERY_PATH=/etc/pgexporter/queries.yml
-    volumes:
-      - ./monitoring/configuration/postgres-exporter.yml:/etc/pgexporter/postgres-exporter.yml:Z
-      - ./monitoring/configuration/pg-exporter-queries.yml:/etc/pgexporter/queries.yml:Z
-    command:
-      # Both the config file and 'DATA_SOURCE_NAME' should contain valid connection info
-      - --config.file=/etc/pgexporter/postgres-exporter.yml
-    depends_on:
-      - postgres
-    networks:
-      - simulation
+  # postgres-exporter:
+  #   # Service aimed to scrape information from Postgres and post it to Prometeus
+  #   image: quay.io/prometheuscommunity/postgres-exporter:v0.12.0
+  #   restart: on-failure:5
+  #   environment:
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+  #     - DATA_SOURCE_URI=postgres?sslmode=disable
+  #     - DATA_SOURCE_USER=${POSTGRES_USER:-postgres}
+  #     - DATA_SOURCE_PASS=${POSTGRES_PASSWORD:-test123}
+  #     - PG_EXPORTER_EXTEND_QUERY_PATH=/etc/pgexporter/queries.yml
+  #   volumes:
+  #     - ./monitoring/configuration/postgres-exporter.yml:/etc/pgexporter/postgres-exporter.yml:Z
+  #     - ./monitoring/configuration/pg-exporter-queries.yml:/etc/pgexporter/queries.yml:Z
+  #   command:
+  #     # Both the config file and 'DATA_SOURCE_NAME' should contain valid connection info
+  #     - --config.file=/etc/pgexporter/postgres-exporter.yml
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     - simulation
 
   prometheus:
     image: prom/prometheus:latest

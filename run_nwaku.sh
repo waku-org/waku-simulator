@@ -159,4 +159,4 @@ exec /usr/bin/wakunode\
       --nat=extip:${IP}\
       --pubsub-topic=/waku/2/rs/66/0\
       --cluster-id=66\
-      --storenode=/ip4/10.2.0.99/tcp/60000/p2p/16Uiu2HAmTVafvweaXrXKmFFkUo4qWYP7wTa2H6PXee8iMyQw4eHm
+      --storenode=/ip4/10.2.0.99/tcp/60001/p2p/16Uiu2HAmTVafvweaXrXKmFFkUo4qWYP7wTa2H6PXee8iMyQw4eHm

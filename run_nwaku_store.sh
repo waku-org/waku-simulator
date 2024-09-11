@@ -37,7 +37,8 @@ exec /usr/bin/wakunode\
       --nat=extip:${IP}\
       --pubsub-topic=/waku/2/rs/66/0\
       --cluster-id=66\
+      --ports-shift=1\
       --nodekey=5978783f8b1a16795032371fff7a526af352d9dca38179af7d71c0122942df25\
       --store=true\
-      --store-message-retention-policy=time:3600\
+      --store-message-retention-policy=time:90000\
       --store-message-db-url="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/postgres"
