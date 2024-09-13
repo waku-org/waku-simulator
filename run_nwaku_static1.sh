@@ -1,24 +1,21 @@
 #!/bin/sh
 
 # Check Linux Distro Version - it can differ depending on the nwaku image used
+# Install bind-tools/dnsutils package used for domain name resolution
 OS=$(cat /etc/os-release)
 if echo $OS | grep -q "Debian"; then
     echo "The operating system is Debian."
     apt update
     apt install -y dnsutils
-    apt install -y jq
 elif echo $OS | grep -q "Alpine"; then
     echo "The operating system is Alpine."
     apk add bind-tools
-    apk add jq
 fi
 
 if test -f .env; then
   echo "Using .env file"  
   . $(pwd)/.env
 fi
-
-IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
 
 # Function to extract IP address from URL, resolve the IP and replace it in the original URL
 get_ip_address_and_replace() {
@@ -45,76 +42,31 @@ else
     fi
 fi
 
-#Function to get the index of the container and use it to retrieve a private key to be used to generate the keystore
-get_private_key(){
-
-  # Read the JSON file
-  json_content=$(cat /shared/anvil-config.txt)
-
-  # Check if json_content has a value
-  if [ -z "$json_content" ]; then
-    echo "Error: Failed to read the JSON file or the file is empty." >&2
-    return 1
-  fi
-
-  # Extract private_keys json array using jq
-  private_keys=$(echo "$json_content" | jq -r '.private_keys[]')
-
-  # get the service specified in the docker-compose.yml 
-  # by a reverse DNS lookup on the IP
-  SERVICE=`dig -x $IP +short | cut -d'_' -f2`
-
-  # the number of replicas is equal to the A records 
-  # associated with the service name
-  COUNT=`dig $SERVICE +short | wc -l`
-
-  # extract the replica number from the same PTR entry
-  INDEX=`dig -x $IP +short | sed 's/.*_\([0-9]*\)\..*/\1/'`
-  if [ $? -ne 0 ] || [ -z "$INDEX" ]; then
-    echo "Error: Failed to determine the replica index from IP." >&2
-    return 1
-  fi
-
-
-  # iterate through list of private keys and get the one corresponding to the container index
-  # we need to iterate because array objects cannot be used in /bin/ash (Alpine) and a separate script would need to be called to use bash
-  current_index=1
-  for key in $private_keys
-  do
-    if [ $current_index -eq $INDEX ]; then
-      pk=$key
-      echo $key
-      break
-    fi
-    current_index=$((current_index+1))
-  done
-
-  if [ -z "$pk" ]; then
-    echo "Error: Failed to get private key for the container with index=$INDEX." >&2
-    return 1
-  fi
-}
-
 if test -f .$RLN_CREDENTIAL_PATH; then
   echo "$RLN_CREDENTIAL_PATH already exists. Use it instead of creating a new one."
 else
-  private_key="$(get_private_key)"
-  echo "Private key: $private_key"
-
-  echo "Generating RLN keystore"
+  echo "Generating RLN keystore..."
   /usr/bin/wakunode generateRlnKeystore \
     --rln-relay-eth-client-address="$RPC_URL" \
-    --rln-relay-eth-private-key=$private_key  \
+    --rln-relay-eth-private-key=$PRIVATE_KEY  \
     --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS \
     --rln-relay-cred-path=$RLN_CREDENTIAL_PATH \
     --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD \
     --rln-relay-user-message-limit=$RLN_RELAY_MSG_LIMIT \
-    --rln-relay-epoch-sec=$RLN_RELAY_EPOCH_SEC \
     --log-level=DEBUG \
     --execute
 fi
 
+IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
+
 echo "I am a nwaku node"
+
+# Get an unique node index based on the container's IP
+FOURTH_OCTET=${IP##*.}
+THIRD_OCTET="${IP%.*}"; THIRD_OCTET="${THIRD_OCTET##*.}"
+NODE_INDEX=$((FOURTH_OCTET + 256 * THIRD_OCTET))
+
+echo "NODE_INDEX $NODE_INDEX"
 
 RETRIES=${RETRIES:=10}
 
@@ -133,10 +85,13 @@ fi
 echo "Using bootstrap node: ${BOOTSTRAP_ENR}"
 exec /usr/bin/wakunode\
       --relay=true\
-      --lightpush=true\
       --max-connections=250\
       --rest=true\
+      --rest-admin=true\
+      --rest-private=true\
       --rest-address=0.0.0.0\
+      --cluster-id=0\
+      --pubsub-topic=/waku/2/default-waku/proto\
       --rest-port=8645\
       --rln-relay=true\
       --rln-relay-dynamic=true\
@@ -155,5 +110,4 @@ exec /usr/bin/wakunode\
       --metrics-server-address=0.0.0.0\
       --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
       --nat=extip:${IP}\
-      --pubsub-topic=/waku/2/rs/66/0\
-      --cluster-id=66
+      --nodekey=5978783f8b1a16795032371fff7a526af352d9dca38179af7d71c0122942df25

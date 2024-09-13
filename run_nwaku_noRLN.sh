@@ -29,8 +29,6 @@ exec /usr/bin/wakunode\
       --lightpush=true\
       --max-connections=250\
       --rest=true\
-      --rest-admin=true\
-      --rest-private=true\
       --rest-address=0.0.0.0\
       --rest-port=8645\
       --dns-discovery=true\
