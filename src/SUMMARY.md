@@ -6,4 +6,5 @@
 - [Connect external full node](./connect-full-node.md)
 - [Connect external spam node](./connect-spam-node.md)
 - [Connect external light node](./connect-light-node.md)
+- [Connect external store node](./connect-store-node.md)
 - [Register memberships](./register-memberships.md)
