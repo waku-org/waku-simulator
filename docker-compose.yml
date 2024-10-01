@@ -12,45 +12,45 @@ services:
 
 # Accounts are hardcoded to 520 with the idea that nwaku nodes use up to 500 for membership registration and the last 20 are used for ad-hoc testing.
 # The account number and private key pairs of the last 20 accounts can be found in the Register memberships section of the Waku-simulator book.
-  foundry:
-    image: ghcr.io/foundry-rs/foundry:nightly-9b73e06e1fe376738b92ae081107620291d50188
-    labels:
-      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-    ports:
-      - 0.0.0.0:8545:8545
-    command:
-      - anvil
-        --port=8545
-        --host=0.0.0.0
-        --accounts=520
-        --allow-origin=*
-        --block-time=3
-        --chain-id=1234
-        --silent
-        --config-out=/shared/anvil-config.txt
-    volumes:
-      - privatekeys-volume:/shared
-    networks:
-      - simulation
+  # foundry:
+  #   image: ghcr.io/foundry-rs/foundry:nightly-9b73e06e1fe376738b92ae081107620291d50188
+  #   labels:
+  #     com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+  #   ports:
+  #     - 0.0.0.0:8545:8545
+  #   command:
+  #     - anvil
+  #       --port=8545
+  #       --host=0.0.0.0
+  #       --accounts=520
+  #       --allow-origin=*
+  #       --block-time=3
+  #       --chain-id=1234
+  #       --silent
+  #       --config-out=/shared/anvil-config.txt
+  #   volumes:
+  #     - privatekeys-volume:/shared
+  #   networks:
+  #     - simulation
 
-  contract-repo-deployer:
-    image: node:hydrogen-bullseye
-    labels:
-      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-    environment:
-      - PRIVATE_KEY=${PRIVATE_KEY}
-      - RPC_URL=${RPC_URL:-http://foundry:8545}
-      - ETH_FROM=${ETH_FROM}
-      - MAX_MESSAGE_LIMIT=${MAX_MESSAGE_LIMIT:-20}
-    entrypoint: sh
-    command:
-      - '/opt/deploy_rln_contract.sh'
-    volumes:
-      - ./deploy_rln_contract.sh:/opt/deploy_rln_contract.sh
-    depends_on:
-      - foundry
-    networks:
-      - simulation
+  # contract-repo-deployer:
+  #   image: node:hydrogen-bullseye
+  #   labels:
+  #     com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+  #   environment:
+  #     - PRIVATE_KEY=${PRIVATE_KEY}
+  #     - RPC_URL=${RPC_URL:-http://foundry:8545}
+  #     - ETH_FROM=${ETH_FROM}
+  #     - MAX_MESSAGE_LIMIT=${MAX_MESSAGE_LIMIT:-20}
+  #   entrypoint: sh
+  #   command:
+  #     - '/opt/deploy_rln_contract.sh'
+  #   volumes:
+  #     - ./deploy_rln_contract.sh:/opt/deploy_rln_contract.sh
+  #   depends_on:
+  #     - foundry
+  #   networks:
+  #     - simulation
 
   bootstrap:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
@@ -79,57 +79,67 @@ services:
     deploy:
       replicas: ${NUM_NWAKU_NODES:-5}
     entrypoint: sh
-    environment:
-      - RPC_URL=${RPC_URL:-http://foundry:8545}
-      - RLN_CONTRACT_ADDRESS=0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
-      - RLN_CREDENTIAL_PATH=/keystore.json
-      - RLN_CREDENTIAL_PASSWORD=passw123
-      - RLN_RELAY_MSG_LIMIT=${RLN_RELAY_MSG_LIMIT:-10}
-      - RLN_RELAY_EPOCH_SEC=${RLN_RELAY_EPOCH_SEC:-60}
     command:
-      - '/opt/run_nwaku.sh'
+      - '/opt/run_nwaku_noRLN.sh'
     volumes:
-      - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
-      - privatekeys-volume:/shared
+      - ./run_nwaku_noRLN.sh:/opt/run_nwaku_noRLN.sh:Z
     depends_on:
-      contract-repo-deployer:
-        condition: service_completed_successfully
+      - bootstrap
     networks:
       - simulation
   
-  # nwaku_store:
-  #   image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
-  #   restart: on-failure
-  #   labels:
-  #     com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-  #   ports:
-  #     - 127.0.0.1:60001:60001
-  #   entrypoint: sh
-  #   environment:
-  #     - POSTGRES_USER=${POSTGRES_USER:-postgres}
-  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
-  #   command:
-  #     - '/opt/run_nwaku_store.sh'
-  #   volumes:
-  #     - ./run_nwaku_store.sh:/opt/run_nwaku_store.sh:Z
-  #   depends_on:
-  #     - postgres
-  #   networks:
-  #     simulation:
-  #         ipv4_address: 10.2.0.99
-
-  rest-traffic:
-    image: alrevuelta/rest-traffic:6992bb5
+  nwaku_store_pg1:
+    image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
+    restart: on-failure
+    labels:
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+    entrypoint: sh
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
     command:
-      --multiple-nodes=http://waku-simulator_nwaku_[1..${NUM_NWAKU_NODES:-5}]:8645
-      --msg-size-kbytes=${MSG_SIZE_KBYTES:-10}
-      --delay-seconds=${TRAFFIC_DELAY_SECONDS:-15}
+      - '/opt/run_nwaku_store_postgres1.sh'
+    volumes:
+      - ./run_nwaku_store_postgres1.sh:/opt/run_nwaku_store_postgres1.sh:Z
+    depends_on:
+      postgres1: 
+        condition: service_healthy
     networks:
       - simulation
-    depends_on:
-      - nwaku
 
-  postgres:
+  nwaku_store_pg2:
+    image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
+    restart: on-failure
+    labels:
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+    entrypoint: sh
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+    command:
+      - '/opt/run_nwaku_store_postgres2.sh'
+    volumes:
+      - ./run_nwaku_store_postgres2.sh:/opt/run_nwaku_store_postgres2.sh:Z
+    depends_on:
+      postgres2: 
+        condition: service_healthy
+    networks:
+      - simulation
+
+  # rest-traffic:
+  #   image: alrevuelta/rest-traffic:6992bb5
+  #   command:
+#       --content-topic=
+#       --pubsub-topic="/waku/2/rs/16/32"
+  #     --multiple-nodes=http://waku-simulator_nwaku_[1..${NUM_NWAKU_NODES:-5}]:8645
+  #     --msg-size-kbytes=${MSG_SIZE_KBYTES:-10}
+  #     --delay-seconds=${TRAFFIC_DELAY_SECONDS:-15}
+  #   networks:
+  #     - simulation
+  #   depends_on:
+  #     - nwaku
+
+  postgres1:
     # This service is used when the Waku node has the 'store' protocol enabled
     # and the store-message-db-url is set to use Postgres
     image: postgres:15.4-alpine3.18
@@ -140,7 +150,7 @@ services:
     volumes:
       - ./postgres_cfg/postgresql.conf:/etc/postgresql/postgresql.conf:Z
       - ./postgres_cfg/db.sql:/docker-entrypoint-initdb.d/db.sql:Z
-      - ${PG_DATA_DIR:-./postgresql}:/var/lib/postgresql/data:Z
+      - ${PG_DATA_DIR:-./postgresql1}:/var/lib/postgresql/data:Z
     command: postgres -c config_file=/etc/postgresql/postgresql.conf
     ports:
       - 127.0.0.1:5432:5432
@@ -153,26 +163,50 @@ services:
       retries: 5
       start_period: 80s
 
-  postgres-exporter:
-    # Service aimed to scrape information from Postgres and post it to Prometeus
-    image: quay.io/prometheuscommunity/postgres-exporter:v0.12.0
+  postgres2:
+    # This service is used when the Waku node has the 'store' protocol enabled
+    # and the store-message-db-url is set to use Postgres
+    image: postgres:15.4-alpine3.18
     restart: on-failure:5
     environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
-      - DATA_SOURCE_URI=postgres?sslmode=disable
-      - DATA_SOURCE_USER=${POSTGRES_USER:-postgres}
-      - DATA_SOURCE_PASS=${POSTGRES_PASSWORD:-test123}
-      - PG_EXPORTER_EXTEND_QUERY_PATH=/etc/pgexporter/queries.yml
     volumes:
-      - ./monitoring/configuration/postgres-exporter.yml:/etc/pgexporter/postgres-exporter.yml:Z
-      - ./monitoring/configuration/pg-exporter-queries.yml:/etc/pgexporter/queries.yml:Z
-    command:
-      # Both the config file and 'DATA_SOURCE_NAME' should contain valid connection info
-      - --config.file=/etc/pgexporter/postgres-exporter.yml
-    depends_on:
-      - postgres
+      - ./postgres_cfg/postgresql.conf:/etc/postgresql/postgresql.conf:Z
+      - ./postgres_cfg/db.sql:/docker-entrypoint-initdb.d/db.sql:Z
+      - ${PG_DATA_DIR:-./postgresql2}:/var/lib/postgresql/data:Z
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    ports:
+      - 127.0.0.1:5433:5432
     networks:
       - simulation
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+
+  # postgres-exporter:
+  #   # Service aimed to scrape information from Postgres and post it to Prometeus
+  #   image: quay.io/prometheuscommunity/postgres-exporter:v0.12.0
+  #   restart: on-failure:5
+  #   environment:
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+  #     - DATA_SOURCE_URI=postgres?sslmode=disable
+  #     - DATA_SOURCE_USER=${POSTGRES_USER:-postgres}
+  #     - DATA_SOURCE_PASS=${POSTGRES_PASSWORD:-test123}
+  #     - PG_EXPORTER_EXTEND_QUERY_PATH=/etc/pgexporter/queries.yml
+  #   volumes:
+  #     - ./monitoring/configuration/postgres-exporter.yml:/etc/pgexporter/postgres-exporter.yml:Z
+  #     - ./monitoring/configuration/pg-exporter-queries.yml:/etc/pgexporter/queries.yml:Z
+  #   command:
+  #     # Both the config file and 'DATA_SOURCE_NAME' should contain valid connection info
+  #     - --config.file=/etc/pgexporter/postgres-exporter.yml
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     - simulation
 
   prometheus:
     image: prom/prometheus:latest
@@ -233,71 +267,71 @@ services:
     networks:
       - simulation
 
-  api:
-    image: web3labs/epirus-free-api:latest
-    ports:
-      - 127.0.0.1:8090:8090
-    environment:
-      - NODE_ENDPOINT=${RPC_URL:-http://foundry:8545}
-      - MONGO_CLIENT_URI=mongodb://mongodb:27017
-      - REINDEX_ENDPOINT=http://ingestion/reindex/
-      - MONGO_DB_NAME=epirus
-      - MONGO_CREATE_INDICES=true
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-    depends_on:
-      - redis
-      - mongodb
-      - foundry
-    networks:
-      - simulation
+  # api:
+  #   image: web3labs/epirus-free-api:latest
+  #   ports:
+  #     - 127.0.0.1:8090:8090
+  #   environment:
+  #     - NODE_ENDPOINT=${RPC_URL:-http://foundry:8545}
+  #     - MONGO_CLIENT_URI=mongodb://mongodb:27017
+  #     - REINDEX_ENDPOINT=http://ingestion/reindex/
+  #     - MONGO_DB_NAME=epirus
+  #     - MONGO_CREATE_INDICES=true
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #   depends_on:
+  #     - redis
+  #     - mongodb
+  #     - foundry
+  #   networks:
+  #     - simulation
 
-  mongodb:
-    image: mongo:5.0.8
-    environment:
-      - COMPOSE_HTTP_TIMEOUT=900
-      - DOCKER_CLIENT_TIMEOUT=900
-    entrypoint: mongod --bind_ip "0.0.0.0"
-    networks:
-      - simulation
+  # mongodb:
+  #   image: mongo:5.0.8
+  #   environment:
+  #     - COMPOSE_HTTP_TIMEOUT=900
+  #     - DOCKER_CLIENT_TIMEOUT=900
+  #   entrypoint: mongod --bind_ip "0.0.0.0"
+  #   networks:
+  #     - simulation
 
-  web:
-    image: web3labs/epirus-free-web:latest
-    environment:
-      - API_URL=${EPIRUS_WEB_API_URL:-/api}
-      - WS_API_URL=${EPIRUS_WEB_WS_API_URL:-ws://localhost:8090}
-      - DISPLAY_NETWORK_TAB=disabled
-    depends_on:
-      - api
-    networks:
-      - simulation
+  # web:
+  #   image: web3labs/epirus-free-web:latest
+  #   environment:
+  #     - API_URL=${EPIRUS_WEB_API_URL:-/api}
+  #     - WS_API_URL=${EPIRUS_WEB_WS_API_URL:-ws://localhost:8090}
+  #     - DISPLAY_NETWORK_TAB=disabled
+  #   depends_on:
+  #     - api
+  #   networks:
+  #     - simulation
 
-  ingestion:
-    image: web3labs/epirus-free-ingestion:latest
-    environment:
-      - NODE_ENDPOINT=${RPC_URL:-http://foundry:8545}
-      - MONGO_CLIENT_URI=mongodb://mongodb:27017
-      - MONGO_DB_NAME=epirus
-      - LIST_OF_METRICS_TO_CALCULATE_PER_MINUTE=hourly,daily,monthly,yearly
-    depends_on:
-      - mongodb
-      - redis
-      - foundry
-    networks:
-      - simulation
+  # ingestion:
+  #   image: web3labs/epirus-free-ingestion:latest
+  #   environment:
+  #     - NODE_ENDPOINT=${RPC_URL:-http://foundry:8545}
+  #     - MONGO_CLIENT_URI=mongodb://mongodb:27017
+  #     - MONGO_DB_NAME=epirus
+  #     - LIST_OF_METRICS_TO_CALCULATE_PER_MINUTE=hourly,daily,monthly,yearly
+  #   depends_on:
+  #     - mongodb
+  #     - redis
+  #     - foundry
+  #   networks:
+  #     - simulation
 
-  nginx:
-    image: nginx:latest
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./5xx.html:/www/error_pages/5xx.html
-    ports:
-      - 0.0.0.0:3000:80
-    depends_on:
-      - api
-      - web
-    networks:
-      - simulation
+  # nginx:
+  #   image: nginx:latest
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #     - ./5xx.html:/www/error_pages/5xx.html
+  #   ports:
+  #     - 0.0.0.0:3000:80
+  #   depends_on:
+  #     - api
+  #     - web
+  #   networks:
+  #     - simulation
 
 volumes:
   privatekeys-volume:

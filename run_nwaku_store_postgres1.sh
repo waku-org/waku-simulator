@@ -1,13 +1,8 @@
 #!/bin/sh
 
-if test -f .env; then
-  echo "Using .env file"  
-  . $(pwd)/.env
-fi
-
 IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
 
-echo "I am a nwaku node - no RLN"
+echo "I am a nwaku store node"
 
 RETRIES=${RETRIES:=10}
 
@@ -26,7 +21,7 @@ fi
 echo "Using bootstrap node: ${BOOTSTRAP_ENR}"
 exec /usr/bin/wakunode\
       --relay=true\
-      --max-connections=250\
+      --max-connections=50\
       --rest=true\
       --rest-address=0.0.0.0\
       --rest-port=8645\
@@ -37,6 +32,13 @@ exec /usr/bin/wakunode\
       --metrics-server=True\
       --metrics-server-address=0.0.0.0\
       --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
-      --nat=extip:${IP}\
       --pubsub-topic=/waku/2/rs/16/32\
-      --cluster-id=16
+      --cluster-id=16\
+      --ports-shift=1\
+      --store=true\
+      --store-message-retention-policy=size:1GB\
+      --store-message-db-url="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres1:5432/postgres"\
+      --store-sync=true\
+      --store-sync-interval=120\
+      --store-sync-range=3600\
+      --nodekey=5978783f8b1a16795032371fff7a526af352d9dca38179af7d71c0122942daa1
