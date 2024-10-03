@@ -93,6 +93,8 @@ services:
     restart: on-failure
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+    ports:
+      - 127.0.0.1:60001:60001
     entrypoint: sh
     environment:
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
@@ -105,13 +107,16 @@ services:
       postgres1: 
         condition: service_healthy
     networks:
-      - simulation
+      simulation: 
+       ipv4_address: 10.2.0.100
 
   nwaku_store_pg2:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
     restart: on-failure
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+    ports:
+      - 127.0.0.1:60002:60002
     entrypoint: sh
     environment:
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
@@ -121,10 +126,13 @@ services:
     volumes:
       - ./run_nwaku_store_postgres2.sh:/opt/run_nwaku_store_postgres2.sh:Z
     depends_on:
-      postgres2: 
+      nwaku_store_pg1:
+        condition: service_started
+      postgres2:
         condition: service_healthy
     networks:
-      - simulation
+      simulation: 
+       ipv4_address: 10.2.0.101
 
   # rest-traffic:
   #   image: alrevuelta/rest-traffic:6992bb5
