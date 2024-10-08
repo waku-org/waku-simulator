@@ -39,6 +39,6 @@ exec /usr/bin/wakunode\
       --store-message-retention-policy=size:20MB\
       --store-message-db-url="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres1:5432/postgres"\
       --store-sync=true\
-      --store-sync-interval=120\
+      --store-sync-interval=200\
       --store-sync-range=3600\
       --nodekey=5978783f8b1a16795032371fff7a526af352d9dca38179af7d71c0122942daa1

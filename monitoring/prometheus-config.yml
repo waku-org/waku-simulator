@@ -17,8 +17,8 @@ scrape_configs:
     static_configs:
     - targets:
       - bootstrap:8008
-      - waku-simulator_nwaku_store_pg1_1:8008
-      - waku-simulator_nwaku_store_pg2_1:8008
+      - waku-simulator_nwaku_store_pg1_1:8009
+      - waku-simulator_nwaku_store_pg2_1:8010
       - waku-simulator_nwaku_1:8008
       - waku-simulator_nwaku_2:8008
       - waku-simulator_nwaku_3:8008

@@ -195,26 +195,27 @@ services:
       retries: 5
       start_period: 80s
 
-  # postgres-exporter:
-  #   # Service aimed to scrape information from Postgres and post it to Prometeus
-  #   image: quay.io/prometheuscommunity/postgres-exporter:v0.12.0
-  #   restart: on-failure:5
-  #   environment:
-  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
-  #     - DATA_SOURCE_URI=postgres?sslmode=disable
-  #     - DATA_SOURCE_USER=${POSTGRES_USER:-postgres}
-  #     - DATA_SOURCE_PASS=${POSTGRES_PASSWORD:-test123}
-  #     - PG_EXPORTER_EXTEND_QUERY_PATH=/etc/pgexporter/queries.yml
-  #   volumes:
-  #     - ./monitoring/configuration/postgres-exporter.yml:/etc/pgexporter/postgres-exporter.yml:Z
-  #     - ./monitoring/configuration/pg-exporter-queries.yml:/etc/pgexporter/queries.yml:Z
-  #   command:
-  #     # Both the config file and 'DATA_SOURCE_NAME' should contain valid connection info
-  #     - --config.file=/etc/pgexporter/postgres-exporter.yml
-  #   depends_on:
-  #     - postgres
-  #   networks:
-  #     - simulation
+  postgres-exporter:
+    # Service aimed to scrape information from Postgres and post it to Prometeus
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.12.0
+    restart: on-failure:5
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+      - DATA_SOURCE_URI=postgres1:5432/postgres?sslmode=disable
+      - DATA_SOURCE_USER=${POSTGRES_USER:-postgres}
+      - DATA_SOURCE_PASS=${POSTGRES_PASSWORD:-test123}
+      - PG_EXPORTER_EXTEND_QUERY_PATH=/etc/pgexporter/queries.yml
+    volumes:
+      - ./monitoring/configuration/postgres-exporter.yml:/etc/pgexporter/postgres-exporter.yml:Z
+      - ./monitoring/configuration/pg-exporter-queries.yml:/etc/pgexporter/queries.yml:Z
+    command:
+      # Both the config file and 'DATA_SOURCE_NAME' should contain valid connection info
+      - --config.file=/etc/pgexporter/postgres-exporter.yml
+    depends_on:
+      postgres1:
+        condition: service_healthy
+    networks:
+      - simulation
 
   prometheus:
     image: prom/prometheus:latest

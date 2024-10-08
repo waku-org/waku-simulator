@@ -28,7 +28,7 @@ exec /usr/bin/wakunode\
       --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
-      --log-level=TRACE\
+      --log-level=DEBUG\
       --metrics-server=True\
       --metrics-server-address=0.0.0.0\
       --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
@@ -37,9 +37,9 @@ exec /usr/bin/wakunode\
       --ports-shift=2\
       --store=true\
       --store-message-retention-policy=size:40MB\
+      --nat=extip:${IP}\
       --store-message-db-url="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres2:5432/postgres"\
       --store-sync=true\
-      --store-sync-interval=80\
+      --store-sync-interval=60\
       --store-sync-range=3600\
-      --staticnode=/ip4/10.2.0.100/tcp/60001/p2p/16Uiu2HAm3iFcvPDcYge7JFev3ZRdsiUoYFwxtzGZW1BSoV4b4Gc6\
       --nodekey=5978783f8b1a16795032371fff7a526af352d9dca38179af7d71c0122942daa3
