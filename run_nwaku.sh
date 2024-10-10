@@ -45,7 +45,7 @@ else
     fi
 fi
 
-#Function to get the index of the container and use it to retrieve a private key to be used to generate the keystore
+#Function to get the index of the container and use it to retrieve a private key to be used to generate the keystore, allowing for either dash or underscore container name format (for docker-compose backward compatibility)
 get_private_key(){
 
   # Read the JSON file
@@ -60,16 +60,9 @@ get_private_key(){
   # Extract private_keys json array using jq
   private_keys=$(echo "$json_content" | jq -r '.private_keys[]')
 
-  # get the service specified in the docker-compose.yml 
-  # by a reverse DNS lookup on the IP
-  SERVICE=`dig -x $IP +short | cut -d'_' -f2`
+  CNTR=`dig -x $IP +short | cut -d'.' -f1`
+  INDEX=`echo $CNTR | sed 's/.*[-_]\([0-9]*\)/\1/'`
 
-  # the number of replicas is equal to the A records 
-  # associated with the service name
-  COUNT=`dig $SERVICE +short | wc -l`
-
-  # extract the replica number from the same PTR entry
-  INDEX=`dig -x $IP +short | sed 's/.*_\([0-9]*\)\..*/\1/'`
   if [ $? -ne 0 ] || [ -z "$INDEX" ]; then
     echo "Error: Failed to determine the replica index from IP." >&2
     return 1

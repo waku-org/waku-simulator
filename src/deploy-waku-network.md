@@ -36,14 +36,14 @@ After a couple of minutes, everything should be running at:
 For greater observability, one can access each node logs as follows:
 
 ```bash
-docker logs waku-simulator_nwaku_1
-docker logs waku-simulator_nwaku_2
+docker logs waku-simulator-nwaku-1
+docker logs waku-simulator-nwaku-2
 ```
 
 Or if you want to follow the logs
 
 ```bash
-docker logs waku-simulator_nwaku_1 --follow
+docker logs waku-simulator-nwaku-1 --follow
 ```
 
 Once the network of nwaku nodes is up and running we can use it to perform different tests, connecting other nodes that we fully control with some specific characteristics. This ranges from connecting spammer nodes, light clients, and in the future unsynced nodes, etc.
