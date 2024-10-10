@@ -8,7 +8,7 @@ docker run -it --network waku-simulator_simulation alrevuelta/rest-traffic:d9364
 --delay-seconds=10 \
 --msg-size-kbytes=5 \
 --pubsub-topic=/waku/2/rs/66/0 \
---multiple-nodes="http://waku-simulator_nwaku_[1..5]:8645"
+--multiple-nodes="http://waku-simulator-nwaku-[1..5]:8645"
 ```
 
 Note that the REST API doesn’t allow to publish messages exceeding the rate limit, so this tool can’t be used to test beyond the rate limits.
