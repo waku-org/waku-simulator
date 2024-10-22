@@ -20,7 +20,8 @@ fi
 
 echo "Using bootstrap node: ${BOOTSTRAP_ENR}"
 exec /usr/bin/wakunode\
-      --relay=true\
+      --relay=false\
+      --lightpush=true\
       --max-connections=50\
       --rest=true\
       --rest-address=0.0.0.0\
@@ -28,18 +29,19 @@ exec /usr/bin/wakunode\
       --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
-      --log-level=DEBUG\
+      --log-level=TRACE\
       --metrics-server=True\
       --metrics-server-address=0.0.0.0\
       --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
       --pubsub-topic=/waku/2/rs/16/32\
       --cluster-id=16\
-      --ports-shift=2\
+      --ports-shift=0\
       --store=true\
-      --store-message-retention-policy=size:40MB\
+      --store-message-retention-policy=size:1GB\
       --nat=extip:${IP}\
       --store-message-db-url="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres2:5432/postgres"\
       --store-sync=true\
-      --store-sync-interval=60\
+      --store-sync-interval=300\
       --store-sync-range=3600\
+      --store-sync-relay-jitter=0\
       --nodekey=5978783f8b1a16795032371fff7a526af352d9dca38179af7d71c0122942daa3

@@ -93,12 +93,14 @@ services:
     restart: on-failure
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-    ports:
-      - 127.0.0.1:60001:60001
+    # ports:
+    #   - 127.0.0.1:60001:60001
     entrypoint: sh
     environment:
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+      - WAKU_SYNC_INTERVAL=${WAKU_SYNC_INTERVAL:-300}
+      - WAKU_SYNC_RANGE=${WAKU_SYNC_RANGE:-3600}
     command:
       - '/opt/run_nwaku_store_postgres1.sh'
     volumes:
@@ -115,12 +117,14 @@ services:
     restart: on-failure
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-    ports:
-      - 127.0.0.1:60002:60002
+    # ports:
+    #   - 127.0.0.1:60002:60002
     entrypoint: sh
     environment:
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+      - WAKU_SYNC_INTERVAL=${WAKU_SYNC_INTERVAL:-300}
+      - WAKU_SYNC_RANGE=${WAKU_SYNC_RANGE:-3600}
     command:
       - '/opt/run_nwaku_store_postgres2.sh'
     volumes:
@@ -133,6 +137,30 @@ services:
     networks:
       simulation: 
        ipv4_address: 10.2.0.101
+
+  # nwaku_store_pg3:
+  #   image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
+  #   restart: on-failure
+  #   labels:
+  #     com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+  #   ports:
+  #     - 127.0.0.1:60003:60003
+  #   entrypoint: sh
+  #   environment:
+  #     - POSTGRES_USER=${POSTGRES_USER:-postgres}
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+  #   command:
+  #     - '/opt/run_nwaku_store_postgres3.sh'
+  #   volumes:
+  #     - ./run_nwaku_store_postgres3.sh:/opt/run_nwaku_store_postgres3.sh:Z
+  #   depends_on:
+  #     nwaku_store_pg1:
+  #       condition: service_started
+  #     postgres3:
+  #       condition: service_healthy
+  #   networks:
+  #     simulation: 
+  #      ipv4_address: 10.2.0.102
 
   # rest-traffic:
   #   image: alrevuelta/rest-traffic:6992bb5
@@ -161,7 +189,7 @@ services:
       - ${PG_DATA_DIR:-./postgresql1}:/var/lib/postgresql/data:Z
     command: postgres -c config_file=/etc/postgresql/postgresql.conf
     ports:
-      - 127.0.0.1:5432:5432
+      - 0.0.0.0:5432:5432
     networks:
       - simulation
     healthcheck:
@@ -185,7 +213,31 @@ services:
       - ${PG_DATA_DIR:-./postgresql2}:/var/lib/postgresql/data:Z
     command: postgres -c config_file=/etc/postgresql/postgresql.conf
     ports:
-      - 127.0.0.1:5433:5432
+      - 0.0.0.0:5433:5432
+    networks:
+      - simulation
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+
+  postgres3:
+    # This service is used when the Waku node has the 'store' protocol enabled
+    # and the store-message-db-url is set to use Postgres
+    image: postgres:15.4-alpine3.18
+    restart: on-failure:5
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+    volumes:
+      - ./postgres_cfg/postgresql.conf:/etc/postgresql/postgresql.conf:Z
+      - ./postgres_cfg/db.sql:/docker-entrypoint-initdb.d/db.sql:Z
+      - ${PG_DATA_DIR:-./postgresql3}:/var/lib/postgresql/data:Z
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    ports:
+      - 0.0.0.0:5434:5432
     networks:
       - simulation
     healthcheck:
