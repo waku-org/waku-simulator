@@ -14,6 +14,7 @@ if [ ! -d "waku-rlnv2-contract" ]; then
 fi
 
 cd /waku-rlnv2-contract
+git checkout $RLN_CONTRACT_REPO_COMMIT
 
 #3. Replace the hardcoded MAX_MESSAGE_LIMIT
 sed -i "s/\b100\b/${MAX_MESSAGE_LIMIT}/g" script/Deploy.s.sol
