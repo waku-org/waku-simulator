@@ -15,6 +15,14 @@ fi
 
 cd /waku-rlnv2-contract
 git checkout $RLN_CONTRACT_REPO_COMMIT
+# Verify the current commit
+CURRENT_COMMIT=$(git rev-parse HEAD)
+if [ "$CURRENT_COMMIT" = "$RLN_CONTRACT_REPO_COMMIT" ]; then
+    echo "You are on the expected branch: $CURRENT_COMMIT"
+else
+    echo "Warning: You are on branch $CURRENT_COMMIT, but expected $RLN_CONTRACT_REPO_COMMIT"
+    exit 1
+fi
 
 #3. Replace the hardcoded MAX_MESSAGE_LIMIT
 sed -i "s/\b100\b/${MAX_MESSAGE_LIMIT}/g" script/Deploy.s.sol
