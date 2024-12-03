@@ -20,9 +20,11 @@ scrape_configs:
       - waku-simulator_nwaku_store_pg1_1:8008
       - waku-simulator_nwaku_store_pg2_1:8008
       - waku-simulator_nwaku_store_pg3_1:8011
+      - waku-simulator_nwaku_store_pg4_1:8011
       - waku-simulator_postgres1_1:8008
       - waku-simulator_postgres2_1:8008
       - waku-simulator_postgres3_1:8008
+      - waku-simulator_postgres4_1:8008
       - waku-simulator_nwaku_1:8008
       - waku-simulator_nwaku_2:8008
       - waku-simulator_nwaku_3:8008

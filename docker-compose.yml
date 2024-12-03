@@ -12,45 +12,45 @@ services:
 
 # Accounts are hardcoded to 520 with the idea that nwaku nodes use up to 500 for membership registration and the last 20 are used for ad-hoc testing.
 # The account number and private key pairs of the last 20 accounts can be found in the Register memberships section of the Waku-simulator book.
-  # foundry:
-  #   image: ghcr.io/foundry-rs/foundry:nightly-9b73e06e1fe376738b92ae081107620291d50188
-  #   labels:
-  #     com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-  #   ports:
-  #     - 0.0.0.0:8545:8545
-  #   command:
-  #     - anvil
-  #       --port=8545
-  #       --host=0.0.0.0
-  #       --accounts=520
-  #       --allow-origin=*
-  #       --block-time=3
-  #       --chain-id=1234
-  #       --silent
-  #       --config-out=/shared/anvil-config.txt
-  #   volumes:
-  #     - privatekeys-volume:/shared
-  #   networks:
-  #     - simulation
+  foundry:
+    image: ghcr.io/foundry-rs/foundry:nightly-9b73e06e1fe376738b92ae081107620291d50188
+    labels:
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+    ports:
+      - 0.0.0.0:8545:8545
+    command:
+      - anvil
+        --port=8545
+        --host=0.0.0.0
+        --accounts=520
+        --allow-origin=*
+        --block-time=3
+        --chain-id=1234
+        --silent
+        --config-out=/shared/anvil-config.txt
+    volumes:
+      - privatekeys-volume:/shared
+    networks:
+      - simulation
 
-  # contract-repo-deployer:
-  #   image: node:hydrogen-bullseye
-  #   labels:
-  #     com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-  #   environment:
-  #     - PRIVATE_KEY=${PRIVATE_KEY}
-  #     - RPC_URL=${RPC_URL:-http://foundry:8545}
-  #     - ETH_FROM=${ETH_FROM}
-  #     - MAX_MESSAGE_LIMIT=${MAX_MESSAGE_LIMIT:-20}
-  #   entrypoint: sh
-  #   command:
-  #     - '/opt/deploy_rln_contract.sh'
-  #   volumes:
-  #     - ./deploy_rln_contract.sh:/opt/deploy_rln_contract.sh
-  #   depends_on:
-  #     - foundry
-  #   networks:
-  #     - simulation
+  contract-repo-deployer:
+    image: node:hydrogen-bullseye
+    labels:
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+    environment:
+      - PRIVATE_KEY=${PRIVATE_KEY}
+      - RPC_URL=${RPC_URL:-http://foundry:8545}
+      - ETH_FROM=${ETH_FROM}
+      - MAX_MESSAGE_LIMIT=${MAX_MESSAGE_LIMIT:-20}
+    entrypoint: sh
+    command:
+      - '/opt/deploy_rln_contract.sh'
+    volumes:
+      - ./deploy_rln_contract.sh:/opt/deploy_rln_contract.sh
+    depends_on:
+      - foundry
+    networks:
+      - simulation
 
   bootstrap:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
@@ -80,77 +80,72 @@ services:
       replicas: ${NUM_NWAKU_NODES:-5}
     entrypoint: sh
     command:
-      - '/opt/run_nwaku_noRLN.sh'
+      - '/opt/run_nwaku.sh'
     volumes:
-      - ./run_nwaku_noRLN.sh:/opt/run_nwaku_noRLN.sh:Z
+      - ./run_nwaku_noRLN.sh:/opt/run_nwaku.sh:Z
     depends_on:
       - bootstrap
     networks:
       - simulation
   
-  nwaku_store_pg1:
-    image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
-    restart: on-failure
-    labels:
-      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-    # ports:
-    #   - 127.0.0.1:60001:60001
-    entrypoint: sh
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
-      - WAKU_SYNC_INTERVAL=${WAKU_SYNC_INTERVAL:-300}
-      - WAKU_SYNC_RANGE=${WAKU_SYNC_RANGE:-3600}
-    command:
-      - '/opt/run_nwaku_store_postgres1.sh'
-    volumes:
-      - ./run_nwaku_store_postgres1.sh:/opt/run_nwaku_store_postgres1.sh:Z
-    depends_on:
-      postgres1: 
-        condition: service_healthy
-    networks:
-      simulation: 
-       ipv4_address: 10.2.0.100
+  # nwaku_store_pg1:
+  #   image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
+  #   restart: on-failure
+  #   labels:
+  #     com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+  #   entrypoint: sh
+  #   environment:
+  #     - POSTGRES_USER=${POSTGRES_USER:-postgres}
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+  #     - WAKU_SYNC_INTERVAL=${WAKU_SYNC_INTERVAL:-300}
+  #     - WAKU_SYNC_RANGE=${WAKU_SYNC_RANGE:-3600}
+  #   command:
+  #     - '/opt/run_nwaku_store_postgres1.sh'
+  #   volumes:
+  #     - ./run_nwaku_store_postgres1.sh:/opt/run_nwaku_store_postgres1.sh:Z
+  #   depends_on:
+  #     postgres1: 
+  #       condition: service_healthy
+  #   networks:
+  #     simulation: 
+  #      ipv4_address: 10.2.0.100
+  
 
-  nwaku_store_pg2:
-    image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
-    restart: on-failure
-    labels:
-      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-    # ports:
-    #   - 127.0.0.1:60002:60002
-    entrypoint: sh
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
-      - WAKU_SYNC_INTERVAL=${WAKU_SYNC_INTERVAL:-300}
-      - WAKU_SYNC_RANGE=${WAKU_SYNC_RANGE:-3600}
-    command:
-      - '/opt/run_nwaku_store_postgres2.sh'
-    volumes:
-      - ./run_nwaku_store_postgres2.sh:/opt/run_nwaku_store_postgres2.sh:Z
-    depends_on:
-      nwaku_store_pg1:
-        condition: service_started
-      postgres2:
-        condition: service_healthy
-    networks:
-      simulation: 
-       ipv4_address: 10.2.0.101
+  # nwaku_store_pg2:
+  #   image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
+  #   restart: on-failure
+  #   labels:
+  #     com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+  #   entrypoint: sh
+  #   environment:
+  #     - POSTGRES_USER=${POSTGRES_USER:-postgres}
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+  #     - WAKU_SYNC_INTERVAL=${WAKU_SYNC_INTERVAL:-300}
+  #     - WAKU_SYNC_RANGE=${WAKU_SYNC_RANGE:-3600}
+  #   command:  ["-c", "sleep 30 && /opt/run_nwaku_store_postgres2.sh"]
+  #   volumes:
+  #     - ./run_nwaku_store_postgres2.sh:/opt/run_nwaku_store_postgres2.sh:Z
+  #   depends_on:
+  #     nwaku_store_pg1:
+  #       condition: service_started
+  #     postgres2:
+  #       condition: service_healthy
+  #   networks:
+  #     simulation: 
+  #      ipv4_address: 10.2.0.101
 
   # nwaku_store_pg3:
   #   image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
   #   restart: on-failure
   #   labels:
   #     com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-  #   ports:
-  #     - 127.0.0.1:60003:60003
   #   entrypoint: sh
   #   environment:
   #     - POSTGRES_USER=${POSTGRES_USER:-postgres}
   #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
-  #   command:
-  #     - '/opt/run_nwaku_store_postgres3.sh'
+  #     - WAKU_SYNC_INTERVAL=${WAKU_SYNC_INTERVAL:-300}
+  #     - WAKU_SYNC_RANGE=${WAKU_SYNC_RANGE:-3600}
+  #   command:  ["-c", "sleep 60 && /opt/run_nwaku_store_postgres3.sh"]
   #   volumes:
   #     - ./run_nwaku_store_postgres3.sh:/opt/run_nwaku_store_postgres3.sh:Z
   #   depends_on:
@@ -161,6 +156,29 @@ services:
   #   networks:
   #     simulation: 
   #      ipv4_address: 10.2.0.102
+  
+  # nwaku_store_pg4:
+  #   image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
+  #   restart: on-failure
+  #   labels:
+  #     com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+  #   entrypoint: sh
+  #   environment:
+  #     - POSTGRES_USER=${POSTGRES_USER:-postgres}
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+  #     - WAKU_SYNC_INTERVAL=${WAKU_SYNC_INTERVAL:-300}
+  #     - WAKU_SYNC_RANGE=${WAKU_SYNC_RANGE:-3600}
+  #   command:  ["-c", "sleep 85 && /opt/run_nwaku_store_postgres4.sh"]
+  #   volumes:
+  #     - ./run_nwaku_store_postgres4.sh:/opt/run_nwaku_store_postgres4.sh:Z
+  #   depends_on:
+  #     nwaku_store_pg1:
+  #       condition: service_started
+  #     postgres4:
+  #       condition: service_healthy
+  #   networks:
+  #     simulation: 
+  #      ipv4_address: 10.2.0.103
 
   # rest-traffic:
   #   image: alrevuelta/rest-traffic:6992bb5
@@ -175,99 +193,123 @@ services:
   #   depends_on:
   #     - nwaku
 
-  postgres1:
-    # This service is used when the Waku node has the 'store' protocol enabled
-    # and the store-message-db-url is set to use Postgres
-    image: postgres:15.4-alpine3.18
-    restart: on-failure:5
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
-    volumes:
-      - ./postgres_cfg/postgresql.conf:/etc/postgresql/postgresql.conf:Z
-      - ./postgres_cfg/db.sql:/docker-entrypoint-initdb.d/db.sql:Z
-      - ${PG_DATA_DIR:-./postgresql1}:/var/lib/postgresql/data:Z
-    command: postgres -c config_file=/etc/postgresql/postgresql.conf
-    ports:
-      - 0.0.0.0:5432:5432
-    networks:
-      - simulation
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
-      interval: 30s
-      timeout: 60s
-      retries: 5
-      start_period: 80s
+  # postgres1:
+  #   # This service is used when the Waku node has the 'store' protocol enabled
+  #   # and the store-message-db-url is set to use Postgres
+  #   image: postgres:15.4-alpine3.18
+  #   restart: on-failure:5
+  #   environment:
+  #     - POSTGRES_USER=${POSTGRES_USER:-postgres}
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+  #   volumes:
+  #     - ./postgres_cfg/postgresql.conf:/etc/postgresql/postgresql.conf:Z
+  #     - ./postgres_cfg/db.sql:/docker-entrypoint-initdb.d/db.sql:Z
+  #     - ${PG_DATA_DIR:-./postgresql1}:/var/lib/postgresql/data:Z
+  #   command: postgres -c config_file=/etc/postgresql/postgresql.conf
+  #   ports:
+  #     - 0.0.0.0:5432:5432
+  #   networks:
+  #     - simulation
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+  #     interval: 30s
+  #     timeout: 60s
+  #     retries: 5
+  #     start_period: 80s
 
-  postgres2:
-    # This service is used when the Waku node has the 'store' protocol enabled
-    # and the store-message-db-url is set to use Postgres
-    image: postgres:15.4-alpine3.18
-    restart: on-failure:5
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
-    volumes:
-      - ./postgres_cfg/postgresql.conf:/etc/postgresql/postgresql.conf:Z
-      - ./postgres_cfg/db.sql:/docker-entrypoint-initdb.d/db.sql:Z
-      - ${PG_DATA_DIR:-./postgresql2}:/var/lib/postgresql/data:Z
-    command: postgres -c config_file=/etc/postgresql/postgresql.conf
-    ports:
-      - 0.0.0.0:5433:5432
-    networks:
-      - simulation
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
-      interval: 30s
-      timeout: 60s
-      retries: 5
-      start_period: 80s
+  # postgres2:
+  #   # This service is used when the Waku node has the 'store' protocol enabled
+  #   # and the store-message-db-url is set to use Postgres
+  #   image: postgres:15.4-alpine3.18
+  #   restart: on-failure:5
+  #   environment:
+  #     - POSTGRES_USER=${POSTGRES_USER:-postgres}
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+  #   volumes:
+  #     - ./postgres_cfg/postgresql.conf:/etc/postgresql/postgresql.conf:Z
+  #     - ./postgres_cfg/db.sql:/docker-entrypoint-initdb.d/db.sql:Z
+  #     - ${PG_DATA_DIR:-./postgresql2}:/var/lib/postgresql/data:Z
+  #   command: postgres -c config_file=/etc/postgresql/postgresql.conf
+  #   ports:
+  #     - 0.0.0.0:5433:5432
+  #   networks:
+  #     - simulation
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+  #     interval: 30s
+  #     timeout: 60s
+  #     retries: 5
+  #     start_period: 80s
 
-  postgres3:
-    # This service is used when the Waku node has the 'store' protocol enabled
-    # and the store-message-db-url is set to use Postgres
-    image: postgres:15.4-alpine3.18
-    restart: on-failure:5
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
-    volumes:
-      - ./postgres_cfg/postgresql.conf:/etc/postgresql/postgresql.conf:Z
-      - ./postgres_cfg/db.sql:/docker-entrypoint-initdb.d/db.sql:Z
-      - ${PG_DATA_DIR:-./postgresql3}:/var/lib/postgresql/data:Z
-    command: postgres -c config_file=/etc/postgresql/postgresql.conf
-    ports:
-      - 0.0.0.0:5434:5432
-    networks:
-      - simulation
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
-      interval: 30s
-      timeout: 60s
-      retries: 5
-      start_period: 80s
+  # postgres3:
+  #   # This service is used when the Waku node has the 'store' protocol enabled
+  #   # and the store-message-db-url is set to use Postgres
+  #   image: postgres:15.4-alpine3.18
+  #   restart: on-failure:5
+  #   environment:
+  #     - POSTGRES_USER=${POSTGRES_USER:-postgres}
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+  #   volumes:
+  #     - ./postgres_cfg/postgresql.conf:/etc/postgresql/postgresql.conf:Z
+  #     - ./postgres_cfg/db.sql:/docker-entrypoint-initdb.d/db.sql:Z
+  #     - ${PG_DATA_DIR:-./postgresql3}:/var/lib/postgresql/data:Z
+  #   command: postgres -c config_file=/etc/postgresql/postgresql.conf
+  #   ports:
+  #     - 0.0.0.0:5434:5432
+  #   networks:
+  #     - simulation
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+  #     interval: 30s
+  #     timeout: 60s
+  #     retries: 5
+  #     start_period: 100s
 
-  postgres-exporter:
-    # Service aimed to scrape information from Postgres and post it to Prometeus
-    image: quay.io/prometheuscommunity/postgres-exporter:v0.12.0
-    restart: on-failure:5
-    environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
-      - DATA_SOURCE_URI=postgres1:5432/postgres?sslmode=disable
-      - DATA_SOURCE_USER=${POSTGRES_USER:-postgres}
-      - DATA_SOURCE_PASS=${POSTGRES_PASSWORD:-test123}
-      - PG_EXPORTER_EXTEND_QUERY_PATH=/etc/pgexporter/queries.yml
-    volumes:
-      - ./monitoring/configuration/postgres-exporter.yml:/etc/pgexporter/postgres-exporter.yml:Z
-      - ./monitoring/configuration/pg-exporter-queries.yml:/etc/pgexporter/queries.yml:Z
-    command:
-      # Both the config file and 'DATA_SOURCE_NAME' should contain valid connection info
-      - --config.file=/etc/pgexporter/postgres-exporter.yml
-    depends_on:
-      postgres1:
-        condition: service_healthy
-    networks:
-      - simulation
+  # postgres4:
+  #   # This service is used when the Waku node has the 'store' protocol enabled
+  #   # and the store-message-db-url is set to use Postgres
+  #   image: postgres:15.4-alpine3.18
+  #   restart: on-failure:5
+  #   environment:
+  #     - POSTGRES_USER=${POSTGRES_USER:-postgres}
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+  #   volumes:
+  #     - ./postgres_cfg/postgresql.conf:/etc/postgresql/postgresql.conf:Z
+  #     - ./postgres_cfg/db.sql:/docker-entrypoint-initdb.d/db.sql:Z
+  #     - ${PG_DATA_DIR:-./postgresql4}:/var/lib/postgresql/data:Z
+  #   command: postgres -c config_file=/etc/postgresql/postgresql.conf
+  #   ports:
+  #     - 0.0.0.0:5435:5432
+  #   networks:
+  #     - simulation
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+  #     interval: 30s
+  #     timeout: 60s
+  #     retries: 5
+  #     start_period: 80s
+
+  # postgres-exporter:
+  #   # Service aimed to scrape information from Postgres and post it to Prometeus
+  #   image: quay.io/prometheuscommunity/postgres-exporter:v0.12.0
+  #   restart: on-failure:5
+  #   environment:
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-test123}
+  #     - DATA_SOURCE_URI=postgres1:5432/postgres?sslmode=disable
+  #     - DATA_SOURCE_USER=${POSTGRES_USER:-postgres}
+  #     - DATA_SOURCE_PASS=${POSTGRES_PASSWORD:-test123}
+  #     - PG_EXPORTER_EXTEND_QUERY_PATH=/etc/pgexporter/queries.yml
+  #   volumes:
+  #     - ./monitoring/configuration/postgres-exporter.yml:/etc/pgexporter/postgres-exporter.yml:Z
+  #     - ./monitoring/configuration/pg-exporter-queries.yml:/etc/pgexporter/queries.yml:Z
+  #   command:
+  #     # Both the config file and 'DATA_SOURCE_NAME' should contain valid connection info
+  #     - --config.file=/etc/pgexporter/postgres-exporter.yml
+  #   depends_on:
+  #     postgres1:
+  #       condition: service_healthy
+  #   networks:
+  #     - simulation
 
   prometheus:
     image: prom/prometheus:latest

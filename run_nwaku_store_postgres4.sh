@@ -35,12 +35,12 @@ exec /usr/bin/wakunode\
       --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
       --pubsub-topic=/waku/2/rs/16/32\
       --cluster-id=16\
-      --ports-shift=0\
-      --nat=extip:${IP}\
+      --ports-shift=3\
       --store=true\
       --store-message-retention-policy=size:40MB\
-      --store-message-db-url="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres1:5432/postgres"\
+      --nat=extip:${IP}\
+      --store-message-db-url="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres3:5432/postgres"\
       --store-sync=true\
       --store-sync-interval=${WAKU_SYNC_INTERVAL}\
       --store-sync-range=${WAKU_SYNC_RANGE}\
-      --nodekey=5978783f8b1a16795032371fff7a526af352d9dca38179af7d71c0122942daa1
+      --nodekey=5978783f8b1a16795032371fff7a526af352d9dca38179af7d71c0122942aa5b

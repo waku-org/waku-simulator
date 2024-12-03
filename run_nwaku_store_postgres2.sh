@@ -37,11 +37,10 @@ exec /usr/bin/wakunode\
       --cluster-id=16\
       --ports-shift=0\
       --store=true\
-      --store-message-retention-policy=size:1GB\
+      --store-message-retention-policy=size:40MB\
       --nat=extip:${IP}\
       --store-message-db-url="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres2:5432/postgres"\
       --store-sync=true\
-      --store-sync-interval=300\
-      --store-sync-range=3600\
-      --store-sync-relay-jitter=0\
+      --store-sync-interval=${WAKU_SYNC_INTERVAL}\
+      --store-sync-range=${WAKU_SYNC_RANGE}\
       --nodekey=5978783f8b1a16795032371fff7a526af352d9dca38179af7d71c0122942daa3
