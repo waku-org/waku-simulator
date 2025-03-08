@@ -28,13 +28,18 @@ Run the following command ( tested with Docker Compose version v2.28.1 )
 docker compose up -d
 ```
 
-## warning
+## Warning
 
-in case arp tables are overflowing:
+- In case arp tables are overflowing:
 
-```
-sysctl net.ipv4.neigh.default.gc_thresh3=32000
-```
+  ```
+  sysctl net.ipv4.neigh.default.gc_thresh3=32000
+  ```
+
+- In case `docker compose version` shows v1, the following command is needed:
+  ```
+  docker-compose --compatibility up -d
+  ```
 
 # Infrastructure
 
