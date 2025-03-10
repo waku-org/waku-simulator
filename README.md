@@ -23,22 +23,18 @@ export RLN_RELAY_MSG_LIMIT=2
 export MAX_MESSAGE_LIMIT=100  # Contract's message limit. Needs to be higher or equal than RLN_RELAY_MSG_LIMIT, otherwise nodes won't start correctly.
 ```
 
-Run the following command ( tested with Docker Compose version v2.28.1 )
+Run the following command
 ```
 docker compose up -d
 ```
+(tested with Docker Compose version v2.28.1. Notice that we don't support docker compose v1)
 
 ## Warning
 
-- In case arp tables are overflowing:
+In case arp tables are overflowing:
 
   ```
   sysctl net.ipv4.neigh.default.gc_thresh3=32000
-  ```
-
-- In case `docker compose version` shows v1, the following command is needed:
-  ```
-  docker-compose --compatibility up -d
   ```
 
 # Infrastructure
