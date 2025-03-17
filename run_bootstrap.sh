@@ -7,7 +7,11 @@ echo "I am a bootstrap node"
 exec /usr/bin/wakunode\
       --relay=false\
       --rest=true\
+      --rest-admin=true\
       --rest-address=0.0.0.0\
+      --rest-port=8645\
+      --rest-allow-origin="waku-org.github.io"\
+      --rest-allow-origin="localhost:*"\
       --max-connections=300\
       --dns-discovery=true\
       --discv5-discovery=true\

@@ -107,7 +107,7 @@ else
     --execute
 fi
 
-echo "I am a nwaku node"
+echo "I am a nwaku service node"
 
 RETRIES=${RETRIES:=10}
 
@@ -123,14 +123,28 @@ if [ -z "${BOOTSTRAP_ENR}" ]; then
    exit 1
 fi
 
+STORE_RETENTION_POLICY=--store-message-retention-policy=size:1GB
+
+if [ -n "${STORAGE_SIZE}" ]; then
+    STORE_RETENTION_POLICY=--store-message-retention-policy=size:"${STORAGE_SIZE}"
+fi
+
 echo "Using bootstrap node: ${BOOTSTRAP_ENR}"
 echo "My IP is: ${IP}"
 
 exec /usr/bin/wakunode\
       --relay=true\
       --lightpush=true\
+      --filter=true\
+      --store=true\
       --max-connections=250\
-      --rest=false\
+      --rest=true\
+      --rest-admin=true\
+      --rest-address=0.0.0.0\
+      --rest-port=8645\
+      --rest-allow-origin="waku-org.github.io"\
+      --rest-allow-origin="localhost:*"\
+      --websocket-support=true\
       --rln-relay=true\
       --rln-relay-dynamic=true\
       --rln-relay-eth-client-address="$RPC_URL"\
@@ -143,10 +157,14 @@ exec /usr/bin/wakunode\
       --dns-discovery=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
-      --log-level=DEBUG\
+      --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
+      --log-level=INFO\
       --metrics-server=True\
       --metrics-server-address=0.0.0.0\
-      --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
       --nat=extip:${IP}\
+      --tcp-port:60001\
+      --nodekey=e3416f0b00005aa3ebc9cd42797b3847bfbf4fe810edaa6a1fc65e755638b7fb\
       --pubsub-topic=/waku/2/rs/66/0\
-      --cluster-id=66
+      --cluster-id=66\
+      --store-message-db-url="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/postgres"\
+      ${STORE_RETENTION_POLICY}\

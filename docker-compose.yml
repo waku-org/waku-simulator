@@ -1,12 +1,51 @@
 version: "3.7"
 
+x-bootstrap-environment: &bootstrap_env
+  BOOTSTRAP_IP: 10.2.0.100
+  BOOTSTRAP_MULTIADDRESS: "/ip4/10.2.0.100/tcp/60000/p2p/16Uiu2HAmGNtM2rQ8abySFNhqPDFY4cmfAEpfo9Z9fD3NekoFR2ip"
+  BOOTSTRAP_ENR: "enr:-LG4QK3uc1orOi79J5eAprzwyfj4QcYaR_oamz1YY0U3PmaRY807UrJTkQJiSDT8PNmIPwxIw9POrel-sf1OOTlcK9UCgmlkgnY0gmlwhAoCAGSKbXVsdGlhZGRyc4oACAQKAgBkBupggnJzhQBCAQAAiXNlY3AyNTZrMaEDN06qX-XhZ-Cc7ZuIAdGNCVUicscmbFvEEfkFOQ2W_j2DdGNwgupgg3VkcIIjKIV3YWt1MgA" 
+
+x-servicenode-environment: &servicenode_env
+  SERVICENODE_IP: 10.2.0.101
+  SERVICENODE_MULTIADDRESS: "/ip4/10.2.0.101/tcp/60001/p2p/16Uiu2HAkyte8uj451tGkbww4Mjcg6DRnmAHxNeWyF4zp23RbpG3n"
+  SERVICENODE_WS_MULTIADDRESS: "/ip4/10.2.0.101/tcp/8000/ws/p2p/16Uiu2HAkyte8uj451tGkbww4Mjcg6DRnmAHxNeWyF4zp23RbpG3n"
+  SERVICENODE_ENR: "enr:-LO4QDhRxZ-YJBeiriq07BkSiA-qSJCcy3Kz7bAWXeop48dIPpsQK2QNuDX7umonw3Wu0zFXXoMxGrIFmpQiJ1mBd_sBgmlkgnY0gmlwhAoCAGWKbXVsdGlhZGRyc4wACgQKAgBlBh9A3QOCcnOFAEIBAACJc2VjcDI1NmsxoQJCV1iKpD3kj-6EDB8QIiRtUZE3-g0OK1QbmXL2OoziNYN0Y3CC6mCDdWRwgiMohXdha3UyDw" 
+
+x-edgenode-environment: &edgenode_env
+  EDGENODE_IP: 10.2.0.102
+  EDGENODE_MULTIADDRESS: "/ip4/10.2.0.102/tcp/60002/p2p/16Uiu2HAm5tojCrfxXrum5VxAVtCQk6h1jkA2Ecy447rQkKwwgf51"
+  EDGENODE_ENR: "enr:-KC4QAsSQM0tP9Zs8UxbHl3pe7HKE_0xLNA2P5LLVCbzCArsATKeH6EK43hhQJznAKjaMcpzqbMcd3UEjYJSkahMyg4BgmlkgnY0gmlwhAoCAGaKbXVsdGlhZGRyc4CCcnOFAEIBAACJc2VjcDI1NmsxoQKbiE_1i7pL24P02qgEFs0jHaso1XPo8HmcXAfqJPjGeIN0Y3CC6mKFd2FrdTIA" 
+
+x-rln-environment: &rln_env
+  RPC_URL: ${RPC_URL:-http://foundry:8545}
+  RLN_CONTRACT_ADDRESS: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+  RLN_CREDENTIAL_PATH: /keystore.json
+  RLN_CREDENTIAL_PASSWORD: passw123
+  RLN_RELAY_MSG_LIMIT: ${RLN_RELAY_MSG_LIMIT:-10}
+  RLN_RELAY_EPOCH_SEC: ${RLN_RELAY_EPOCH_SEC:-60}
+
+x-pg-pass: &pg_pass test123
+x-pg-user: &pg_user postgres
+
+x-pg-environment: &pg_env
+  POSTGRES_USER: *pg_user
+  POSTGRES_PASSWORD: *pg_pass
+
+x-pg-exporter-env: &pg_exp_env
+  environment:
+    POSTGRES_PASSWORD: *pg_pass
+    DATA_SOURCE_URI: postgres?sslmode=disable
+    DATA_SOURCE_USER: *pg_user
+    DATA_SOURCE_PASS: *pg_pass
+    PG_EXPORTER_EXTEND_QUERY_PATH: /etc/pgexporter/queries.yml
+
 networks:
   simulation:
-      driver: bridge
-      ipam:
-          driver: default
-          config:
-              - subnet: "10.2.0.0/24"
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.2.0.0/24"
 
 services:
 
@@ -63,14 +102,47 @@ services:
       - 127.0.0.1:60000:60000
       - 127.0.0.1:8008:8008
       - 127.0.0.1:9000:9000
-      - 127.0.0.1:8645:8645
+      - 127.0.0.1:8646:8645
     entrypoint: sh
     command:
       - '/opt/run_bootstrap.sh'
     volumes:
       - ./run_bootstrap.sh:/opt/run_bootstrap.sh:Z
     networks:
-      - simulation
+      simulation:
+        ipv4_address: 10.2.0.100
+
+  servicenode:
+    image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
+    restart: on-failure
+    labels:
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+    ports:
+      - 127.0.0.1:60001:60001/tcp
+      - 127.0.0.1:60001:60001/udp
+      - 127.0.0.1:8000:8000/tcp #WSS
+      - 127.0.0.1:8645:8645 # Service node REST-API
+    environment:
+      NODEKEY: ${NODEKEY}
+      STORAGE_SIZE: ${STORAGE_SIZE}
+      <<:
+        - *pg_env
+        - *rln_env
+        - *bootstrap_env
+    volumes:
+      - ./run_servicenode.sh:/opt/run_servicenode.sh:Z
+      - privatekeys-volume:/shared
+    entrypoint: sh
+    command:
+      - /opt/run_servicenode.sh
+    depends_on:
+      contract-repo-deployer:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_started
+    networks:
+      simulation:
+        ipv4_address: 10.2.0.101
 
   nwaku:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
@@ -81,12 +153,9 @@ services:
       replicas: ${NUM_NWAKU_NODES:-5}
     entrypoint: sh
     environment:
-      - RPC_URL=${RPC_URL:-http://foundry:8545}
-      - RLN_CONTRACT_ADDRESS=0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
-      - RLN_CREDENTIAL_PATH=/keystore.json
-      - RLN_CREDENTIAL_PASSWORD=passw123
-      - RLN_RELAY_MSG_LIMIT=${RLN_RELAY_MSG_LIMIT:-10}
-      - RLN_RELAY_EPOCH_SEC=${RLN_RELAY_EPOCH_SEC:-60}
+      <<:
+        - *rln_env
+        - *bootstrap_env
     command:
       - '/opt/run_nwaku.sh'
     volumes:
@@ -97,17 +166,28 @@ services:
         condition: service_completed_successfully
     networks:
       - simulation
-      
-  rest-traffic:
-    image: alrevuelta/rest-traffic:28430f8
+
+  edgenode:
+    image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
+    restart: on-failure
+    ports:
+      - 127.0.0.1:60002:60002/tcp
+      - 127.0.0.1:60002:60002/udp
+      - 127.0.0.1:8644:8645 # Service node REST-API
+    entrypoint: sh
+    environment:
+      <<:
+        - *servicenode_env
     command:
-      --multiple-nodes=http://waku-simulator-nwaku-[1..${NUM_NWAKU_NODES:-5}]:8645
-      --msg-size-kbytes=${MSG_SIZE_KBYTES:-10}
-      --delay-seconds=${TRAFFIC_DELAY_SECONDS:-15}
-    networks:
-      - simulation
+      - '/opt/run_edgenode.sh'
+    volumes:
+      - ./run_edgenode.sh:/opt/run_edgenode.sh:Z
     depends_on:
-      - nwaku
+      servicenode:
+        condition: service_started
+    networks:
+      simulation:
+        ipv4_address: 10.2.0.102
 
   prometheus:
     image: prom/prometheus:latest
@@ -231,6 +311,46 @@ services:
     depends_on:
       - api
       - web
+    networks:
+      - simulation
+
+  postgres:
+    # This service is used when the Waku node has the 'store' protocol enabled
+    # and the store-message-db-url is set to use Postgres
+    image: postgres:15.4-alpine3.18
+    restart: on-failure:5
+    shm_size: "${POSTGRES_SHM:-1g}"  # Set default shared memory size to 1 GB
+    environment:
+      <<: *pg_env
+    volumes:
+      - ./postgres_cfg/postgresql.conf:/etc/postgresql/postgresql.conf:Z
+      - ./postgres_cfg/db.sql:/docker-entrypoint-initdb.d/db.sql:Z
+      - ${PG_DATA_DIR:-./postgresql}:/var/lib/postgresql/data:Z
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    ports:
+      - 127.0.0.1:5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+    networks:
+      - simulation
+
+  postgres-exporter:
+    # Service aimed to scrape information from Postgres and post it to Prometeus
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.12.0
+    restart: on-failure:5
+    <<: *pg_exp_env
+    volumes:
+      - ./monitoring/configuration/postgres-exporter.yml:/etc/pgexporter/postgres-exporter.yml:Z
+      - ./monitoring/configuration/pg-exporter-queries.yml:/etc/pgexporter/queries.yml:Z
+    command:
+      # Both the config file and 'DATA_SOURCE_NAME' should contain valid connection info
+      - --config.file=/etc/pgexporter/postgres-exporter.yml
+    depends_on:
+      - postgres
     networks:
       - simulation
 
