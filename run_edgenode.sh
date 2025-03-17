@@ -36,7 +36,7 @@ exec /usr/bin/wakunode\
       --rest-admin=true\
       --rest-address=0.0.0.0\
       --rest-port=8645\
-      --rest-allow-origin="waku-org.github.io"\
+      --rest-allow-origin="waku-org.github.iLightPushResponse.relayPeerCount.typeo"\
       --rest-allow-origin="localhost:*"\
       --log-level=INFO\
       --metrics-server=True\
@@ -45,5 +45,4 @@ exec /usr/bin/wakunode\
       --tcp-port:60002\
       --pubsub-topic=/waku/2/rs/66/0\
       --cluster-id=66\
-      --nodekey=5358f02c157accb30a6c1d5920e778604de12e23d6009512be44f72f1a64d828\
-      --relay-service-ratio="0:100"
+      --nodekey=5358f02c157accb30a6c1d5920e778604de12e23d6009512be44f72f1a64d828

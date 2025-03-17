@@ -54,7 +54,7 @@ services:
   foundry:
     image: ghcr.io/foundry-rs/foundry:nightly-9b73e06e1fe376738b92ae081107620291d50188
     labels:
-      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-true}'
     ports:
       - 0.0.0.0:8545:8545
     command:
@@ -75,12 +75,12 @@ services:
   contract-repo-deployer:
     image: node:hydrogen-bullseye
     labels:
-      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-true}'
     environment:
       - RLN_CONTRACT_REPO_COMMIT=${RLN_CONTRACT_REPO_COMMIT:-64df4593c6a14e43b8b0e9b396d2f4772bb08b34}
-      - PRIVATE_KEY=${PRIVATE_KEY}
+      - PRIVATE_KEY=${PRIVATE_KEY:-0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80}
       - RPC_URL=${RPC_URL:-http://foundry:8545}
-      - ETH_FROM=${ETH_FROM}
+      - ETH_FROM=${ETH_FROM:-0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266}
       - MAX_MESSAGE_LIMIT=${MAX_MESSAGE_LIMIT:-20}
     entrypoint: sh
     command:
@@ -96,7 +96,7 @@ services:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
     restart: on-failure
     labels:
-      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-true}'
     # TODO: expose some ports to inject traffic
     ports:
       - 127.0.0.1:60000:60000
@@ -116,7 +116,7 @@ services:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
     restart: on-failure
     labels:
-      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-true}'
     ports:
       - 127.0.0.1:60001:60001/tcp
       - 127.0.0.1:60001:60001/udp
@@ -148,7 +148,7 @@ services:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
     restart: on-failure
     labels:
-      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-true}'
     deploy:
       replicas: ${NUM_NWAKU_NODES:-5}
     entrypoint: sh
