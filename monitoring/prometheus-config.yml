@@ -20,7 +20,7 @@ scrape_configs:
       - waku-simulator-nwaku-2:8008
       - waku-simulator-nwaku-3:8008
       - waku-simulator-nwaku-4:8008
-      - waku-simulator-nwaku-5:8008https://docs.google.com/presentation/d/1ZOc2v3lwHck28LvamhAN0V0045XX1VoXnsbTCuMSmyk/edit?usp=sharing
+      - waku-simulator-nwaku-5:8008
       - waku-simulator-nwaku-6:8008
       - waku-simulator-nwaku-7:8008
       - waku-simulator-nwaku-8:8008
