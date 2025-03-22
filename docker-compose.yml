@@ -17,6 +17,7 @@ x-edgenode-environment: &edgenode_env
   EDGENODE_ENR: "enr:-KC4QAsSQM0tP9Zs8UxbHl3pe7HKE_0xLNA2P5LLVCbzCArsATKeH6EK43hhQJznAKjaMcpzqbMcd3UEjYJSkahMyg4BgmlkgnY0gmlwhAoCAGaKbXVsdGlhZGRyc4CCcnOFAEIBAACJc2VjcDI1NmsxoQKbiE_1i7pL24P02qgEFs0jHaso1XPo8HmcXAfqJPjGeIN0Y3CC6mKFd2FrdTIA" 
 
 x-rln-environment: &rln_env
+  RLN_ENABLED: ${RLN_ENABLED:-true}
   RPC_URL: ${RPC_URL:-http://foundry:8545}
   RLN_CONTRACT_ADDRESS: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
   RLN_CREDENTIAL_PATH: /keystore.json

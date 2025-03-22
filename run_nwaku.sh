@@ -125,13 +125,14 @@ fi
 
 echo "Using bootstrap node: ${BOOTSTRAP_ENR}"
 echo "My IP is: ${IP}"
+echo "Run with RLN ${RLN_ENABLED}"
 
 exec /usr/bin/wakunode\
       --relay=true\
       --lightpush=true\
       --max-connections=250\
       --rest=false\
-      --rln-relay=true\
+      --rln-relay=${RLN_ENABLED}\
       --rln-relay-dynamic=true\
       --rln-relay-eth-client-address="$RPC_URL"\
       --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS\
