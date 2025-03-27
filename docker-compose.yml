@@ -42,6 +42,7 @@ x-pg-exporter-env: &pg_exp_env
 
 networks:
   simulation:
+    name: simulation
     driver: bridge
     ipam:
       driver: default
@@ -95,6 +96,7 @@ services:
 
   bootstrap:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
+    # container_name: bootstrap
     restart: on-failure
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-true}'
@@ -115,6 +117,10 @@ services:
 
   servicenode:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
+    # container_name: servicenode
+    cpu_count: 1
+    cpuset: "4"
+    mem_limit: 512m
     restart: on-failure
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-true}'
@@ -170,6 +176,7 @@ services:
 
   edgenode:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
+    # container_name: edgenode
     restart: on-failure
     ports:
       - 127.0.0.1:60002:60002/tcp
@@ -319,6 +326,9 @@ services:
     # This service is used when the Waku node has the 'store' protocol enabled
     # and the store-message-db-url is set to use Postgres
     image: postgres:15.4-alpine3.18
+    cpu_count: 1
+    cpuset: "4"
+    mem_limit: 2g
     restart: on-failure:5
     shm_size: "${POSTGRES_SHM:-1g}"  # Set default shared memory size to 1 GB
     environment:
