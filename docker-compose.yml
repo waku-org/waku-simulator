@@ -118,9 +118,8 @@ services:
   servicenode:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
     # container_name: servicenode
-    cpu_count: 1
-    cpuset: "4"
-    mem_limit: 512m
+    cpuset: ${SERVICENODE_CPU_CORES:-"4"}
+    mem_limit: ${SERVICENODE_MEM_LIMIT:-512m}
     restart: on-failure
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-true}'
@@ -326,9 +325,8 @@ services:
     # This service is used when the Waku node has the 'store' protocol enabled
     # and the store-message-db-url is set to use Postgres
     image: postgres:15.4-alpine3.18
-    cpu_count: 1
-    cpuset: "4"
-    mem_limit: 2g
+    cpuset: ${POSTGRES_CPU_CORES:-"4"}
+    mem_limit: ${POSTGRES_MEM_LIMIT:-2g}
     restart: on-failure:5
     shm_size: "${POSTGRES_SHM:-1g}"  # Set default shared memory size to 1 GB
     environment:
