@@ -10,6 +10,7 @@ exec /usr/bin/wakunode\
       --rest-address=0.0.0.0\
       --max-connections=300\
       --dns-discovery=true\
+      --peer-exchange=true\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
       --log-level=DEBUG\

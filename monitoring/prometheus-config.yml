@@ -214,3 +214,4 @@ scrape_configs:
       - waku-simulator-nwaku-198:8008
       - waku-simulator-nwaku-199:8008
       - waku-simulator-nwaku-200:8008
+      - lp-mix-1:8008

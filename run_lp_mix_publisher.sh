@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Check Linux Distro Version - it can differ depending on the nwaku image used
-OS=$(cat /etc/os-release)
+# OS=$(cat /etc/os-release)
 # if echo $OS | grep -q "Debian"; then
 #     echo "The operating system is Debian."
 #     apt update
@@ -18,7 +18,7 @@ OS=$(cat /etc/os-release)
 #   . $(pwd)/.env
 # fi
 
-IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
+#IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
 
 # # Function to extract IP address from URL, resolve the IP and replace it in the original URL
 # get_ip_address_and_replace() {
@@ -107,39 +107,39 @@ IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
 #     --execute
 # fi
 
-echo "I am a nwaku node"
+echo "I am a lightpush mix publisher"
 
 RETRIES=${RETRIES:=10}
 
-while [ -z "${BOOTSTRAP_ENR}" ] && [ ${RETRIES} -ge 0 ]; do
-  BOOTSTRAP_ENR=$(wget -qO- http://bootstrap:8645/debug/v1/info --header='Content-Type:application/json' 2> /dev/null | sed 's/.*"enrUri":"\([^"]*\)".*/\1/');
+while [ -z "${BOOTSTRAP_ADDRS}" ] && [ ${RETRIES} -ge 0 ]; do
+  BOOTSTRAP_ADDRS=$(wget -qO- http://bootstrap:8645/debug/v1/info --header='Content-Type:application/json' 2> /dev/null | jq '.listenAddresses[0]') ;
   echo "Bootstrap node not ready, retrying (retries left: ${RETRIES})"
   sleep 1
   RETRIES=$(( $RETRIES - 1 ))
 done
 
-if [ -z "${BOOTSTRAP_ENR}" ]; then
-   echo "Could not get BOOTSTRAP_ENR and none provided. Failing"
+if [ -z "${BOOTSTRAP_ADDRS}" ]; then
+   echo "Could not get BOOTSTRAP_ADDR and none provided. Failing"
    exit 1
 fi
 
-echo "Using bootstrap node: ${BOOTSTRAP_ENR}"
-exec /usr/bin/wakunode\
-      --relay=true\
-      --lightpush=true\
-      --peer-exchange=true\
-      --max-connections=250\
-      --rest=true\
-      --rest-address=0.0.0.0\
-      --rest-port=8645\
-      --dns-discovery=true\
-      --discv5-discovery=true\
-      --discv5-enr-auto-update=True\
-      --log-level=DEBUG\
-      --metrics-server=True\
-      --metrics-server-address=0.0.0.0\
-      --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
-      --nat=extip:${IP}\
-      --pubsub-topic=/waku/2/rs/66/0\
-      --cluster-id=66\
-      --mix=true
+BOOTSTRAP_ADDR=$(echo "$BOOTSTRAP_ADDRS" | sed 's/"//g')
+
+RETRIES=${RETRIES:=10}
+
+while [ -z "${LP_ADDRS}" ] && [ ${RETRIES} -ge 0 ]; do
+  LP_ADDRS=$(wget -qO- http://nwaku:8645/debug/v1/info --header='Content-Type:application/json' 2> /dev/null | jq '.listenAddresses[0]');
+  echo "Bootstrap node not ready, retrying (retries left: ${RETRIES})"
+  sleep 1
+  RETRIES=$(( $RETRIES - 1 ))
+done
+
+if [ -z "${LP_ADDRS}" ]; then
+   echo "Could not get LP_ADDR and none provided. Failing"
+   exit 1
+fi
+
+LP_ADDR=$(echo "$LP_ADDRS" | sed 's/"//g')
+
+echo "Using bootstrap node: ${BOOTSTRAP_ADDR} , Lighpush Service Node: ${LP_ADDR}, MIN_MIX_POOL_SIZE: ${NUM_NWAKU_NODES}"
+exec /usr/bin/lightpush_publisher_mix --px-addr=${BOOTSTRAP_ADDR} --dp-addr=${LP_ADDR} --min-mix-pool-size=${NUM_NWAKU_NODES} --num-msgs=10000 --msg-interval=100
