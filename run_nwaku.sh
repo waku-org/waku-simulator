@@ -149,5 +149,7 @@ exec /usr/bin/wakunode\
       --metrics-server-address=0.0.0.0\
       --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
       --nat=extip:${IP}\
-      --pubsub-topic=/waku/2/rs/66/0\
+      --shard=0\
       --cluster-id=66
+
+      #--pubsub-topic=/waku/2/rs/66/0\
