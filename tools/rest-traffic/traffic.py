@@ -16,7 +16,7 @@ def send_waku_msg(node_address, kbytes, pubsub_topic, content_topic):
         "payload": base64_payload,
         "contentTopic": content_topic,
         "version": 1,  # You can adjust the version as needed
-        #"timestamp": int(time.time())
+        "timestamp": int(time.time())
     }
 
     encoded_pubsub_topic = urllib.parse.quote(pubsub_topic, safe='')
