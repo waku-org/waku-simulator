@@ -43,6 +43,8 @@ exec /usr/bin/wakunode\
       --metrics-server-address=0.0.0.0\
       --nat=extip:${IP}\
       --tcp-port:60002\
-      --pubsub-topic=/waku/2/rs/66/0\
+      --shard=0\
       --cluster-id=66\
       --nodekey=5358f02c157accb30a6c1d5920e778604de12e23d6009512be44f72f1a64d828
+      
+      # --pubsub-topic=/waku/2/rs/66/0\

@@ -216,3 +216,43 @@ scrape_configs:
       - waku-simulator-nwaku-198:8008
       - waku-simulator-nwaku-199:8008
       - waku-simulator-nwaku-200:8008
+      - lpt-publishernode:8003
+      - lpt-publishernode-1:8003
+      - lpt-publishernode-2:8003
+      - lpt-publishernode-3:8003
+      - lpt-publishernode-4:8003
+      - lpt-publishernode-5:8003
+      - lpt-publishernode-6:8003
+      - lpt-publishernode-7:8003
+      - lpt-publishernode-8:8003
+      - lpt-publishernode-9:8003
+      - lpt-publishernode-10:8003
+      - lpt-publishernode-11:8003
+      - lpt-publishernode-12:8003
+      - lpt-publishernode-13:8003
+      - lpt-publishernode-14:8003
+      - lpt-publishernode-15:8003
+      - lpt-publishernode-16:8003
+      - lpt-publishernode-17:8003
+      - lpt-publishernode-18:8003
+      - lpt-publishernode-19:8003
+      - lpt-receivernode:8003
+      - lpt-receivernode-1:8003
+      - lpt-receivernode-2:8003
+      - lpt-receivernode-3:8003
+      - lpt-receivernode-4:8003
+      - lpt-receivernode-5:8003
+      - lpt-receivernode-6:8003
+      - lpt-receivernode-7:8003
+      - lpt-receivernode-8:8003
+      - lpt-receivernode-9:8003
+      - lpt-receivernode-10:8003
+      - lpt-receivernode-11:8003
+      - lpt-receivernode-12:8003
+      - lpt-receivernode-13:8003
+      - lpt-receivernode-14:8003
+      - lpt-receivernode-15:8003
+      - lpt-receivernode-16:8003
+      - lpt-receivernode-17:8003
+      - lpt-receivernode-18:8003
+      - lpt-receivernode-19:8003
