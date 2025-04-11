@@ -99,7 +99,9 @@ services:
       - simulation
       
   rest-traffic:
-    image: alrevuelta/rest-traffic:28430f8
+    build:
+      context: ./tools/rest-traffic
+      dockerfile: Dockerfile
     command:
       --multiple-nodes=http://waku-simulator-nwaku-[1..${NUM_NWAKU_NODES:-5}]:8645
       --msg-size-kbytes=${MSG_SIZE_KBYTES:-10}
