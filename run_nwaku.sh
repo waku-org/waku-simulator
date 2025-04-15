@@ -1,5 +1,14 @@
 #!/bin/sh
 
+apt update
+apt upgrade
+apt -y install wget
+apt -y install libpq-dev
+apt -y install libpcre3
+apt -y install dnsutils
+apt -y install jq
+apt -y install iproute2
+
 # Check Linux Distro Version - it can differ depending on the nwaku image used
 OS=$(cat /etc/os-release)
 if echo $OS | grep -q "Debian"; then
@@ -94,24 +103,21 @@ if test -f .$RLN_CREDENTIAL_PATH; then
   echo "$RLN_CREDENTIAL_PATH already exists. Use it instead of creating a new one."
 else
 
-  # private_key="$(get_private_key)"
-  # echo "Private key: $private_key"
+  private_key="$(get_private_key)"
+  echo "Private key: $private_key"
 
-  # echo "Generating RLN keystore"
-  # /usr/bin/wakunode generateRlnKeystore \
-  #   --rln-relay-eth-client-address="$RPC_URL" \
-  #   --rln-relay-eth-private-key=$private_key  \
-  #   --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS \
-  #   --rln-relay-cred-path=$RLN_CREDENTIAL_PATH \
-  #   --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD \
-  #   --rln-relay-user-message-limit=$RLN_RELAY_MSG_LIMIT \
-  #   --rln-relay-epoch-sec=$RLN_RELAY_EPOCH_SEC \
-  #   --log-level=DEBUG \
-  #   --execute
+  echo "Generating RLN keystore"
+  /usr/bin/wakunode generateRlnKeystore \
+    --rln-relay-eth-client-address="$RPC_URL" \
+    --rln-relay-eth-private-key=$private_key  \
+    --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS \
+    --rln-relay-cred-path=$RLN_CREDENTIAL_PATH \
+    --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD \
+    --rln-relay-user-message-limit=$RLN_RELAY_MSG_LIMIT \
+    --rln-relay-epoch-sec=$RLN_RELAY_EPOCH_SEC \
+    --log-level=TRACE \
+    --execute
 fi
-
-echo "File list:"
-ls -al
 
 echo "I am a nwaku node"
 

@@ -57,38 +57,38 @@ CONTRACT_ADDRESS=0x5FC8d32690cc91D4c39d9d3abcBD16989F875707
 # forge script test/TestToken.sol --broadcast -vvvv --rpc-url http://foundry:8545 --tc TestTokenFactory --private-key 0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d
 # export TOKEN2=0x0165878A594ca255338adfa4d48449f69242Eb8F
 echo "Minting...1"
-  cast send $TOKEN_ADDRESS "mint(address,uint256)" $ETH_FROM 90000000000000000000 --private-key $PRIVATE_KEY --rpc-url $RPC_URL
-  cast send $TOKEN_ADDRESS "approve(address,uint256)" $CONTRACT_ADDRESS 3000000000000000000 --private-key $PRIVATE_KEY --rpc-url $RPC_URL
+  cast send $TOKEN_ADDRESS "mint(address,uint256)" $ETH_FROM 900000000000000000000 --private-key $PRIVATE_KEY --rpc-url $RPC_URL
+  cast send $TOKEN_ADDRESS "approve(address,uint256)" $CONTRACT_ADDRESS 30000000000000000000 --private-key $PRIVATE_KEY --rpc-url $RPC_URL
 
 echo "Transfer tokens from account1 to others..."
 # account1 transfers tokens to account2
-  # cast send $TOKEN_ADDRESS "transfer(address,uint256)" 0x70997970c51812dc3a010c7d01b50e0d17dc79c8 3000000000000000000  --private-key $PRIVATE_KEY --rpc-url $RPC_URL
-  # cast send $TOKEN_ADDRESS "transfer(address,uint256)" 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC 3000000000000000000  --private-key $PRIVATE_KEY --rpc-url $RPC_URL
-  # cast send $TOKEN_ADDRESS "transfer(address,uint256)" 0x90F79bf6EB2c4f870365E785982E1f101E93b906 1100000000000000000  --private-key $PRIVATE_KEY --rpc-url $RPC_URL
-  # cast send $TOKEN_ADDRESS "transfer(address,uint256)" 0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65 1000000000000000000  --private-key $PRIVATE_KEY --rpc-url $RPC_URL
+  cast send $TOKEN_ADDRESS "transfer(address,uint256)" 0x70997970c51812dc3a010c7d01b50e0d17dc79c8 30000000000000000000  --private-key $PRIVATE_KEY --rpc-url $RPC_URL
+  cast send $TOKEN_ADDRESS "transfer(address,uint256)" 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC 10000000000000000000  --private-key $PRIVATE_KEY --rpc-url $RPC_URL
+  cast send $TOKEN_ADDRESS "transfer(address,uint256)" 0x90F79bf6EB2c4f870365E785982E1f101E93b906 10000000000000000000  --private-key $PRIVATE_KEY --rpc-url $RPC_URL
+  cast send $TOKEN_ADDRESS "transfer(address,uint256)" 0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65 10000000000000000000  --private-key $PRIVATE_KEY --rpc-url $RPC_URL
 echo "Minting..2"
 # account2 approves the smart contract
-  # cast send --from 0x70997970c51812dc3a010c7d01b50e0d17dc79c8 $TOKEN_ADDRESS "approve(address,uint256)" $CONTRACT_ADDRESS 3000000000000000000 --private-key 0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d --rpc-url $RPC_URL
-# echo "Allowance:"  
-#   cast call $TOKEN_ADDRESS "allowance(address,address)" 0x70997970c51812dc3a010c7d01b50e0d17dc79c8 $CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key $PRIVATE_KEY
+  cast send --from 0x70997970c51812dc3a010c7d01b50e0d17dc79c8 $TOKEN_ADDRESS "approve(address,uint256)" $CONTRACT_ADDRESS 30000000000000000000 --private-key 0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d --rpc-url $RPC_URL
+echo "Allowance:"  
+  cast call $TOKEN_ADDRESS "allowance(address,address)" 0x70997970c51812dc3a010c7d01b50e0d17dc79c8 $CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key $PRIVATE_KEY
 
-  export ID_COMMITMENT=1234
-  export RATE_LIMIT=20
-  export PATH=$PATH:$HOME/.foundry/bin
-  echo "REGISTERING"
-  # TX_HASH=$(cast send $CONTRACT_ADDRESS "register(uint256,uint32,uint256[])" $ID_COMMITMENT $RATE_LIMIT "[]" --rpc-url $RPC_URL --private-key $private_key)
+  # export ID_COMMITMENT=1234
+  # export RATE_LIMIT=20
+  # export PATH=$PATH:$HOME/.foundry/bin
+  # echo "REGISTERING"
+  # TX_HASH=$(cast send $CONTRACT_ADDRESS "register(uint256,uint32,uint256[])" $ID_COMMITMENT $RATE_LIMIT "[]" --rpc-url $RPC_URL --private-key $PRIVATE_KEY)
   # echo "Transaction hash: $TX_HASH"
 
-# echo "Minting..3"
-#   cast send  --from 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC $TOKEN_ADDRESS "approve(address,uint256)" $CONTRACT_ADDRESS 2000000000000000000 --private-key 0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a --rpc-url $RPC_URL
+echo "Minting..3"
+  cast send  --from 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC $TOKEN_ADDRESS "approve(address,uint256)" $CONTRACT_ADDRESS 2000000000000000000 --private-key 0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a --rpc-url $RPC_URL
 #   cast call $TOKEN_ADDRESS "allowance(address,address)" 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC $CONTRACT_ADDRESS --rpc-url $RPC_URL --private-key 0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a
-# # echo "Minting..4"
-  # cast send  --from 0x90F79bf6EB2c4f870365E785982E1f101E93b906 $TOKEN_ADDRESS "approve(address,uint256)" $CONTRACT_ADDRESS 1100000000000000000 --private-key 0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6 --rpc-url $RPC_URL
-  # cast send  --from 0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65 $TOKEN_ADDRESS "approve(address,uint256)" $CONTRACT_ADDRESS 1000000000000000000 --private-key 0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a --rpc-url $RPC_URL
+echo "Minting..4"
+  cast send  --from 0x90F79bf6EB2c4f870365E785982E1f101E93b906 $TOKEN_ADDRESS "approve(address,uint256)" $CONTRACT_ADDRESS 2000000000000000000 --private-key 0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6 --rpc-url $RPC_URL
+  cast send  --from 0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65 $TOKEN_ADDRESS "approve(address,uint256)" $CONTRACT_ADDRESS 2000000000000000000 --private-key 0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a --rpc-url $RPC_URL
   # cast send $TOKEN_ADDRESS "mint(address,uint256)" 0x70997970c51812dc3a010c7d01b50e0d17dc79c8 3000000000000000000 --private-key $PRIVATE_KEY --rpc-url $RPC_URL
   # cast send $TOKEN_ADDRESS "approve(address,uint256)" 0x70997970c51812dc3a010c7d01b50e0d17dc79c8 3000000000000000000 --private-key $PRIVATE_KEY --rpc-url $RPC_URL
-#   cast send $TOKEN_ADDRESS "approve(address,uint256)" $CONTRACT_ADDRESS 3000000000000000000 --private-key 0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d --rpc-url $RPC_URL
-
+  # cast send $TOKEN_ADDRESS "approve(address,uint256)" $CONTRACT_ADDRESS 3000000000000000000 --private-key 0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d --rpc-url $RPC_URL
+# "private_keys":["0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80","0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d","0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a","0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6","0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a","0x8b3a350cf5c34c9194ca85829a2df0ec3153be0318b5e2d3348e872092edffba",
 # echo "Minting...3"
 #   cast send $TOKEN_ADDRESS "mint(address,uint256)" 0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc 3000000000000000000 --private-key $PRIVATE_KEY --rpc-url $RPC_URL
 #   cast send $TOKEN_ADDRESS "approve(address,uint256)" 0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc 3000000000000000000 --private-key $PRIVATE_KEY --rpc-url $RPC_URL
