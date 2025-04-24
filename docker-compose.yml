@@ -360,7 +360,7 @@ services:
       context: ./tools/rest-traffic
       dockerfile: Dockerfile
     command:
-      --multiple-nodes=http://waku-simulator-servicenode-1:8645
+      --single-node=http://waku-simulator-servicenode-1:8645
       --msg-size-kbytes=${MSG_SIZE_KBYTES:-10}
       --delay-seconds=${TRAFFIC_DELAY_SECONDS:-15}
     networks:
