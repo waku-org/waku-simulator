@@ -74,7 +74,7 @@ services:
       - simulation
 
   contract-repo-deployer:
-    image: node:hydrogen-bullseye
+    image: node:hydrogen-bookworm
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-true}'
     environment:
