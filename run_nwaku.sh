@@ -140,7 +140,7 @@ exec /usr/bin/wakunode\
       --rln-relay-tree-path="rlnv2_tree1"\
       --rln-relay-epoch-sec=$RLN_RELAY_EPOCH_SEC\
       --rln-relay-user-message-limit=$RLN_RELAY_MSG_LIMIT\
-      --dns-discovery=true\
+      --rln-relay-chain-id=1234\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
       --log-level=DEBUG\
