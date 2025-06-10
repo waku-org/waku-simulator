@@ -155,19 +155,18 @@ exec /usr/bin/wakunode\
       --rln-relay-tree-path="rlnv2_tree1"\
       --rln-relay-epoch-sec=$RLN_RELAY_EPOCH_SEC\
       --rln-relay-user-message-limit=$RLN_RELAY_MSG_LIMIT\
-      --dns-discovery=true\
+      --dns-discovery=false\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
       --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
-      --log-level=INFO\
+      --log-level=DEBUG\
       --metrics-server=True\
       --metrics-server-address=0.0.0.0\
       --nat=extip:${IP}\
       --tcp-port:60001\
       --nodekey=e3416f0b00005aa3ebc9cd42797b3847bfbf4fe810edaa6a1fc65e755638b7fb\
       --shard=0\
+      --num-shards-in-network=1\
       --cluster-id=66\
       --store-message-db-url="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/postgres"\
-      ${STORE_RETENTION_POLICY}\
-
-      #--pubsub-topic=/waku/2/rs/66/0\
+      ${STORE_RETENTION_POLICY}

@@ -2051,13 +2051,13 @@
           "text": "lpt-receivernode-1:8003",
           "value": "lpt-receivernode-1:8003"
         },
-        "definition": "label_values({instance=~\".*receivernode.*\"},instance)",
+        "definition": "label_values({instance=~\".*receiver.*\"},instance)",
         "includeAll": false,
         "name": "receiver",
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values({instance=~\".*receivernode.*\"},instance)",
+          "query": "label_values({instance=~\".*receiver.*\"},instance)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,

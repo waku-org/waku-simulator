@@ -75,7 +75,7 @@ services:
       - simulation
 
   contract-repo-deployer:
-    image: node:hydrogen-bullseye
+    image: node:hydrogen-bookworm
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-true}'
     environment:
@@ -116,10 +116,11 @@ services:
         ipv4_address: 10.2.0.100
 
   servicenode:
-    image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
+    image: ${SERVICENODE_IMAGE:-wakuorg/nwaku:latest}
     # container_name: servicenode
     cpuset: ${SERVICENODE_CPU_CORES:-4}
     mem_limit: ${SERVICENODE_MEM_LIMIT:-512m}
+    memswap_limit: ${SERVICENODE_MEM_LIMIT:-512m}
     restart: on-failure
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-true}'
@@ -149,6 +150,29 @@ services:
     networks:
       simulation:
         ipv4_address: 10.2.0.101
+
+  relaynode:
+    image: ${SERVICENODE_IMAGE:-wakuorg/nwaku:latest}
+    restart: on-failure
+    labels:
+      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-true}'
+    ports:
+      - 127.0.0.1:8643:8645 # Service node REST-API
+    entrypoint: sh
+    environment:
+      <<:
+        - *rln_env
+        - *bootstrap_env
+    command:
+      - '/opt/run_relaynode.sh'
+    volumes:
+      - ./run_relaynode.sh:/opt/run_relaynode.sh:Z
+      - privatekeys-volume:/shared
+    depends_on:
+      contract-repo-deployer:
+        condition: service_completed_successfully
+    networks:
+      - simulation
 
   nwaku:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}

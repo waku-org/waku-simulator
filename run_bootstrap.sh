@@ -13,7 +13,7 @@ exec /usr/bin/wakunode\
       --rest-allow-origin="waku-org.github.io"\
       --rest-allow-origin="localhost:*"\
       --max-connections=300\
-      --dns-discovery=true\
+      --dns-discovery=false\
       --discv5-discovery=true\
       --discv5-enr-auto-update=True\
       --log-level=DEBUG\
@@ -23,5 +23,3 @@ exec /usr/bin/wakunode\
       --nat=extip:${IP}\
       --shard=0\
       --cluster-id=66
-
-      # --pubsub-topic=/waku/2/rs/66/0\
