@@ -38,16 +38,17 @@ services:
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
     environment:
-      - RLN_CONTRACT_REPO_COMMIT=${RLN_CONTRACT_REPO_COMMIT:-64df4593c6a14e43b8b0e9b396d2f4772bb08b34}
+      - RLN_CONTRACT_REPO_COMMIT=${RLN_CONTRACT_REPO_COMMIT:-ad0dc9a81d892864ac2576d74e628ce93da592ef}
       - PRIVATE_KEY=${PRIVATE_KEY}
       - RPC_URL=${RPC_URL:-http://foundry:8545}
       - ETH_FROM=${ETH_FROM}
-      - MAX_MESSAGE_LIMIT=${MAX_MESSAGE_LIMIT:-20}
+      - NUM_NWAKU_NODES=${NUM_NWAKU_NODES:-5}
     entrypoint: sh
     command:
-      - '/opt/deploy_rln_contract.sh'
+      - '/opt/deploy_new_contract.sh'
     volumes:
-      - ./deploy_rln_contract.sh:/opt/deploy_rln_contract.sh
+      - ./deploy_new_contract.sh:/opt/deploy_new_contract.sh
+      - privatekeys-volume:/shared
     depends_on:
       - foundry
     networks:
@@ -82,11 +83,11 @@ services:
     entrypoint: sh
     environment:
       - RPC_URL=${RPC_URL:-http://foundry:8545}
-      - RLN_CONTRACT_ADDRESS=0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+      - RLN_CONTRACT_ADDRESS=0x5FC8d32690cc91D4c39d9d3abcBD16989F875707
       - RLN_CREDENTIAL_PATH=/keystore.json
       - RLN_CREDENTIAL_PASSWORD=passw123
-      - RLN_RELAY_MSG_LIMIT=${RLN_RELAY_MSG_LIMIT:-10}
-      - RLN_RELAY_EPOCH_SEC=${RLN_RELAY_EPOCH_SEC:-60}
+      - RLN_RELAY_MSG_LIMIT=${RLN_RELAY_MSG_LIMIT:-100}
+      - RLN_RELAY_EPOCH_SEC=${RLN_RELAY_EPOCH_SEC:-600}
     command:
       - '/opt/run_nwaku.sh'
     volumes:
