@@ -2,9 +2,7 @@
 
 set -e
 
-# 1. Install foundry, pnpm, and required tools
-apt update && apt install -y jq
-
+# 1. Install foundry and pnpm
 curl -L https://foundry.paradigm.xyz | bash && . /root/.bashrc && foundryup && export PATH=$PATH:$HOME/.foundry/bin
 
 echo "installing pnpm..."
