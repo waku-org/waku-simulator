@@ -26,6 +26,8 @@ services:
         --allow-origin=*
         --block-time=12
         --chain-id=1234
+        --gas-limit=30000000
+        --gas-price=1
         --silent
         --config-out=/shared/anvil-config.txt
     volumes:
@@ -45,9 +47,9 @@ services:
       - NUM_NWAKU_NODES=${NUM_NWAKU_NODES:-5}
     entrypoint: sh
     command:
-      - '/opt/deploy_new_contract.sh'
+      - '/opt/deploy_rln_contract.sh'
     volumes:
-      - ./deploy_new_contract.sh:/opt/deploy_new_contract.sh
+      - ./deploy_rln_contract.sh:/opt/deploy_rln_contract.sh
       - privatekeys-volume:/shared
     depends_on:
       - foundry
@@ -88,10 +90,35 @@ services:
       - RLN_CREDENTIAL_PASSWORD=passw123
       - RLN_RELAY_MSG_LIMIT=${RLN_RELAY_MSG_LIMIT:-100}
       - RLN_RELAY_EPOCH_SEC=${RLN_RELAY_EPOCH_SEC:-600}
+      - TOKEN_ADDRESS=0x5FbDB2315678afecb367f032d93F642f64180aa3
+      - PRIVATE_KEY=${PRIVATE_KEY}
     command:
       - '/opt/run_nwaku.sh'
     volumes:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
+      - privatekeys-volume:/shared
+    init: true
+    depends_on:
+      contract-repo-deployer:
+        condition: service_completed_successfully
+      nwaku-token-init:
+        condition: service_completed_successfully
+    networks:
+      - simulation
+
+  nwaku-token-init:
+    build:
+      context: ./tools/token-mint-service
+      dockerfile: Dockerfile
+    environment:
+      - RPC_URL=${RPC_URL:-http://foundry:8545}
+      - TOKEN_ADDRESS=0x5FbDB2315678afecb367f032d93F642f64180aa3
+      - CONTRACT_ADDRESS=0x5FC8d32690cc91D4c39d9d3abcBD16989F875707
+      - PRIVATE_KEY=${PRIVATE_KEY}
+      - NUM_NWAKU_NODES=${NUM_NWAKU_NODES:-5}
+    deploy:
+      replicas: ${NUM_NWAKU_NODES:-5}
+    volumes:
       - privatekeys-volume:/shared
     depends_on:
       contract-repo-deployer:

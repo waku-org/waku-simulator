@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -55,46 +55,8 @@ echo "\nDeploying Proxy contract..."
 forge script script/Deploy.s.sol --broadcast -vvv --rpc-url http://foundry:8545 --tc DeployProxy --private-key $PRIVATE_KEY
 export CONTRACT_ADDRESS=0x5FC8d32690cc91D4c39d9d3abcBD16989F875707
 
-# 6. Setup tokens for nwaku nodes
-echo "\nSetting up tokens for nwaku nodes..."
-
-# Read anvil config to get addresses and private keys
-ANVIL_CONFIG=$(cat /shared/anvil-config.txt)
-ADDRESSES=$(echo "$ANVIL_CONFIG" | jq -r '.available_accounts[]')
-echo "Available addresses: $ADDRESSES"
-PRIVATE_KEYS=$(echo "$ANVIL_CONFIG" | jq -r '.private_keys[]')
-
-# Get number of nwaku nodes from environment (default 5)
-NUM_NODES=${NUM_NWAKU_NODES:-5}
-
-echo "Setting up tokens for $NUM_NODES nwaku nodes"
-
-# Process each account sequentially to ensure reliability
-node_index=1
-address_index=1
-
-echo "$ADDRESSES" | while read ADDRESS; do
-    if [ $node_index -le $NUM_NODES ]; then
-        # Get corresponding private key
-        PRIV_KEY=$(echo "$PRIVATE_KEYS" | sed -n "${address_index}p")
-        
-        echo "Setting up tokens for node $node_index: $ADDRESS"
-        
-        # Mint tokens to the address
-        echo "  Minting tokens..."
-        cast send $TOKEN_ADDRESS "mint(address,uint256)" $ADDRESS 5000000000000000000 --private-key $PRIVATE_KEY --from $ETH_FROM --rpc-url $RPC_URL
-        
-        # Approve the RLN contract to spend tokens
-        echo "  Approving contract..."
-        cast send $TOKEN_ADDRESS "approve(address,uint256)" $CONTRACT_ADDRESS 5000000000000000000 --private-key $PRIV_KEY --from $ADDRESS --rpc-url $RPC_URL
-        
-        echo "✓ Node $node_index setup complete"
-        node_index=$((node_index + 1))
-    else
-        break
-    fi
-    
-    address_index=$((address_index + 1))
-done
-
-echo "Token setup complete for all nwaku nodes"
+# 6. Contract deployment completed
+echo "\nContract deployment completed successfully"
+echo "TOKEN_ADDRESS: $TOKEN_ADDRESS"
+echo "CONTRACT_ADDRESS: $CONTRACT_ADDRESS"
+echo "\nEach account registering a membership needs to first mint the token and approve the contract to spend it on their behalf."
