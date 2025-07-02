@@ -12,46 +12,46 @@ services:
 
 # Accounts are hardcoded to 520 with the idea that nwaku nodes use up to 500 for membership registration and the last 20 are used for ad-hoc testing.
 # The account number and private key pairs of the last 20 accounts can be found in the Register memberships section of the Waku-simulator book.
-  foundry:
-    image: ghcr.io/foundry-rs/foundry:nightly-9b73e06e1fe376738b92ae081107620291d50188
-    labels:
-      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-    ports:
-      - 0.0.0.0:8545:8545
-    command:
-      - anvil
-        --port=8545
-        --host=0.0.0.0
-        --accounts=520
-        --allow-origin=*
-        --block-time=12
-        --chain-id=1234
-        --silent
-        --config-out=/shared/anvil-config.txt
-    volumes:
-      - privatekeys-volume:/shared
-    networks:
-      - simulation
+  # foundry:
+  #   image: ghcr.io/foundry-rs/foundry:v0.3.0
+  #   labels:
+  #     com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+  #   ports:
+  #     - 0.0.0.0:8545:8545
+  #   command:
+  #     - anvil
+  #       --port=8545
+  #       --host=0.0.0.0
+  #       --accounts=520
+  #       --allow-origin=*
+  #       --block-time=12
+  #       --chain-id=1234
+  #       --silent
+  #       --config-out=/shared/anvil-config.txt
+  #   volumes:
+  #     - privatekeys-volume:/shared
+  #   networks:
+  #     - simulation
 
-  contract-repo-deployer:
-    image: node:hydrogen-bookworm
-    labels:
-      com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
-    environment:
-      - RLN_CONTRACT_REPO_COMMIT=${RLN_CONTRACT_REPO_COMMIT:-64df4593c6a14e43b8b0e9b396d2f4772bb08b34}
-      - PRIVATE_KEY=${PRIVATE_KEY}
-      - RPC_URL=${RPC_URL:-http://foundry:8545}
-      - ETH_FROM=${ETH_FROM}
-      - MAX_MESSAGE_LIMIT=${MAX_MESSAGE_LIMIT:-20}
-    entrypoint: sh
-    command:
-      - '/opt/deploy_rln_contract.sh'
-    volumes:
-      - ./deploy_rln_contract.sh:/opt/deploy_rln_contract.sh
-    depends_on:
-      - foundry
-    networks:
-      - simulation
+  # contract-repo-deployer:
+  #   image: node:hydrogen-bookworm
+  #   labels:
+  #     com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
+  #   environment:
+  #     - RLN_CONTRACT_REPO_COMMIT=${RLN_CONTRACT_REPO_COMMIT:-64df4593c6a14e43b8b0e9b396d2f4772bb08b34}
+  #     - PRIVATE_KEY=${PRIVATE_KEY}
+  #     - RPC_URL=${RPC_URL:-http://foundry:8545}
+  #     - ETH_FROM=${ETH_FROM}
+  #     - MAX_MESSAGE_LIMIT=${MAX_MESSAGE_LIMIT:-20}
+  #   entrypoint: sh
+  #   command:
+  #     - '/opt/deploy_rln_contract.sh'
+  #   volumes:
+  #     - ./deploy_rln_contract.sh:/opt/deploy_rln_contract.sh
+  #   depends_on:
+  #     - foundry
+  #   networks:
+  #     - simulation
 
   bootstrap:
     image: ${NWAKU_IMAGE:-wakuorg/nwaku:latest}
@@ -93,23 +93,40 @@ services:
       - ./run_nwaku.sh:/opt/run_nwaku.sh:Z
       - privatekeys-volume:/shared
     depends_on:
-      contract-repo-deployer:
-        condition: service_completed_successfully
+      - bootstrap
     networks:
       - simulation
-      
-  rest-traffic:
-    build:
-      context: ./tools/rest-traffic
-      dockerfile: Dockerfile
+
+  lp-mix:
+    image: lightpushmix:test
+    pull_policy: never
+    #deploy:
+    #replicas: 2
+    entrypoint: sh
+    environment:
+      - NUM_NWAKU_NODES=${NUM_NWAKU_NODES}
     command:
-      --multiple-nodes=http://waku-simulator-nwaku-[1..${NUM_NWAKU_NODES:-5}]:8645
-      --msg-size-kbytes=${MSG_SIZE_KBYTES:-10}
-      --delay-seconds=${TRAFFIC_DELAY_SECONDS:-15}
+      - '/opt/run_lp_mix_publisher.sh'
+    volumes:
+      - ./run_lp_mix_publisher.sh:/opt/run_lp_mix_publisher.sh:Z
     networks:
       - simulation
     depends_on:
       - nwaku
+
+  #  rest-traffic:
+  #  build:
+  #    context: ./tools/rest-traffic
+  #    dockerfile: Dockerfile
+  #  image: alrevuelta/rest-traffic:28430f8
+  #  command:
+  #    --multiple-nodes=http://waku-simulator-nwaku-[1..${NUM_NWAKU_NODES:-5}]:8645
+  #    --msg-size-kbytes=${MSG_SIZE_KBYTES:-10}
+  #    --delay-seconds=${TRAFFIC_DELAY_SECONDS:-15}
+  #  networks:
+  #    - simulation
+  #  depends_on:
+  #    - nwaku
 
   prometheus:
     image: prom/prometheus:latest
@@ -170,71 +187,71 @@ services:
     networks:
       - simulation
 
-  api:
-    image: web3labs/epirus-free-api:latest
-    ports:
-      - 127.0.0.1:8090:8090
-    environment:
-      - NODE_ENDPOINT=${RPC_URL:-http://foundry:8545}
-      - MONGO_CLIENT_URI=mongodb://mongodb:27017
-      - REINDEX_ENDPOINT=http://ingestion/reindex/
-      - MONGO_DB_NAME=epirus
-      - MONGO_CREATE_INDICES=true
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-    depends_on:
-      - redis
-      - mongodb
-      - foundry
-    networks:
-      - simulation
+  # api:
+  #   image: web3labs/epirus-free-api:latest
+  #   ports:
+  #     - 127.0.0.1:8090:8090
+  #   environment:
+  #     - NODE_ENDPOINT=${RPC_URL:-http://foundry:8545}
+  #     - MONGO_CLIENT_URI=mongodb://mongodb:27017
+  #     - REINDEX_ENDPOINT=http://ingestion/reindex/
+  #     - MONGO_DB_NAME=epirus
+  #     - MONGO_CREATE_INDICES=true
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #   depends_on:
+  #     - redis
+  #     - mongodb
+  #     - foundry
+  #   networks:
+  #     - simulation
 
-  mongodb:
-    image: mongo:5.0.8
-    environment:
-      - COMPOSE_HTTP_TIMEOUT=900
-      - DOCKER_CLIENT_TIMEOUT=900
-    entrypoint: mongod --bind_ip "0.0.0.0"
-    networks:
-      - simulation
+  # mongodb:
+  #   image: mongo:5.0.8
+  #   environment:
+  #     - COMPOSE_HTTP_TIMEOUT=900
+  #     - DOCKER_CLIENT_TIMEOUT=900
+  #   entrypoint: mongod --bind_ip "0.0.0.0"
+  #   networks:
+  #     - simulation
 
-  web:
-    image: web3labs/epirus-free-web:latest
-    environment:
-      - API_URL=${EPIRUS_WEB_API_URL:-/api}
-      - WS_API_URL=${EPIRUS_WEB_WS_API_URL:-ws://localhost:8090}
-      - DISPLAY_NETWORK_TAB=disabled
-    depends_on:
-      - api
-    networks:
-      - simulation
+#   web:
+#     image: web3labs/epirus-free-web:latest
+#     environment:
+#       - API_URL=${EPIRUS_WEB_API_URL:-/api}
+#       - WS_API_URL=${EPIRUS_WEB_WS_API_URL:-ws://localhost:8090}
+#       - DISPLAY_NETWORK_TAB=disabled
+#     depends_on:
+#       - api
+#     networks:
+#       - simulation
 
-  ingestion:
-    image: web3labs/epirus-free-ingestion:latest
-    environment:
-      - NODE_ENDPOINT=${RPC_URL:-http://foundry:8545}
-      - MONGO_CLIENT_URI=mongodb://mongodb:27017
-      - MONGO_DB_NAME=epirus
-      - LIST_OF_METRICS_TO_CALCULATE_PER_MINUTE=hourly,daily,monthly,yearly
-    depends_on:
-      - mongodb
-      - redis
-      - foundry
-    networks:
-      - simulation
+#   ingestion:
+#     image: web3labs/epirus-free-ingestion:latest
+#     environment:
+#       - NODE_ENDPOINT=${RPC_URL:-http://foundry:8545}
+#       - MONGO_CLIENT_URI=mongodb://mongodb:27017
+#       - MONGO_DB_NAME=epirus
+#       - LIST_OF_METRICS_TO_CALCULATE_PER_MINUTE=hourly,daily,monthly,yearly
+#     depends_on:
+#       - mongodb
+#       - redis
+#       - foundry
+#     networks:
+#       - simulation
 
-  nginx:
-    image: nginx:latest
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./5xx.html:/www/error_pages/5xx.html
-    ports:
-      - 0.0.0.0:3000:80
-    depends_on:
-      - api
-      - web
-    networks:
-      - simulation
+#   nginx:
+#     image: nginx:latest
+#     volumes:
+#       - ./nginx.conf:/etc/nginx/nginx.conf
+#       - ./5xx.html:/www/error_pages/5xx.html
+#     ports:
+#       - 0.0.0.0:3000:80
+#     depends_on:
+#       - api
+#       - web
+#     networks:
+#       - simulation
 
 volumes:
   privatekeys-volume:

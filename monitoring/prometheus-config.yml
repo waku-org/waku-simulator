@@ -214,3 +214,24 @@ scrape_configs:
       - waku-simulator-nwaku-198:8008
       - waku-simulator-nwaku-199:8008
       - waku-simulator-nwaku-200:8008
+      - waku-simulator-lp-mix-1:8008
+      - waku-simulator-lp-mix-2:8008
+      - waku-simulator-lp-mix-3:8008
+      - waku-simulator-lp-mix-4:8008
+      - waku-simulator-lp-mix-5:8008
+      - waku-simulator-lp-mix-6:8008
+      - waku-simulator-lp-mix-7:8008
+      - waku-simulator-lp-mix-8:8008
+      - waku-simulator-lp-mix-9:8008
+      - waku-simulator-lp-mix-10:8008
+      - waku-simulator-lp-mix-11:8008
+      - waku-simulator-lp-mix-12:8008
+      - waku-simulator-lp-mix-13:8008
+      - waku-simulator-lp-mix-14:8008
+      - waku-simulator-lp-mix-15:8008
+      - waku-simulator-lp-mix-16:8008
+      - waku-simulator-lp-mix-17:8008
+      - waku-simulator-lp-mix-18:8008
+      - waku-simulator-lp-mix-19:8008
+      - waku-simulator-lp-mix-20:8008
+      - waku-simulator-lp-mix-21:8008
