@@ -127,6 +127,7 @@ echo "Using bootstrap node: ${BOOTSTRAP_ENR}"
 exec /usr/bin/wakunode\
       --relay=true\
       --lightpush=true\
+      --peer-exchange=true\
       --max-connections=250\
       --rest=true\
       --rest-address=0.0.0.0\
@@ -139,4 +140,5 @@ exec /usr/bin/wakunode\
       --discv5-bootstrap-node=${BOOTSTRAP_ENR}\
       --nat=extip:${IP}\
       --shard=0\
-      --cluster-id=66
+      --cluster-id=66\
+      --mix=true
