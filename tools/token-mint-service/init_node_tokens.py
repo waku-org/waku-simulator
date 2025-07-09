@@ -30,10 +30,12 @@ class NodeTokenInitializer:
         self.rpc_url = os.getenv('RPC_URL', 'http://foundry:8545')
         self.token_address = os.getenv('TOKEN_ADDRESS', '0x5FbDB2315678afecb367f032d93F642f64180aa3')
         self.contract_address = os.getenv('CONTRACT_ADDRESS', '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707')
-        self.private_key = os.getenv('NODE_PRIVATE_KEY')  # Ethereum account private key (not nwaku node-key)
-        self.node_address = os.getenv('NODE_ADDRESS')  # Ethereum account address
+        # The values for NODE_PRIVATE_KEY, NODE_ADDRESS, and NODE_INDEX are set by the get_account_key.sh script
+        self.private_key = os.getenv('NODE_PRIVATE_KEY')
+        self.node_address = os.getenv('NODE_ADDRESS')
         self.node_index = os.getenv('NODE_INDEX', '0')
-        self.mint_amount = int(os.getenv('MINT_AMOUNT', '5000000000000000000'))  # 5 tokens
+
+        self.mint_amount = int(os.getenv('MINT_AMOUNT', '5000000000000000000'))  # at least 5 tokens required for membership with RLN_RELAY_MSG_LIMIT=100
         
         if not self.private_key:
             raise ValueError("NODE_PRIVATE_KEY (Ethereum account private key) environment variable is required")

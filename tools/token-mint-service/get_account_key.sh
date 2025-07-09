@@ -1,17 +1,11 @@
 #!/bin/sh
-# Helper script to get the index of the container and use it to retrieve a unique account private key per nwaku node to be used to generate the keystore
+# Helper script to get the index of the container and use it to retrieve a unique account private key.
+# Each node uses a unique Ethereum account to register with the RLN contract.
+# The account and private key pairs are stored in anvil-config.txt on a shared volume at anvil startup in the foundry service
 
 set -e
 
-# Tools already installed in Dockerfile
-
 ANVIL_CONFIG_PATH=${ANVIL_CONFIG_PATH:-/shared/anvil-config.txt}
-
-# Wait for anvil config to be available
-echo "Waiting for anvil config at $ANVIL_CONFIG_PATH..."
-while [ ! -f "$ANVIL_CONFIG_PATH" ]; do
-    sleep 2
-done
 
 # Get container IP and determine index (same method as run_nwaku.sh)
 IP=$(ip a | grep "inet " | grep -Fv 127.0.0.1 | sed 's/.*inet \([^/]*\).*/\1/')
