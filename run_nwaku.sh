@@ -1,5 +1,7 @@
 #!/bin/sh
 
+ANVIL_CONFIG_PATH=${ANVIL_CONFIG_PATH:-/shared/anvil-config.txt}
+
 # Check Linux Distro Version - it can differ depending on the nwaku image used
 OS=$(cat /etc/os-release)
 if echo $OS | grep -q "Debian"; then
@@ -49,7 +51,7 @@ fi
 get_private_key(){
 
   # Read the JSON file
-  json_content=$(cat /shared/anvil-config.txt)
+  json_content=$(cat "$ANVIL_CONFIG_PATH")
 
   # Check if json_content has a value
   if [ -z "$json_content" ]; then
