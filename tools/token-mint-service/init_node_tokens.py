@@ -78,82 +78,102 @@ class NodeTokenInitializer:
 
     def mint_tokens(self) -> bool:
         """Mint tokens to this node's address using the node's own private key."""
-        try:
-            logger.info(f"Minting {self.mint_amount} tokens to {self.node_address}")
-            
-            # Use the node's own private key since mint() is public
-            nonce = self.w3.eth.get_transaction_count(self.node_address)
-            
-            # Build mint transaction
-            function_signature = self.w3.keccak(text="mint(address,uint256)")[:4]
-            encoded_address = self.node_address[2:].lower().zfill(64)
-            encoded_amount = hex(self.mint_amount)[2:].zfill(64)
-            data = function_signature.hex() + encoded_address + encoded_amount
-            
-            transaction = {
-                'to': self.token_address,
-                'value': 0,
-                'gas': 200000,
-                'gasPrice': self.w3.eth.gas_price,
-                'nonce': nonce,
-                'data': data,
-            }
-            
-            # Sign and send with node's own key
-            signed_txn = self.w3.eth.account.sign_transaction(transaction, self.private_key)
-            tx_hash = self.w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-            
-            logger.info(f"Mint transaction sent: {tx_hash.hex()}")
-            
-            if self.wait_for_transaction(tx_hash.hex()):
-                logger.info(f"✓ Mint successful for node {self.node_index}")
-                return True
-            else:
-                logger.error(f"✗ Mint failed for node {self.node_index}")
-                return False
+        for attempt in range(3):
+            try:
+                logger.info(f"Minting {self.mint_amount} tokens to {self.node_address} (attempt {attempt + 1}/3)")
                 
-        except Exception as e:
-            logger.error(f"✗ Mint failed for node {self.node_index}: {str(e)}")
-            return False
+                # Use the node's own private key since mint() is public
+                nonce = self.w3.eth.get_transaction_count(self.node_address)
+                
+                # Build mint transaction
+                function_signature = self.w3.keccak(text="mint(address,uint256)")[:4]
+                encoded_address = self.node_address[2:].lower().zfill(64)
+                encoded_amount = hex(self.mint_amount)[2:].zfill(64)
+                data = function_signature.hex() + encoded_address + encoded_amount
+                
+                transaction = {
+                    'to': self.token_address,
+                    'value': 0,
+                    'gas': 200000,
+                    'gasPrice': self.w3.eth.gas_price,
+                    'nonce': nonce,
+                    'data': data,
+                }
+                
+                # Sign and send with node's own key
+                signed_txn = self.w3.eth.account.sign_transaction(transaction, self.private_key)
+                tx_hash = self.w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+                
+                logger.info(f"Mint transaction sent: {tx_hash.hex()}")
+                
+                if self.wait_for_transaction(tx_hash.hex()):
+                    logger.info(f"✓ Mint successful for node {self.node_index}")
+                    return True
+                else:
+                    logger.error(f"✗ Mint failed for node {self.node_index} (attempt {attempt + 1})")
+                    if attempt < 2:
+                        logger.info(f"Retrying mint in 5 seconds...")
+                        time.sleep(5)
+                    continue
+                    
+            except Exception as e:
+                logger.error(f"✗ Mint failed for node {self.node_index} (attempt {attempt + 1}): {str(e)}")
+                if attempt < 2:
+                    logger.info(f"Retrying mint in 5 seconds...")
+                    time.sleep(5)
+                continue
+        
+        logger.error(f"✗ Mint failed for node {self.node_index} after 3 attempts")
+        return False
 
     def approve_tokens(self) -> bool:
         """Approve RLN contract to spend tokens."""
-        try:
-            logger.info(f"Approving {self.mint_amount} tokens for contract {self.contract_address}")
-            
-            nonce = self.w3.eth.get_transaction_count(self.node_address)
-            
-            # Build approve transaction
-            function_signature = self.w3.keccak(text="approve(address,uint256)")[:4]
-            encoded_contract = self.contract_address[2:].lower().zfill(64)
-            encoded_amount = hex(self.mint_amount)[2:].zfill(64)
-            data = function_signature.hex() + encoded_contract + encoded_amount
-            
-            transaction = {
-                'to': self.token_address,
-                'value': 0,
-                'gas': 200000,
-                'gasPrice': self.w3.eth.gas_price,
-                'nonce': nonce,
-                'data': data,
-            }
-            
-            # Sign and send with node's own key
-            signed_txn = self.w3.eth.account.sign_transaction(transaction, self.private_key)
-            tx_hash = self.w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-            
-            logger.info(f"Approve transaction sent: {tx_hash.hex()}")
-            
-            if self.wait_for_transaction(tx_hash.hex()):
-                logger.info(f"✓ Approval successful for node {self.node_index}")
-                return True
-            else:
-                logger.error(f"✗ Approval failed for node {self.node_index}")
-                return False
+        for attempt in range(3):
+            try:
+                logger.info(f"Approving {self.mint_amount} tokens for contract {self.contract_address} (attempt {attempt + 1}/3)")
                 
-        except Exception as e:
-            logger.error(f"✗ Approval failed for node {self.node_index}: {str(e)}")
-            return False
+                nonce = self.w3.eth.get_transaction_count(self.node_address)
+                
+                # Build approve transaction
+                function_signature = self.w3.keccak(text="approve(address,uint256)")[:4]
+                encoded_contract = self.contract_address[2:].lower().zfill(64)
+                encoded_amount = hex(self.mint_amount)[2:].zfill(64)
+                data = function_signature.hex() + encoded_contract + encoded_amount
+                
+                transaction = {
+                    'to': self.token_address,
+                    'value': 0,
+                    'gas': 200000,
+                    'gasPrice': self.w3.eth.gas_price,
+                    'nonce': nonce,
+                    'data': data,
+                }
+                
+                # Sign and send with node's own key
+                signed_txn = self.w3.eth.account.sign_transaction(transaction, self.private_key)
+                tx_hash = self.w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+                
+                logger.info(f"Approve transaction sent: {tx_hash.hex()}")
+                
+                if self.wait_for_transaction(tx_hash.hex()):
+                    logger.info(f"✓ Approval successful for node {self.node_index}")
+                    return True
+                else:
+                    logger.error(f"✗ Approval failed for node {self.node_index} (attempt {attempt + 1})")
+                    if attempt < 2:
+                        logger.info(f"Retrying approval in 5 seconds...")
+                        time.sleep(5)
+                    continue
+                    
+            except Exception as e:
+                logger.error(f"✗ Approval failed for node {self.node_index} (attempt {attempt + 1}): {str(e)}")
+                if attempt < 2:
+                    logger.info(f"Retrying approval in 5 seconds...")
+                    time.sleep(5)
+                continue
+        
+        logger.error(f"✗ Approval failed for node {self.node_index} after 3 attempts")
+        return False
 
     def run(self) -> bool:
         """Run the token initialization process."""
