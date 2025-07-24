@@ -24,7 +24,7 @@ services:
         --host=0.0.0.0
         --accounts=520
         --allow-origin=*
-        --block-time=12
+        --block-time=3
         --chain-id=1234
         --gas-limit=30000000
         --gas-price=1
