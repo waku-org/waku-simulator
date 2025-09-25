@@ -139,7 +139,6 @@ exec /usr/bin/wakunode\
       --rln-relay-eth-contract-address=$RLN_CONTRACT_ADDRESS\
       --rln-relay-cred-path=$RLN_CREDENTIAL_PATH\
       --rln-relay-cred-password=$RLN_CREDENTIAL_PASSWORD\
-      --rln-relay-tree-path="rlnv2_tree1"\
       --rln-relay-epoch-sec=$RLN_RELAY_EPOCH_SEC\
       --rln-relay-user-message-limit=$RLN_RELAY_MSG_LIMIT\
       --rln-relay-chain-id=1234\
