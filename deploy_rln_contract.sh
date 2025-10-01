@@ -38,10 +38,11 @@ export API_KEY_ETHERSCAN=123
 export API_KEY_CARDONA=123
 export API_KEY_LINEASCAN=123
 
-# 5. Deploy the TestToken
-echo "\nDeploying TestToken (ERC20 Token Contract)...\n"
-forge script test/TestToken.sol --broadcast -vv --rpc-url http://foundry:8545 --tc TestTokenFactory --private-key $PRIVATE_KEY
-export TOKEN_ADDRESS=0x5FbDB2315678afecb367f032d93F642f64180aa3
+# 5. Deploy the TestToken Proxy with the TestToken implementation contracts
+echo "\nDeploying TestToken Proxy (ERC20 Token Contract)...\n"
+DEPLOY_TST_PROXY_OUTPUT=$(ETH_FROM=$ETH_FROM forge script script/DeployTokenWithProxy.s.sol:DeployTokenWithProxy --broadcast -vv --rpc-url http://foundry:8545 --tc TestTokenFactory --private-key $PRIVATE_KEY)
+PROXY_TOKEN_ADDRESS=$(echo "$DEPLOY_TST_PROXY_OUTPUT" | grep -o "0: address 0x[a-fA-F0-9]\{40\}" | cut -d' ' -f3)
+export TOKEN_ADDRESS=$PROXY_TOKEN_ADDRESS
 
 echo "\nDeploying LinearPriceCalculator Contract..."
 forge script script/Deploy.s.sol --broadcast -vv --rpc-url http://foundry:8545 --tc DeployPriceCalculator --private-key $PRIVATE_KEY
@@ -50,8 +51,8 @@ echo "\nDeploying RLN contract..."
 forge script script/Deploy.s.sol --broadcast -vv --rpc-url http://foundry:8545 --tc DeployWakuRlnV2 --private-key $PRIVATE_KEY
 
 echo "\nDeploying Proxy contract..."
-forge script script/Deploy.s.sol --broadcast -vvv --rpc-url http://foundry:8545 --tc DeployProxy --private-key $PRIVATE_KEY
-export CONTRACT_ADDRESS=0x5FC8d32690cc91D4c39d9d3abcBD16989F875707
+DEPLOY_WAKURLN_PROXY_OUTPUT=$(ETH_FROM=$ETH_FROM forge script script/Deploy.s.sol --broadcast -vvv --rpc-url http://foundry:8545 --tc DeployProxy --private-key $PRIVATE_KEY)
+export CONTRACT_ADDRESS=$(echo "$DEPLOY_WAKURLN_PROXY_OUTPUT" | grep -o "0: address 0x[a-fA-F0-9]\{40\}" | cut -d' ' -f3)
 
 # 6. Contract deployment completed
 echo "\nContract deployment completed successfully"
