@@ -58,7 +58,7 @@ validate_address() {
 
 # 5. Deploy the TestToken Proxy with the TestToken implementation contracts
 printf "\nDeploying TestToken Proxy (ERC20 Token Contract)...\n"
-DEPLOY_TST_PROXY_OUTPUT=$(ETH_FROM=$ETH_FROM forge script script/DeployTokenWithProxy.s.sol:DeployTokenWithProxy --broadcast -vv --rpc-url http://foundry:8545 --tc TestTokenFactory --private-key $PRIVATE_KEY)
+DEPLOY_TST_PROXY_OUTPUT=$(ETH_FROM=$ETH_FROM forge script script/DeployTokenWithProxy.s.sol:DeployTokenWithProxy --broadcast -vv --rpc-url http://foundry:8545 --private-key $PRIVATE_KEY)
 if [ $? -ne 0 ]; then
     echo "Error: TestToken Proxy deployment failed"
     echo "Forge output: $DEPLOY_TST_PROXY_OUTPUT"
