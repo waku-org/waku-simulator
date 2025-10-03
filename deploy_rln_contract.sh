@@ -38,21 +38,63 @@ export API_KEY_ETHERSCAN=123
 export API_KEY_CARDONA=123
 export API_KEY_LINEASCAN=123
 
+# Helper function to validate Ethereum addresses
+validate_address() {
+    local address="$1"
+    local name="$2"
+    
+    if [ -z "$address" ]; then
+        echo "Error: Failed to extract $name address"
+        exit 1
+    fi
+    
+    if ! echo "$address" | grep -qE "^0x[a-fA-F0-9]{40}$"; then
+        echo "Error: Invalid $name address format: $address"
+        exit 1
+    fi
+    
+    echo "Successfully extracted $name address: $address"
+}
+
 # 5. Deploy the TestToken Proxy with the TestToken implementation contracts
 printf "\nDeploying TestToken Proxy (ERC20 Token Contract)...\n"
 DEPLOY_TST_PROXY_OUTPUT=$(ETH_FROM=$ETH_FROM forge script script/DeployTokenWithProxy.s.sol:DeployTokenWithProxy --broadcast -vv --rpc-url http://foundry:8545 --tc TestTokenFactory --private-key $PRIVATE_KEY)
-PROXY_TOKEN_ADDRESS=$(echo "$DEPLOY_TST_PROXY_OUTPUT" | grep -o "0: address 0x[a-fA-F0-9]\{40\}" | head -n1 | cut -d' ' -f3)
+if [ $? -ne 0 ]; then
+    echo "Error: TestToken Proxy deployment failed"
+    echo "Forge output: $DEPLOY_TST_PROXY_OUTPUT"
+    exit 1
+fi
+
+export PROXY_TOKEN_ADDRESS=$(echo "$DEPLOY_TST_PROXY_OUTPUT" | grep -o "0: address 0x[a-fA-F0-9]\{40\}" | head -n1 | cut -d' ' -f3)
+validate_address "$PROXY_TOKEN_ADDRESS" "TestToken Proxy"
 export TOKEN_ADDRESS=$PROXY_TOKEN_ADDRESS
 
 printf "\nDeploying LinearPriceCalculator Contract...\n"
 forge script script/Deploy.s.sol --broadcast -vv --rpc-url http://foundry:8545 --tc DeployPriceCalculator --private-key $PRIVATE_KEY
+if [ $? -ne 0 ]; then
+    echo "Error: LinearPriceCalculator deployment failed"
+    exit 1
+fi
+echo "LinearPriceCalculator deployment completed successfully"
 
 printf "\nDeploying RLN contract...\n"
 forge script script/Deploy.s.sol --broadcast -vv --rpc-url http://foundry:8545 --tc DeployWakuRlnV2 --private-key $PRIVATE_KEY
+if [ $? -ne 0 ]; then
+    echo "Error: RLN contract deployment failed"
+    exit 1
+fi
+echo "RLN contract deployment completed successfully"
 
 printf "\nDeploying Proxy contract...\n"
 DEPLOY_WAKURLN_PROXY_OUTPUT=$(ETH_FROM=$ETH_FROM forge script script/Deploy.s.sol --broadcast -vvv --rpc-url http://foundry:8545 --tc DeployProxy --private-key $PRIVATE_KEY)
+if [ $? -ne 0 ]; then
+    echo "Error: Proxy contract deployment failed"
+    echo "Forge output: $DEPLOY_WAKURLN_PROXY_OUTPUT"
+    exit 1
+fi
+
 export RLN_CONTRACT_ADDRESS=$(echo "$DEPLOY_WAKURLN_PROXY_OUTPUT" | grep -o "0: address 0x[a-fA-F0-9]\{40\}" | head -n1 | cut -d' ' -f3)
+validate_address "$RLN_CONTRACT_ADDRESS" "RLN Proxy"
 
 # 6. Contract deployment completed
 printf "\nContract deployment completed successfully"
