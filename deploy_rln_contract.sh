@@ -39,23 +39,23 @@ export API_KEY_CARDONA=123
 export API_KEY_LINEASCAN=123
 
 # 5. Deploy the TestToken Proxy with the TestToken implementation contracts
-echo "\nDeploying TestToken Proxy (ERC20 Token Contract)...\n"
+printf "\nDeploying TestToken Proxy (ERC20 Token Contract)...\n"
 DEPLOY_TST_PROXY_OUTPUT=$(ETH_FROM=$ETH_FROM forge script script/DeployTokenWithProxy.s.sol:DeployTokenWithProxy --broadcast -vv --rpc-url http://foundry:8545 --tc TestTokenFactory --private-key $PRIVATE_KEY)
 PROXY_TOKEN_ADDRESS=$(echo "$DEPLOY_TST_PROXY_OUTPUT" | grep -o "0: address 0x[a-fA-F0-9]\{40\}" | head -n1 | cut -d' ' -f3)
 export TOKEN_ADDRESS=$PROXY_TOKEN_ADDRESS
 
-echo "\nDeploying LinearPriceCalculator Contract..."
+printf "\nDeploying LinearPriceCalculator Contract...\n"
 forge script script/Deploy.s.sol --broadcast -vv --rpc-url http://foundry:8545 --tc DeployPriceCalculator --private-key $PRIVATE_KEY
 
-echo "\nDeploying RLN contract..."
+printf "\nDeploying RLN contract...\n"
 forge script script/Deploy.s.sol --broadcast -vv --rpc-url http://foundry:8545 --tc DeployWakuRlnV2 --private-key $PRIVATE_KEY
 
-echo "\nDeploying Proxy contract..."
+printf "\nDeploying Proxy contract...\n"
 DEPLOY_WAKURLN_PROXY_OUTPUT=$(ETH_FROM=$ETH_FROM forge script script/Deploy.s.sol --broadcast -vvv --rpc-url http://foundry:8545 --tc DeployProxy --private-key $PRIVATE_KEY)
 export RLN_CONTRACT_ADDRESS=$(echo "$DEPLOY_WAKURLN_PROXY_OUTPUT" | grep -o "0: address 0x[a-fA-F0-9]\{40\}" | head -n1 | cut -d' ' -f3)
 
 # 6. Contract deployment completed
-echo "\nContract deployment completed successfully"
-echo "TOKEN_ADDRESS: $TOKEN_ADDRESS"
-echo "RLN_CONTRACT_ADDRESS: $RLN_CONTRACT_ADDRESS"
-echo "\nEach account registering a membership needs to first mint the token and approve the contract to spend it on their behalf."
+printf "\nContract deployment completed successfully"
+printf "\nTOKEN_ADDRESS: $TOKEN_ADDRESS"
+printf "\nRLN_CONTRACT_ADDRESS: $RLN_CONTRACT_ADDRESS"
+printf "\nEach account registering a membership needs to first mint the token and approve the contract to spend it on their behalf."
