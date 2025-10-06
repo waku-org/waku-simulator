@@ -37,7 +37,7 @@ class NodeTokenInitializer:
         # Approver private key for adding accounts to approved minters list
         self.approver_private_key = os.getenv('PRIVATE_KEY')
 
-        self.mint_amount = int(os.getenv('MINT_AMOUNT', '500000000000000000000'))  # at least 5 tokens required for membership with RLN_RELAY_MSG_LIMIT=100
+        self.mint_amount = int(os.getenv('MINT_AMOUNT', '5000000000000000000'))  # at least 5 tokens required for membership with RLN_RELAY_MSG_LIMIT=100
         
         if not self.private_key:
             raise ValueError("NODE_PRIVATE_KEY (Ethereum account private key) environment variable is required")
