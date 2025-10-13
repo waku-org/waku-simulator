@@ -12,7 +12,7 @@ docker run --network waku-simulator_simulation alrevuelta/go-waku-light:4fabb22 
 --contract-address=0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9 \
 send-messages-loop \
 --priv-key=ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 \
---user-message-limit=1 \
+--user-message-limit=20 \
 --message="light client sending a rln message" \
 --content-topic=/basic2/1/test/proto \
 --pubsub-topic=/waku/2/rs/66/0 \
@@ -31,7 +31,7 @@ for i in {1..5}; do
     --contract-address=0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9 \
     send-messages-loop \
     --priv-key=ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 \
-    --user-message-limit=1 \
+    --user-message-limit=20 \
     --message="light client sending a rln message" \
     --content-topic=/basic2/1/test/proto \
     --pubsub-topic=/waku/2/rs/66/0 \

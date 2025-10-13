@@ -12,15 +12,15 @@ cd waku-simulator
 Configure the simulation parameters. You can place the env variable in an `.env` file.
 
 ```
-export NWAKU_IMAGE=quay.io/wakuorg/nwaku-pr:2759-rln-v2
+export NWAKU_IMAGE=harbor.status.im/wakuorg/nwaku:v0.36.0
 export NUM_NWAKU_NODES=5
-export TRAFFIC_DELAY_SECONDS=15
+export TRAFFIC_DELAY_SECONDS=30
 export MSG_SIZE_KBYTES=10
 export PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 export ETH_FROM=0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
-export RLN_RELAY_EPOCH_SEC=10
-export RLN_RELAY_MSG_LIMIT=2
-export MAX_MESSAGE_LIMIT=100  # Contract's message limit. Needs to be higher or equal than RLN_RELAY_MSG_LIMIT, otherwise nodes won't start correctly.
+export RLN_RELAY_EPOCH_SEC=600
+export RLN_RELAY_MSG_LIMIT=20
+export RLN_CONTRACT_REPO_COMMIT=851fa0803b3180691392bc06069339bba37927ef
 ```
 
 Run the following command

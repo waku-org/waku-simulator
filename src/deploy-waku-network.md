@@ -10,12 +10,12 @@ Some of the most important parameters are:
 - `TRAFFIC_DELAY_SECONDS` and `MSG_SIZE_KBYTES` are used to inject traffic via the rest API into the network.
 
 ```bash
-export NWAKU_IMAGE=quay.io/wakuorg/nwaku-pr:2759-rln-v2
+export NWAKU_IMAGE=harbor.status.im/wakuorg/nwaku:v0.36.0
 export NUM_NWAKU_NODES=5
-export RLN_RELAY_EPOCH_SEC=1
-export RLN_RELAY_MSG_LIMIT=1
+export RLN_RELAY_EPOCH_SEC=600
+export RLN_RELAY_MSG_LIMIT=20
 
-export TRAFFIC_DELAY_SECONDS=15
+export TRAFFIC_DELAY_SECONDS=30
 export MSG_SIZE_KBYTES=10
 
 export PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80

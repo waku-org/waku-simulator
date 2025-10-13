@@ -40,7 +40,7 @@ services:
     labels:
       com.centurylinklabs.watchtower.enable: '${WATCHTOWER_ENABLED:-false}'
     environment:
-      - RLN_CONTRACT_REPO_COMMIT=${RLN_CONTRACT_REPO_COMMIT:-e75ac913e579ad872f54b2225eec35d1de3d98b0}
+      - RLN_CONTRACT_REPO_COMMIT=${RLN_CONTRACT_REPO_COMMIT:-851fa0803b3180691392bc06069339bba37927ef}
       - PRIVATE_KEY=${PRIVATE_KEY}
       - RPC_URL=${RPC_URL:-http://foundry:8545}
       - ETH_FROM=${ETH_FROM}
