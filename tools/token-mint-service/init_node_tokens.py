@@ -28,12 +28,14 @@ class NodeTokenInitializer:
         """Initialize the node token service."""
         # Required environment variables
         self.rpc_url = os.getenv('RPC_URL', 'http://foundry:8545')
-        self.token_address = os.getenv('TOKEN_ADDRESS', '0x5FbDB2315678afecb367f032d93F642f64180aa3')
-        self.contract_address = os.getenv('CONTRACT_ADDRESS', '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707')
+        self.token_address = os.getenv('TOKEN_ADDRESS', '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512')
+        self.contract_address = os.getenv('RLN_CONTRACT_ADDRESS', '0x0165878A594ca255338adfa4d48449f69242Eb8F')
         # The values for NODE_PRIVATE_KEY, NODE_ADDRESS, and NODE_INDEX are set by the get_account_key.sh script
         self.private_key = os.getenv('NODE_PRIVATE_KEY')
         self.node_address = os.getenv('NODE_ADDRESS')
         self.node_index = os.getenv('NODE_INDEX', '0')
+        # Approver private key for adding accounts to approved minters list
+        self.approver_private_key = os.getenv('PRIVATE_KEY')
 
         self.mint_amount = int(os.getenv('MINT_AMOUNT', '5000000000000000000'))  # at least 5 tokens required for membership with RLN_RELAY_MSG_LIMIT=100
         
@@ -41,16 +43,30 @@ class NodeTokenInitializer:
             raise ValueError("NODE_PRIVATE_KEY (Ethereum account private key) environment variable is required")
         if not self.node_address:
             raise ValueError("NODE_ADDRESS (Ethereum account address) environment variable is required")
+        if not self.approver_private_key:
+            logger.error("PRIVATE_KEY environment variable is missing!")
+            raise ValueError("PRIVATE_KEY (Token contract owner private key) environment variable is required")
+        else:
+            logger.info(f"PRIVATE_KEY loaded successfully")
         
         # Initialize Web3
         self.w3 = Web3(Web3.HTTPProvider(self.rpc_url))
         if not self.w3.is_connected():
             raise Exception(f"Failed to connect to Ethereum node at {self.rpc_url}")
         
+        # Get approver address from private key
+        try:
+            self.approver_address = self.w3.eth.account.from_key(self.approver_private_key).address
+            logger.info(f"Approver address derived: {self.approver_address}")
+        except Exception as e:
+            logger.error(f"Failed to derive approver address from PRIVATE_KEY: {str(e)}")
+            raise
+        
         # Convert addresses to proper checksum format
         self.node_address = self.w3.to_checksum_address(self.node_address)
         self.token_address = self.w3.to_checksum_address(self.token_address)
         self.contract_address = self.w3.to_checksum_address(self.contract_address)
+        self.approver_address = self.w3.to_checksum_address(self.approver_address)
         
         logger.info(f"Node {self.node_index} initializing tokens")
         logger.info(f"Address: {self.node_address}")
@@ -76,6 +92,68 @@ class NodeTokenInitializer:
         logger.error(f"Transaction {tx_hash} timed out after {timeout} seconds")
         return False
 
+    def approve_account_for_minting(self) -> bool:
+        """Add this node's address to the approved minters list."""
+        logger.info(f"=== STARTING APPROVAL PROCESS ===")
+        logger.info(f"Node address to approve: {self.node_address}")
+        logger.info(f"Approver address: {self.approver_address}")
+        logger.info(f"Token contract: {self.token_address}")
+        
+        for attempt in range(3):
+            try:
+                logger.info(f"Adding {self.node_address} to approved minters list (attempt {attempt + 1}/3)")
+                
+                # Use the approver's private key (contract owner)
+                nonce = self.w3.eth.get_transaction_count(self.approver_address, 'pending')
+                
+                # Build addApprovedAccount transaction
+                function_signature = self.w3.keccak(text="addMinter(address)")[:4]
+                encoded_address = self.node_address[2:].lower().zfill(64)
+                data = function_signature.hex() + encoded_address
+                
+                # Increase gas price for retries to avoid underpriced transactions
+                gas_price = self.w3.eth.gas_price
+                if attempt > 0:
+                    gas_price = int(gas_price * (1.1 ** attempt))  # 10% increase per retry
+                
+                transaction = {
+                    'to': self.token_address,
+                    'value': 0,
+                    'gas': 200000,
+                    'gasPrice': gas_price,
+                    'nonce': nonce,
+                    'data': data,
+                }
+                
+                # Sign and send with approver's key
+                signed_txn = self.w3.eth.account.sign_transaction(transaction, self.approver_private_key)
+                tx_hash = self.w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+                
+                logger.info(f"Approve account transaction sent: {tx_hash.hex()}")
+                
+                if self.wait_for_transaction(tx_hash.hex()):
+                    logger.info(f"✓ Account approval successful for node {self.node_index}")
+                    return True
+                else:
+                    logger.error(f"✗ Account approval failed for node {self.node_index} (attempt {attempt + 1})")
+                    if attempt < 2:
+                        logger.info(f"Retrying account approval in 5 seconds...")
+                        time.sleep(5)
+                    continue
+                    
+            except Exception as e:
+                logger.error(f"✗ Account approval failed for node {self.node_index} (attempt {attempt + 1}): {str(e)}")
+                logger.error(f"Exception type: {type(e).__name__}")
+                logger.error(f"Exception details: {repr(e)}")
+                if attempt < 2:
+                    logger.info(f"Retrying account approval in 5 seconds...")
+                    time.sleep(5)
+                continue
+        
+        logger.error(f"✗ Account approval failed for node {self.node_index} after 3 attempts")
+        logger.error(f"=== APPROVAL PROCESS FAILED ===")
+        return False
+
     def mint_tokens(self) -> bool:
         """Mint tokens to this node's address using the node's own private key."""
         for attempt in range(3):
@@ -83,7 +161,7 @@ class NodeTokenInitializer:
                 logger.info(f"Minting {self.mint_amount} tokens to {self.node_address} (attempt {attempt + 1}/3)")
                 
                 # Use the node's own private key since mint() is public
-                nonce = self.w3.eth.get_transaction_count(self.node_address)
+                nonce = self.w3.eth.get_transaction_count(self.node_address, 'pending')
                 
                 # Build mint transaction
                 function_signature = self.w3.keccak(text="mint(address,uint256)")[:4]
@@ -91,11 +169,16 @@ class NodeTokenInitializer:
                 encoded_amount = hex(self.mint_amount)[2:].zfill(64)
                 data = function_signature.hex() + encoded_address + encoded_amount
                 
+                # Increase gas price for retries to avoid underpriced transactions
+                gas_price = self.w3.eth.gas_price
+                if attempt > 0:
+                    gas_price = int(gas_price * (1.1 ** attempt))  # 10% increase per retry
+                
                 transaction = {
                     'to': self.token_address,
                     'value': 0,
                     'gas': 200000,
-                    'gasPrice': self.w3.eth.gas_price,
+                    'gasPrice': gas_price,
                     'nonce': nonce,
                     'data': data,
                 }
@@ -132,7 +215,7 @@ class NodeTokenInitializer:
             try:
                 logger.info(f"Approving {self.mint_amount} tokens for contract {self.contract_address} (attempt {attempt + 1}/3)")
                 
-                nonce = self.w3.eth.get_transaction_count(self.node_address)
+                nonce = self.w3.eth.get_transaction_count(self.node_address, 'pending')
                 
                 # Build approve transaction
                 function_signature = self.w3.keccak(text="approve(address,uint256)")[:4]
@@ -140,11 +223,16 @@ class NodeTokenInitializer:
                 encoded_amount = hex(self.mint_amount)[2:].zfill(64)
                 data = function_signature.hex() + encoded_contract + encoded_amount
                 
+                # Increase gas price for retries to avoid underpriced transactions
+                gas_price = self.w3.eth.gas_price
+                if attempt > 0:
+                    gas_price = int(gas_price * (1.1 ** attempt))  # 10% increase per retry
+                
                 transaction = {
                     'to': self.token_address,
                     'value': 0,
                     'gas': 200000,
-                    'gasPrice': self.w3.eth.gas_price,
+                    'gasPrice': gas_price,
                     'nonce': nonce,
                     'data': data,
                 }
@@ -179,12 +267,30 @@ class NodeTokenInitializer:
         """Run the token initialization process."""
         try:
             logger.info(f"Starting token initialization for node {self.node_index}")
+            logger.info(f"=== DEBUG INFO ===")
+            logger.info(f"Node address: {self.node_address}")
+            logger.info(f"Approver address: {self.approver_address}")
+            logger.info(f"Token address: {self.token_address}")
+            logger.info(f"PRIVATE_KEY present: {'Yes' if self.approver_private_key else 'No'}")
+            logger.info(f"==================")
             
-            # Step 1: Mint tokens
+            # Step 1: Add node address to approved minters list
+            logger.info(f"STEP 1: Starting approval process...")
+            try:
+                if not self.approve_account_for_minting():
+                    logger.error(f"STEP 1 FAILED: Could not approve account for minting")
+                    return False
+                logger.info(f"STEP 1 SUCCESS: Account approved for minting")
+            except Exception as e:
+                logger.error(f"STEP 1 EXCEPTION: {str(e)}")
+                logger.error(f"Exception type: {type(e).__name__}")
+                return False
+            
+            # Step 2: Mint tokens
             if not self.mint_tokens():
                 return False
             
-            # Step 2: Approve contract
+            # Step 3: Approve contract
             if not self.approve_tokens():
                 return False
             
