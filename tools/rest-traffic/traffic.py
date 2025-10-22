@@ -81,21 +81,24 @@ for node in nodes:
 while True:
     # calls are blocking
     # limited by the time it takes the REST API to reply
-    time_to_sleep = args.delay_seconds
+    send_start_time = time.time()
     if args.single_node != None:
       send_waku_msg(args.single_node, args.msg_size_kbytes, args.pubsub_topic, args.content_topic)
 
     if args.multiple_nodes != None:
-      #get time before sending to all nodes
-      send_start_time = time.time()
       for node in nodes:
         send_waku_msg(node, args.msg_size_kbytes, args.pubsub_topic, args.content_topic)
-      send_elapsed = time.time() - send_start_time
-      logging.info("Time taken to send to all nodes: %.4f seconds", send_elapsed)
-      time_to_sleep = args.delay_seconds - send_elapsed
-      if time_to_sleep > 0:
-        logging.info("Sleeping %.4f seconds to maintain delay of %d seconds between rounds", time_to_sleep, args.delay_seconds)
-      else:
-        logging.info("No sleep needed to maintain delay of %d seconds between rounds", args.delay_seconds)
 
-    time.sleep(time_to_sleep)
+    send_elapsed = time.time() - send_start_time
+    if args.multiple_nodes != None:
+      logging.info("Time taken to send to all nodes: %.4f seconds", send_elapsed)
+    else:
+      logging.info("Time taken to send to single node: %.4f seconds", send_elapsed)
+
+    time_to_sleep = args.delay_seconds - send_elapsed
+    if time_to_sleep > 0:
+      logging.info("Sleeping %.4f seconds to maintain delay of %d seconds between rounds", time_to_sleep, args.delay_seconds)
+    else:
+      logging.info("No sleep needed to maintain delay of %d seconds between rounds", args.delay_seconds)
+
+    time.sleep(max(0, time_to_sleep))
